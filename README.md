@@ -1,29 +1,5 @@
-# ${GITHUB_REPOSITORY_NAME}
+# CT Scraper
 
-This is a template for an OpenSAFELY Core repository.
+### Where are clinical trials taking place globally? What can we learn from publicly available resources and automated methods?
 
-Put your project description here.
-
-New repo checklist:
-- [ ] Does the repo require a Dockerfile?
-  If not, delete:
-  - Dockerfile -
-  - .dockerignore
-  - hadolint pre-commit hook from `.pre-commit-config.yaml`
-  - `lint-dockerfile` action from `.github/workflows/main.yml`
-- [ ] Is this a Django project?
-  If so, you probably need to add the following per-file ignores to `.flake8`
-  ```
-  per-file-ignores =
-    manage.py:INP001
-    gunicorn.conf.py:INP001
-  ```
-- [ ] Will this project be installed with pip?
-  If so, delete `requirements.prod.in` and switch references in the `justfile` to `pyproject.toml`
-- [ ] Update DEVELOPERS.md with any project-specific requirements and commands
-- [ ] Update commands in `justfile`
-
-
-## Developer docs
-
-Please see the [additional information](DEVELOPERS.md).
+Affiliation data is generally non-standardized and unstructured. In this project we are using data from clinical trial registries (such as ClinicalTrials.gov) and PubMed, and applying existing resources such as ROR and OpenAlex to cluster site and sponsor information. We will explore the limitations of these automated methods and supplement with some manual efforts.
