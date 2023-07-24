@@ -1,0 +1,133 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.ror.org/organizations?affiliation=CHU+Dijon+Bourgogne
+  response:
+    body:
+      string: "{\"number_of_results\":13,\"items\":[{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0064m4x84\",\"name\":\"Colorado
+        Heights University\",\"email_address\":null,\"ip_addresses\":[],\"established\":1989,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":39.661528,\"lng\":-105.027679,\"state\":\"Colorado\",\"state_code\":\"US-CO\",\"city\":\"Denver\",\"geonames_city\":{\"id\":5419384,\"city\":\"Denver\",\"geonames_admin1\":{\"name\":\"Colorado\",\"id\":5417618,\"ascii_name\":\"Colorado\",\"code\":\"US.CO\"},\"geonames_admin2\":{\"name\":\"Denver
+        County\",\"id\":5419396,\"ascii_name\":\"Denver County\",\"code\":\"US.CO.031\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":6252001}],\"links\":[\"http://chu.edu/\"],\"aliases\":[\"Loretto
+        Heights College\",\"Teikyo Loretto Heights University\"],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Colorado_Heights_University\",\"labels\":[],\"country\":{\"country_name\":\"United
+        States\",\"country_code\":\"US\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 8739 1470\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"6214672\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q5148817\"]},\"GRID\":{\"preferred\":\"grid.446956.c\",\"all\":\"grid.446956.c\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/011adb956\",\"name\":\"Centre
+        Hospito Universitaire de S\xE9tif\",\"email_address\":null,\"ip_addresses\":[],\"established\":2012,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":36.200471,\"lng\":5.413688,\"state\":null,\"state_code\":null,\"city\":\"S\xE9tif\",\"geonames_city\":{\"id\":2481700,\"city\":\"S\xE9tif\",\"geonames_admin1\":{\"name\":\"S\xE9tif\",\"id\":2481696,\"ascii_name\":\"Setif\",\"code\":\"DZ.12\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2589581}],\"links\":[\"http://forum.setif.info/index.php?topic=11686.0\"],\"aliases\":[],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Algeria\",\"country_code\":\"DZ\"},\"external_ids\":{\"GRID\":{\"preferred\":\"grid.429120.c\",\"all\":\"grid.429120.c\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0126xah18\",\"name\":\"Chiba
+        University Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1874,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Chiba
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/01hjzeq58\"}],\"addresses\":[{\"lat\":35.6,\"lng\":140.11667,\"state\":null,\"state_code\":null,\"city\":\"Chiba\",\"geonames_city\":{\"id\":2113015,\"city\":\"Chiba\",\"geonames_admin1\":{\"name\":\"Chiba\",\"id\":2113014,\"ascii_name\":\"Chiba\",\"code\":\"JP.04\"},\"geonames_admin2\":{\"name\":\"Chiba-shi\",\"id\":2113012,\"ascii_name\":\"Chiba-shi\",\"code\":\"JP.04.2113012\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":1861060}],\"links\":[\"http://www.ho.chiba-u.ac.jp/en/\"],\"aliases\":[],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"\u5343\u8449\u5927\u5B66\u533B\u5B66\u90E8\u9644\u5C5E\u75C5\u9662\",\"iso639\":\"ja\"}],\"country\":{\"country_name\":\"Japan\",\"country_code\":\"JP\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0632 2959\"]},\"GRID\":{\"preferred\":\"grid.411321.4\",\"all\":\"grid.411321.4\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/016ncsr12\",\"name\":\"Centre
+        Hospitalier Universitaire de Nancy\",\"email_address\":null,\"ip_addresses\":[],\"established\":1970,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"H\xF4pital
+        Saint-Julien\",\"type\":\"Related\",\"id\":\"https://ror.org/01h6hv014\"},{\"label\":\"Universit\xE9
+        de Lorraine\",\"type\":\"Related\",\"id\":\"https://ror.org/04vfs2w97\"},{\"label\":\"Centre
+        d'Investigation Clinique Pierre Drouin\",\"type\":\"Child\",\"id\":\"https://ror.org/04ghtjd11\"},{\"label\":\"Diagnosis
+        and International Adaptive Imaging\",\"type\":\"Child\",\"id\":\"https://ror.org/025mhc977\"},{\"label\":\"H\xF4pital
+        Jeanne d'Arc\",\"type\":\"Child\",\"id\":\"https://ror.org/047b6f797\"},{\"label\":\"Ing\xE9nierie
+        Mol\xE9culaire et Physiopathologie Articulaire\",\"type\":\"Child\",\"id\":\"https://ror.org/04yc2e502\"},{\"label\":\"Research
+        Center for Automatic Control of Nancy\",\"type\":\"Child\",\"id\":\"https://ror.org/022r5hc56\"}],\"addresses\":[{\"lat\":48.68439,\"lng\":6.18496,\"state\":null,\"state_code\":null,\"city\":\"Nancy\",\"geonames_city\":{\"id\":2990999,\"city\":\"Nancy\",\"geonames_admin1\":{\"name\":\"Grand
+        Est\",\"id\":11071622,\"ascii_name\":\"Grand Est\",\"code\":\"FR.44\"},\"geonames_admin2\":{\"name\":\"Meurthe
+        et Moselle\",\"id\":2994111,\"ascii_name\":\"Meurthe et Moselle\",\"code\":\"FR.44.54\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://www.chu-nancy.fr/\"],\"aliases\":[],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1765 1301\"]},\"GRID\":{\"preferred\":\"grid.410527.5\",\"all\":\"grid.410527.5\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01hq89f96\",\"name\":\"Centre
+        Hospitalier Universitaire de Bordeaux\",\"email_address\":null,\"ip_addresses\":[],\"established\":null,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Centre
+        de Recherche Cardio-Thoracique de Bordeaux\",\"type\":\"Child\",\"id\":\"https://ror.org/04vgc9p51\"},{\"label\":\"Electrophysiology
+        and Heart Modeling Institute\",\"type\":\"Child\",\"id\":\"https://ror.org/00jsv7j98\"},{\"label\":\"H\xF4pital
+        Cardiologique du Haut-L\xE9v\xEAque\",\"type\":\"Child\",\"id\":\"https://ror.org/02bf3a828\"},{\"label\":\"H\xF4pital
+        Pellegrin\",\"type\":\"Child\",\"id\":\"https://ror.org/02x581406\"},{\"label\":\"H\xF4pital
+        Saint-Andr\xE9\",\"type\":\"Child\",\"id\":\"https://ror.org/021959v84\"},{\"label\":\"H\xF4pital
+        Xavier Arnozan\",\"type\":\"Child\",\"id\":\"https://ror.org/03d532p87\"},{\"label\":\"Plateforme
+        Technologique d'Innovation Biom\xE9dicale\",\"type\":\"Child\",\"id\":\"https://ror.org/05367a632\"},{\"label\":\"Centre
+        d'Investigation Clinique Plurith\xE9matique de Bordeaux\",\"type\":\"Child\",\"id\":\"https://ror.org/000bbyx17\"}],\"addresses\":[{\"lat\":44.84044,\"lng\":-0.5805,\"state\":null,\"state_code\":null,\"city\":\"Bordeaux\",\"geonames_city\":{\"id\":3031582,\"city\":\"Bordeaux\",\"geonames_admin1\":{\"name\":\"Nouvelle-Aquitaine\",\"id\":11071620,\"ascii_name\":\"Nouvelle-Aquitaine\",\"code\":\"FR.75\"},\"geonames_admin2\":{\"name\":\"Gironde\",\"id\":3015948,\"ascii_name\":\"Gironde\",\"code\":\"FR.75.33\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://www.chu-bordeaux.fr/\"],\"aliases\":[\"CHU
+        de Bordeaux\"],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0593 7118\"]},\"FundRef\":{\"preferred\":\"501100010457\",\"all\":[\"501100010457\"]},\"GRID\":{\"preferred\":\"grid.42399.35\",\"all\":\"grid.42399.35\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01yzz0f51\",\"name\":\"Chung
+        Hua University\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1990,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":24.758333,\"lng\":120.952778,\"state\":null,\"state_code\":null,\"city\":\"Hsinchu\",\"geonames_city\":{\"id\":1675151,\"city\":\"Hsinchu\",\"geonames_admin1\":{\"name\":\"Taiwan\",\"id\":7280291,\"ascii_name\":\"Taiwan\",\"code\":\"TW.04\"},\"geonames_admin2\":{\"name\":\"Hsinchu\",\"id\":1675103,\"ascii_name\":\"Hsinchu\",\"code\":\"TW.04.HSQ\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":1668284}],\"links\":[\"http://english.chu.edu.tw/bin/home.php\"],\"aliases\":[\"Chung
+        Hua Polytechnic Institute\"],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/Chung_Hua_University\",\"labels\":[],\"country\":{\"country_name\":\"Taiwan\",\"country_code\":\"TW\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0638 6362\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100004711\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"4536521\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q718352\"]},\"GRID\":{\"preferred\":\"grid.411655.2\",\"all\":\"grid.411655.2\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/025sdjb25\",\"name\":\"Centre
+        Hospitalier et Universitaire de Brazzaville\",\"email_address\":null,\"ip_addresses\":[],\"established\":1987,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":-4.26464,\"lng\":15.268402,\"state\":null,\"state_code\":null,\"city\":\"Brazzaville\",\"geonames_city\":{\"id\":2260535,\"city\":\"Brazzaville\",\"geonames_admin1\":{\"name\":\"Brazzaville\",\"id\":2572183,\"ascii_name\":\"Brazzaville\",\"code\":\"CG.12\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2260494}],\"links\":[\"http://www.afd.fr/home/pays/afrique/geo-afr/congo/Projets-congo/infrastructures-1/appui-au-chu-brazzaville\"],\"aliases\":[],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Republic
+        of the Congo\",\"country_code\":\"CG\"},\"external_ids\":{\"GRID\":{\"preferred\":\"grid.414332.3\",\"all\":\"grid.414332.3\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/042acmv76\",\"name\":\"University
+        Teaching Hospital of Yaounde\",\"email_address\":null,\"ip_addresses\":[],\"established\":1965,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":3.862871,\"lng\":11.496988,\"state\":null,\"state_code\":null,\"city\":\"Yaound\xE9\",\"geonames_city\":{\"id\":2220957,\"city\":\"Yaound\xE9\",\"geonames_admin1\":{\"name\":\"Centre\",\"id\":2233376,\"ascii_name\":\"Centre\",\"code\":\"CM.11\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2233387}],\"links\":[\"http://kreativ.ca/chu/\"],\"aliases\":[],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/University_Teaching_Hospital_of_Yaounde\",\"labels\":[{\"label\":\"Centre
+        Hospitalier et Universitaire de Yaound\xE9\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Cameroon\",\"country_code\":\"CM\"},\"external_ids\":{\"OrgRef\":{\"preferred\":null,\"all\":[\"36552001\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7894957\"]},\"GRID\":{\"preferred\":\"grid.449865.2\",\"all\":\"grid.449865.2\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/056221z03\",\"name\":\"University
+        Hospital Medical Center at Treichville\",\"email_address\":null,\"ip_addresses\":[],\"established\":1938,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":5.344397,\"lng\":-3.994058,\"state\":null,\"state_code\":null,\"city\":\"Abidjan\",\"geonames_city\":{\"id\":2293538,\"city\":\"Abidjan\",\"geonames_admin1\":{\"name\":\"Abidjan\",\"id\":11153151,\"ascii_name\":\"Abidjan\",\"code\":\"CI.93\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2287781}],\"links\":[\"https://www.chu-treichville.com/\"],\"aliases\":[\"CHU
+        de Treichville\"],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/University_Hospital_Medical_Center_at_Treichville\",\"labels\":[{\"label\":\"Centre
+        Hospitalier Universitaire de Treichville\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Ivory
+        Coast\",\"country_code\":\"CI\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 7664 5497\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2945775\"]},\"GRID\":{\"preferred\":\"grid.411387.8\",\"all\":\"grid.411387.8\"}}}},{\"substring\":\"CHU\",\"score\":0.9,\"matching_type\":\"ACRONYM\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05qf3bt68\",\"name\":\"Centre
+        Hospitalo-Universitaire Bab El Oued\",\"email_address\":null,\"ip_addresses\":[],\"established\":null,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":36.794799,\"lng\":3.049482,\"state\":null,\"state_code\":null,\"city\":\"Algiers\",\"geonames_city\":{\"id\":2507480,\"city\":\"Algiers\",\"geonames_admin1\":{\"name\":\"Algiers\",\"id\":2507475,\"ascii_name\":\"Algiers\",\"code\":\"DZ.01\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2589581}],\"links\":[\"http://www.chubabeloued.com/\"],\"aliases\":[\"Hospital
+        Lamine Debaghin\"],\"acronyms\":[\"CHU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Algeria\",\"country_code\":\"DZ\"},\"external_ids\":{\"GRID\":{\"preferred\":\"grid.488410.1\",\"all\":\"grid.488410.1\"}}}},{\"substring\":\"CHU
+        Dijon Bourgogne\",\"score\":0.58,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0377z4z10\",\"name\":\"Centre
+        Hospitalier Universitaire Dijon Bourgogne\",\"email_address\":null,\"ip_addresses\":[],\"established\":1204,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Burgundy\",\"type\":\"Related\",\"id\":\"https://ror.org/03k1bsr36\"},{\"label\":\"Agroecology\",\"type\":\"Child\",\"id\":\"https://ror.org/00mkad321\"}],\"addresses\":[{\"lat\":47.31667,\"lng\":5.01667,\"state\":null,\"state_code\":null,\"city\":\"Dijon\",\"geonames_city\":{\"id\":3021372,\"city\":\"Dijon\",\"geonames_admin1\":{\"name\":\"Bourgogne-Franche-Comt\xE9\",\"id\":11071619,\"ascii_name\":\"Bourgogne-Franche-Comt\xE9\",\"code\":\"FR.27\"},\"geonames_admin2\":{\"name\":\"Cote
+        d'Or\",\"id\":3023423,\"ascii_name\":\"Cote d'Or\",\"code\":\"FR.27.21\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://www.chu-dijon.fr/fr\"],\"aliases\":[\"CHU
+        de Dijon\",\"Centre Hospitalier R\xE9gional Universitaire de Dijon\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":\"0000
+        0004 0593 7185\",\"all\":[\"0000 0004 0593 7185\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2945762\"]},\"GRID\":{\"preferred\":\"grid.31151.37\",\"all\":\"grid.31151.37\"}}}},{\"substring\":\"CHU
+        Dijon Bourgogne\",\"score\":0.57,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03k1bsr36\",\"name\":\"University
+        of Burgundy\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1722,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"Centre
+        Hospitalier Universitaire Dijon Bourgogne\",\"type\":\"Related\",\"id\":\"https://ror.org/0377z4z10\"},{\"label\":\"Agroecology\",\"type\":\"Child\",\"id\":\"https://ror.org/00mkad321\"},{\"label\":\"Biog\xE9osciences\",\"type\":\"Child\",\"id\":\"https://ror.org/04mzqjs78\"},{\"label\":\"Centre
+        de Microbiologie du Sol et de l'Environnement\",\"type\":\"Child\",\"id\":\"https://ror.org/01c2t8448\"},{\"label\":\"Centre
+        des Sciences du Go\xFBt et de l'Alimentation\",\"type\":\"Child\",\"id\":\"https://ror.org/05s1rff82\"},{\"label\":\"Cognition,
+        Action, and Sensorimotor Plasticity\",\"type\":\"Child\",\"id\":\"https://ror.org/03xe54902\"},{\"label\":\"Diplomatique\",\"type\":\"Child\",\"id\":\"https://ror.org/00dy3ee97\"},{\"label\":\"Institut
+        de Math\xE9matiques de Bourgogne\",\"type\":\"Child\",\"id\":\"https://ror.org/021f0sa24\"},{\"label\":\"Laboratoire
+        Interdisciplinaire Carnot de Bourgogne\",\"type\":\"Child\",\"id\":\"https://ror.org/02b6c1039\"},{\"label\":\"Laboratory
+        for Research on Learning and Development\",\"type\":\"Child\",\"id\":\"https://ror.org/04mp4zc06\"},{\"label\":\"Lipides,
+        Nutrition, Cancer\",\"type\":\"Child\",\"id\":\"https://ror.org/04d70nb60\"},{\"label\":\"Maison
+        des Sciences de l\u2019Homme de Dijon\",\"type\":\"Child\",\"id\":\"https://ror.org/04ejcwb57\"},{\"label\":\"Proc\xE9d\xE9s
+        Alimentaires et Microbiologiques\",\"type\":\"Child\",\"id\":\"https://ror.org/00zgas264\"},{\"label\":\"Th\xE9oriser
+        et Mod\xE9liser pour Am\xE9nager\",\"type\":\"Child\",\"id\":\"https://ror.org/01a0gpy77\"}],\"addresses\":[{\"lat\":47.3125,\"lng\":5.070833,\"state\":\"Bourgogne\",\"state_code\":\"FR-D\",\"city\":\"Dijon\",\"geonames_city\":{\"id\":3021372,\"city\":\"Dijon\",\"geonames_admin1\":{\"name\":\"Bourgogne-Franche-Comt\xE9\",\"id\":11071619,\"ascii_name\":\"Bourgogne-Franche-Comte\",\"code\":\"FR.27\"},\"geonames_admin2\":{\"name\":\"D\xE9partement
+        de la C\xF4te-d'Or\",\"id\":3023423,\"ascii_name\":\"Departement de la Cote-d'Or\",\"code\":\"FR.27.21\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"BASSIN
+        PARISIEN\",\"code\":\"FR2\"},\"nuts_level2\":{\"name\":\"Bourgogne\",\"code\":\"FR26\"},\"nuts_level3\":{\"name\":\"C\xF4te-d'Or\",\"code\":\"FR261\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://en.u-bourgogne.fr/\"],\"aliases\":[\"University
+        of Dijon\"],\"acronyms\":[\"uB\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Burgundy\",\"labels\":[{\"label\":\"Universit\xE9
+        de Bourgogne\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 2298 9313\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100004618\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"5611046\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q287072\"]},\"GRID\":{\"preferred\":\"grid.5613.1\",\"all\":\"grid.5613.1\"}}}},{\"substring\":\"CHU
+        Dijon Bourgogne\",\"score\":0.56,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03zek0r74\",\"name\":\"L'Institut
+        Agro Dijon\",\"email_address\":null,\"ip_addresses\":[],\"established\":2009,\"types\":[\"Other\"],\"relationships\":[{\"label\":\"Agroecology\",\"type\":\"Child\",\"id\":\"https://ror.org/00mkad321\"},{\"label\":\"Biog\xE9osciences\",\"type\":\"Child\",\"id\":\"https://ror.org/04mzqjs78\"},{\"label\":\"Centre
+        des Sciences du Go\xFBt et de l'Alimentation\",\"type\":\"Child\",\"id\":\"https://ror.org/05s1rff82\"},{\"label\":\"Maison
+        des Sciences de l\u2019Homme de Dijon\",\"type\":\"Child\",\"id\":\"https://ror.org/04ejcwb57\"},{\"label\":\"Proc\xE9d\xE9s
+        Alimentaires et Microbiologiques\",\"type\":\"Child\",\"id\":\"https://ror.org/00zgas264\"}],\"addresses\":[{\"lat\":47.31667,\"lng\":5.01667,\"state\":null,\"state_code\":null,\"city\":\"Dijon\",\"geonames_city\":{\"id\":3021372,\"city\":\"Dijon\",\"geonames_admin1\":{\"name\":\"Bourgogne-Franche-Comt\xE9\",\"id\":11071619,\"ascii_name\":\"Bourgogne-Franche-Comt\xE9\",\"code\":\"FR.27\"},\"geonames_admin2\":{\"name\":\"Cote
+        d'Or\",\"id\":3023423,\"ascii_name\":\"Cote d'Or\",\"code\":\"FR.27.21\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"https://institut-agro-dijon.fr\"],\"aliases\":[\"Institut
+        national Sup\xE9rieur des Sciences Agronomiques, de l'Alimentation et de l'Environnement\",\"AgroSup
+        Dijon\",\"Institut Agro Dijon\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 2299 7292\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100008024\"]},\"Wikidata\":{\"preferred\":\"Q8077943\",\"all\":[\"Q8077943\"]},\"GRID\":{\"preferred\":\"grid.420114.2\",\"all\":\"grid.420114.2\"}}}}]}"
+    headers:
+      Allow:
+      - GET, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '21353'
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 24 Jul 2023 10:47:10 GMT
+      Server:
+      - nginx/1.18.0 + Phusion Passenger 6.0.7
+      Status:
+      - 200 OK
+      Vary:
+      - Cookie, Origin
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Powered-By:
+      - Phusion Passenger 6.0.7
+    status:
+      code: 200
+      message: OK
+version: 1

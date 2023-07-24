@@ -6,7 +6,13 @@
 
 black
 coverage
+country-converter
+numpy
+pandas
 pip-tools
 pre-commit
 pytest
+requests
+requests-cache
 ruff
+vcrpy

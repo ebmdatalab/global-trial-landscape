@@ -1,16 +1,30 @@
 import argparse
-import country_converter as coco
+import logging
 import pathlib
+import re
+import time
+import urllib
+
+import country_converter as coco
+import numpy
+import pandas
 import requests
 import requests_cache
 from requests_cache import NEVER_EXPIRE, CachedSession
-import re
-import pandas
-import time
-import urllib
-import numpy
 
-SPECIAL_CHARS_REGEX = '[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^"\~\*\?\:\/\.\,\;]'
+
+SPECIAL_CHARS_REGEX = r'[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^"\~\*\?\:\/\.\,\;]'
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setFormatter(
+    logging.Formatter(
+        fmt="%(asctime)s [%(levelname)-9s] %(message)s [%(module)s]",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+)
+logger.addHandler(handler)
 
 
 def create_session(use_cache=False):
@@ -49,9 +63,7 @@ def filter_already_mapped(mapping_dict_file, remaining):
     already_mapped = merged[merged.ror.notnull()]
     already_mapped["method"] = "dict"
 
-    already_mapped.to_csv(
-        output_file, mode="a", header=not output_file.exists()
-    )
+    already_mapped.to_csv(output_file, mode="a", header=not output_file.exists())
     return remaining.loc[remaining.index.difference(already_mapped.index)]
 
 
@@ -75,11 +87,30 @@ def remove_special_chars(sponsor, replace=" "):
     return re.sub(SPECIAL_CHARS_REGEX, replace, sponsor)
 
 
-def clean(site):
+def extract_before_regex_ignorecase(line, criteria):
+    """
+    Extract the string before any of the criteria, ignoring case
+    """
+    loc = re.search(criteria, line, flags=re.IGNORECASE)
+    if loc:
+        return line[0 : loc.start()].strip()  # noqa: E203
+
+    else:
+        return line
+
+
+def remove_noninformative(site):
     """
     The following strings were commonly the entire site name, in which case
-    we do not want to try to match
-    If they are part of the string, they may hamper the ror affiliation matching
+    we do not want to try to match. If they are part of the string they may
+    hamper the ror affiliation matching.
+
+    We do not use split because we want to use a regex and ingnorecase
+    We do not use site.str.extract because we are trying to extract text
+    BEFORE any of the criteria (.*?)(criteria) would give us more than one
+    match group
+
+    There were instances of both Investigative Site and investigative Site
     """
     non_informative = [
         "study center",
@@ -98,13 +129,9 @@ def clean(site):
         "/id#",
     ]
     criteria = "(" + "|".join(non_informative) + ")"
-    site = (
-        site.str.lower()
-        .str.split(criteria)
-        .str[0]
-        .str.strip()
-        .replace("", numpy.nan)
-    )
+    site = site.apply(
+        lambda x: extract_before_regex_ignorecase(x, criteria) if x == x else x
+    ).replace("", numpy.nan)
     return site
 
 
@@ -134,7 +161,7 @@ def chunk(sponsors, chunk_size=100):
     Split list into chunks of size 'chunk_size'
     """
     chunks = [
-        sponsors[i * chunk_size : (i + 1) * chunk_size]
+        sponsors[i * chunk_size : (i + 1) * chunk_size]  # noqa: E203
         for i in range((len(sponsors) + chunk_size - 1) // chunk_size)
     ]
     return chunks
@@ -152,7 +179,6 @@ def get_empty_results():
 
 
 def process_response(response, results, method="first", method_ror="chosen"):
-    # Just return the name for now
     results["name"] = response["organization"]["name"]
     results["ror"] = response["organization"]["id"]
     results["method"] = method
@@ -174,10 +200,7 @@ def process_ror_json(sponsor, session, results, extra_data):
             return process_response(item, results)
     potential_matches = []
     for item in resp["items"]:
-        if (
-            item["organization"]["country"]["country_code"]
-            == extra_data.country
-        ) and (
+        if (item["organization"]["country"]["country_code"] == extra_data.country) and (
             item["organization"]["addresses"][0]["city"] == extra_data.city
         ):
             potential_matches.append(item)
@@ -203,11 +226,8 @@ def query(sponsor, session, retries=2):
         response.raise_for_status()
         return response.json()
     except Exception as e:
-        import code
-
-        code.interact(local=locals())
         if e.response.status_code == 403:
-            print(f"Failed to download, retries left {retries}")
+            logger.error(f"Failed to download, retries left {retries}")
             retries -= 1
             if retries >= 0:
                 time.sleep(60)
@@ -218,15 +238,56 @@ def query(sponsor, session, retries=2):
                 )
             else:
                 # NOTE: we should not get here, debug
-                import code
-
-                code.interact(local=locals())
+                logger.error("Query failed")
         else:
-            print(f"Failed to download, retries left {retries}")
             # NOTE: we should not get here, debug
-            import code
+            logger.error("Query failed")
+            return
 
-            code.interact(local=locals())
+
+def apply_ror(data):
+    """
+    Try different techniques to resolve with ror
+    Such as adding the country and city directly into the query string
+    and removing special characters so ror treats it as one string
+    """
+    results = get_empty_results()
+    sponsor = data["site"]
+    logger.debug(f"Processing {index}/{len(chunk)}: {sponsor}")
+    # sponsor = sponsor.replace('"', '').replace("'", "")
+    if sponsor != sponsor:
+        logger.debug(f"{index} skipping null site")
+        return results
+    no_special = remove_special_chars(sponsor, replace="")
+    if no_special.isnumeric():
+        logger.info(f"{index} skipping numeric site {sponsor}")
+        return results
+    results = process_ror_json(sponsor, session, results, extra_data=data)
+    # Try adding the country and city into the query
+    if not results["name"]:
+        logger.debug("Adding in city and country")
+        results["method"] = "city/country"
+        results = process_ror_json(
+            sponsor + f",{data.city}, {data.country}",
+            session,
+            results,
+            extra_data=data,
+        )
+    if not results["name"]:
+        if no_special != sponsor:
+            logger.debug("Checking removing special chars")
+            # ROR splits on special chars, remove special chars and try again
+            # https://github.com/ror-community/ror-api/blob/master/rorapi/matching.py#L28C1-L28C20
+            # i.e. Federal State Budgetary Scientific Institution
+            # ""Federal Research Centre of Nutrition, Biotechnology""
+            results["method"] = "remove_special"
+            results = process_ror_json(
+                remove_special_chars(sponsor),
+                session,
+                results,
+                extra_data=data,
+            )
+    return results
 
 
 if __name__ == "__main__":
@@ -278,74 +339,30 @@ if __name__ == "__main__":
     session = create_session(use_cache)
 
     sponsors = load_sponsors(sponsor_file, index_col, (not keep_dups))
-    sponsors = sponsors[0:19999]
+    # Convert country to ISO-2
     sponsors.loc[:, "country"] = convert_country(sponsors.country)
+
+    # Filter out entries already present in the output file
     already_processed = load_sponsors(output_file, index_col).index
     remaining = sponsors.loc[sponsors.index.difference(already_processed)]
 
+    # If a harcoded map is provided, resolve those first
     if mapping_dict_file and mapping_dict_file.exists():
         remaining = filter_already_mapped(mapping_dict_file, remaining)
 
-    remaining["site_lower"] = clean(sponsors.site)
+    # Remove non-informative
+    remaining["site"] = remove_noninformative(remaining.site)
 
     chunks = chunk(remaining, 1000)
     all_results = {}
     for chunk_num, chunk in enumerate(chunks):
-        print(chunk_num, len(chunks))
-        for index, data in chunk.iterrows():
-            print(index)
-            results = get_empty_results()
-            sponsor = data["site_lower"]
-            # sponsor = sponsor.replace('"', '').replace("'", "")
-            if sponsor != sponsor:
-                print("Skipping null")
-                all_results[index] = results
-                continue
-            no_special = remove_special_chars(sponsor, replace="")
-            if no_special.isnumeric():
-                print(f"Skipping, only numeric {sponsor}")
-                all_results[index] = results
-                continue
-            name = process_ror_json(sponsor, session, results, extra_data=data)
-            print(index, sponsor, name, len(all_results))
-            # If one work, try acronym (capitalize)
-            if not name["name"] and len(sponsor.split()) == 1:
-                print("Trying capitlization")
-                results["method"] = "capitalize"
-                name = process_ror_json(
-                    sponsor.upper(),
-                    session,
-                    results,
-                    extra_data=data,
-                )
-            # Try adding the country and city into the query
-            if not name["name"]:
-                print("Adding in city and country")
-                results["method"] = "city/country"
-                name = process_ror_json(
-                    sponsor + f",{data.city}, {data.country}",
-                    session,
-                    results,
-                    extra_data=data,
-                )
-                print(index, sponsor, name, len(all_results))
-            if not name["name"]:
-                if no_special != sponsor:
-                    print("Checking removing special chars")
-                    # ROR splits on special chars, remove special chars and try again
-                    # https://github.com/ror-community/ror-api/blob/master/rorapi/matching.py#L28C1-L28C20
-                    # i.e. Federal State Budgetary Scientific Institution ""Federal Research Centre of Nutrition, Biotechnology""
-                    results["method"] = "remove_special"
-                    name = process_ror_json(
-                        remove_special_chars(sponsor),
-                        session,
-                        results,
-                        extra_data=data,
-                    )
-                    print(index, sponsor, name, len(all_results))
-            all_results[index] = name
+        logger.info(f"Chunk {chunk_num} /{len(chunks)}")
+        for index, row in chunk.iterrows():
+            results = apply_ror(row)
+            logger.debug(f"Result {index}: {row['site']} {results}")
+            all_results[index] = results
         matches = pandas.DataFrame.from_dict(all_results).T
-        df = chunk.join(matches).drop("site_lower", axis=1)
+        df = chunk.join(matches)
         if mapping_dict_file and add_to_mapping_dict:
             write_to_mapping_dict(df, mapping_dict_file)
         df.name.fillna(df.site)
