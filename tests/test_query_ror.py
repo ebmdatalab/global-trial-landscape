@@ -29,7 +29,7 @@ def test_process_ror_json_chosen():
                     "country": "US",
                 }
             )
-        )["name"]
+        )["name_ror"]
         == "Memorial Sloan Kettering Cancer Center"
     )
 
@@ -46,7 +46,7 @@ def test_process_ror_json_city_chosen():
                     "country": "DE",
                 }
             )
-        )["name"]
+        )["name_ror"]
         == "Charité - Universitätsmedizin Berlin"
     )
 
@@ -73,3 +73,6 @@ def test_remove_noninformative():
     # Remove non-informative (case insensitive)
     series = pandas.Series(["GSK Investigational Site", "GSK investigational Site"])
     assert (remove_noninformative(series) == "GSK").all()
+
+
+# Test that when there is no existing output file, len(trials) == len(remaining)
