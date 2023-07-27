@@ -428,8 +428,37 @@ def process_file(args):
     combined.to_csv(output_file, mode="a", header=not output_file.exists(), index=False)
 
 
-# TODO: MAKE THIS GENERALIZABLE
-def make_table(args):
+def pcnt_ror_table(df, groupby):
+    # % ROR
+    table = df.groupby(groupby).agg({"ror": "count", "trial_id": "count"})
+    table.loc["Total"] = table.sum()
+    table.columns = ["Has ROR", "Total Trials"]
+    table["% Has ROR"] = (100 * table["Has ROR"] / table["Total Trials"]).astype(int)
+    table = table.sort_values(["% Has ROR", "Total Trials"], ascending=False)
+    total = table.T.pop("Total")
+    table = pandas.concat([total.to_frame().T, table.drop("Total")], axis=0)
+    return table
+
+
+def write_table(df, output_dir, input_file, suffix):
+    path = output_dir / f"{input_file.stem}_table_{suffix}.csv"
+    df.to_csv(path)
+
+
+def papers_by_site_table(df, groupby):
+    # Among those with ROR, count of papers by site
+    ror = df[df.ror.notnull()]
+    table = (
+        ror.groupby(groupby)
+        .agg({"trial_id": "count", "name": pandas.Series.nunique})
+        .sort_values(by="trial_id", ascending=False)
+    )
+    # table.index = counts.index.set_names(["Site Name", "City", "Country"])
+    table.columns = ["Total Trials", "Unique Names"]
+    return table
+
+
+def make_tables(args):
     processed_file = args.processed_file
     output_dir = processed_file.parent
 
@@ -437,51 +466,45 @@ def make_table(args):
 
     if "country" in df.columns:
         df["country"] = convert_country(df["country"], to="name")
+        df["continent"] = convert_country(df["country"], to="continent")
 
-        # % ROR by country
-        table = df.groupby(["country"])[["ror", "trial_id"]].agg(
-            {"ror": "count", "trial_id": "count"}
+        write_table(
+            pcnt_ror_table(df, ["country"]), output_dir, processed_file, "by_country"
         )
-        table.loc["Total"] = table.sum()
-        table.columns = ["Has ROR", "Total Trials"]
-        table["% Has ROR"] = (100 * table["Has ROR"] / table["Total Trials"]).astype(
-            int
+        write_table(
+            pcnt_ror_table(df, ["continent"]),
+            output_dir,
+            processed_file,
+            "by_continent",
         )
-        table = table.sort_values(["% Has ROR", "Total Trials"], ascending=False)
-        total = table.T.pop("Total")
-        table = pandas.concat([total.to_frame().T, table], axis=0)
-        table.to_csv(output_dir / f"{processed_file.stem}_table_counts.csv")
 
-        # Among those with ROR, count of papers by site
-        ror = df[df.ror.notnull()]
-        counts = (
-            ror.groupby(["name_ror", "city", "country"])
-            .agg({"trial_id": "count", "name": pandas.Series.nunique})
-            .sort_values(by="trial_id", ascending=False)
+        write_table(
+            papers_by_site_table(df, ["name_ror", "city", "country"]),
+            output_dir,
+            processed_file,
+            "only_ror",
         )
-        counts.index = counts.index.set_names(["Site Name", "City", "Country"])
-        counts.columns = ["Total Trials", "Unique Names"]
-        counts.to_csv(output_dir / f"{processed_file.stem}_table_only_ror.csv")
+        africa = df[df.continent == "Africa"]
+        write_table(
+            papers_by_site_table(africa, ["name_ror", "city", "country"]),
+            output_dir,
+            processed_file,
+            "only_ror_africa",
+        )
 
     else:
-        # % ROR
-        table = pandas.DataFrame(df.agg({"ror": "count", "trial_id": "count"})).T
-        table.columns = ["Has ROR", "Total Trials"]
-        table["% Has ROR"] = (100 * table["Has ROR"] / table["Total Trials"]).astype(
-            int
+        write_table(
+            pcnt_ror_table(df, ["organization_type"]),
+            output_dir,
+            processed_file,
+            "counts",
         )
-        table.to_csv(output_dir / f"{processed_file.stem}_table_counts.csv")
-
-        # Among those with ROR, count of papers by site
-        ror = df[df.ror.notnull()]
-        counts = (
-            ror.groupby(["name_ror"])
-            .agg({"trial_id": "count", "name": pandas.Series.nunique})
-            .sort_values(by="trial_id", ascending=False)
+        write_table(
+            papers_by_site_table(df, ["name_ror"]),
+            output_dir,
+            processed_file,
+            "only_ror",
         )
-        counts.index = counts.index.set_names(["Site Name"])
-        counts.columns = ["Total Trials", "Unique Names"]
-        counts.to_csv(output_dir / f"{processed_file.stem}_table_only_ror.csv")
 
 
 if __name__ == "__main__":
@@ -532,7 +555,7 @@ if __name__ == "__main__":
 
     # For the table command
     table_parser = subparsers.add_parser("table")
-    table_parser.set_defaults(func=make_table)
+    table_parser.set_defaults(func=make_tables)
     table_parser.add_argument(
         "--processed-file", required=True, type=pathlib.Path, help="File with ROR data"
     )
