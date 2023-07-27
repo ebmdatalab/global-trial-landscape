@@ -333,8 +333,8 @@ def apply_ror(data, session):
         logger.debug("skipping null name")
         return results
     no_special = remove_special_chars(name, replace="")
-    if no_special.isnumeric():
-        logger.debug(f"skipping numeric name {name}")
+    if no_special.isnumeric() or len(no_special) == 0:
+        logger.debug(f"skipping numeric/special char name {name}")
         return results
     results = process_ror_json(name, session, results, extra_data=data)
     # Try adding the country and city into the query
