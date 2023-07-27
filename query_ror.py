@@ -247,28 +247,36 @@ def process_response(response, results, method="first", method_ror="chosen"):
 
 def process_ror_json(name, session, results, extra_data):
     """
-    There are two techniques for choosing a match from ror
-    1. Use the ror "chosen field"
-    2. The highest score above 0.8 among the ror objects with matching
+    There are three techniques for choosing a match from ror
+    1. The highest score above 0.8 with matching
        city/country
+    2. The highest score above 0.8 without country/city match, if industry
+    3. Chosen (look for false positives)
     """
     resp = query(name, session)
-    # TODO: there could be two chosen
+    if not resp:
+        return results
+    potential_matches = []
+    chosen = None
     for item in resp["items"]:
         if item["chosen"]:
-            return process_response(item, results)
-    potential_matches = []
+            chosen = item
+        if item["score"] >= 0.8:
+            potential_matches.append(item)
     if extra_data.get("country") and extra_data.get("city"):
-        for item in resp["items"]:
+        for item in potential_matches:
             if (
                 item["organization"]["country"]["country_code"]
                 == extra_data.get("country")
             ) and (
                 item["organization"]["addresses"][0]["city"] == extra_data.get("city")
             ):
-                potential_matches.append(item)
-    if len(potential_matches) > 0 and potential_matches[0]["score"] > 0.8:
-        return process_response(potential_matches[0], results, method="city")
+                return process_response(item, results, method="city/country")
+    for item in potential_matches:
+        if "Company" in item["organization"]["types"]:
+            return process_response(item, results, method="industry")
+    if chosen:
+        return process_response(chosen, results, method="chosen")
     else:
         # TODO: append these together
         results["count_non_matches"] = len(potential_matches)

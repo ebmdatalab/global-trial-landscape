@@ -1,0 +1,126 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.ror.org/organizations?affiliation=4580004+-+Queen+Elizabeth+Hospital+II
+  response:
+    body:
+      string: "{\"number_of_results\":11,\"items\":[{\"substring\":\"04 Queen Elizabeth
+        Hospital II\",\"score\":0.95,\"matching_type\":\"COMMON TERMS\",\"chosen\":true,\"organization\":{\"id\":\"https://ror.org/03s32c292\",\"name\":\"Queen
+        Elizabeth II Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":2014,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Hertfordshire\",\"type\":\"Related\",\"id\":\"https://ror.org/0267vjk41\"},{\"label\":\"East
+        and North Hertfordshire NHS Trust\",\"type\":\"Parent\",\"id\":\"https://ror.org/02ryc4y44\"}],\"addresses\":[{\"lat\":51.783487,\"lng\":-0.188615,\"state\":null,\"state_code\":null,\"city\":\"Welwyn
+        Garden City\",\"geonames_city\":{\"id\":2634552,\"city\":\"Welwyn Garden City\",\"geonames_admin1\":{\"name\":\"England\",\"id\":6269131,\"ascii_name\":\"England\",\"code\":\"GB.ENG\"},\"geonames_admin2\":{\"name\":\"Hertfordshire\",\"id\":2647043,\"ascii_name\":\"Hertfordshire\",\"code\":\"GB.ENG.F8\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"EAST
+        OF ENGLAND\",\"code\":\"UKH\"},\"nuts_level2\":{\"name\":\"Bedfordshire and
+        Hertfordshire\",\"code\":\"UKH2\"},\"nuts_level3\":{\"name\":\"Hertfordshire\",\"code\":\"UKH23\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2635167}],\"links\":[\"http://www.newqeii.info/\"],\"aliases\":[],\"acronyms\":[\"QEII\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_II_Hospital\",\"labels\":[],\"country\":{\"country_name\":\"United
+        Kingdom\",\"country_code\":\"GB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0400 1617\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"12910470\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270362\"]},\"GRID\":{\"preferred\":\"grid.415563.0\",\"all\":\"grid.415563.0\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00p6q5476\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":2001,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Lewisham
+        and Greenwich NHS Trust\",\"type\":\"Parent\",\"id\":\"https://ror.org/05tn2bq24\"}],\"addresses\":[{\"lat\":51.478697,\"lng\":0.050094,\"state\":null,\"state_code\":null,\"city\":\"London\",\"geonames_city\":{\"id\":2643743,\"city\":\"London\",\"geonames_admin1\":{\"name\":\"England\",\"id\":6269131,\"ascii_name\":\"England\",\"code\":\"GB.ENG\"},\"geonames_admin2\":{\"name\":\"Greater
+        London\",\"id\":2648110,\"ascii_name\":\"Greater London\",\"code\":\"GB.ENG.GLA\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"LONDON\",\"code\":\"UKI\"},\"nuts_level2\":{\"name\":\"Inner
+        London - West\",\"code\":\"UKI3\"},\"nuts_level3\":{\"name\":\"Westminster\",\"code\":\"UKI32\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2635167}],\"links\":[\"https://www.lewishamandgreenwich.nhs.uk/queen-elizabeth-contacts/\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_Woolwich\",\"labels\":[],\"country\":{\"country_name\":\"United
+        Kingdom\",\"country_code\":\"GB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0398 4383\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"5073196\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270343\"]},\"GRID\":{\"preferred\":\"grid.439484.6\",\"all\":\"grid.439484.6\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00x362k69\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1954,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":-34.883303,\"lng\":138.533086,\"state\":\"South
+        Australia\",\"state_code\":\"AU-SA\",\"city\":\"Adelaide\",\"geonames_city\":{\"id\":2078025,\"city\":\"Adelaide\",\"geonames_admin1\":{\"name\":\"South
+        Australia\",\"id\":2061327,\"ascii_name\":\"South Australia\",\"code\":\"AU.05\"},\"geonames_admin2\":{\"name\":\"Adelaide\",\"id\":7839644,\"ascii_name\":\"Adelaide\",\"code\":\"AU.05.40070\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2077456}],\"links\":[\"http://www.sahealth.sa.gov.au/wps/wcm/connect/public+content/sa+health+internet/health+services/hospitals+and+health+services+metropolitan+adelaide/the+queen+elizabeth+hospital/the+queen+elizabeth+hospital\"],\"aliases\":[],\"acronyms\":[\"TQEH\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_Adelaide\",\"labels\":[],\"country\":{\"country_name\":\"Australia\",\"country_code\":\"AU\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0486 659X\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270336\"]},\"GRID\":{\"preferred\":\"grid.278859.9\",\"all\":\"grid.278859.9\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/015dyrs73\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1948,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Newcastle
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/01kj2bm70\"},{\"label\":\"Gateshead
+        Health NHS Foundation Trust\",\"type\":\"Parent\",\"id\":\"https://ror.org/01aye5y64\"}],\"addresses\":[{\"lat\":54.938713,\"lng\":-1.58279,\"state\":null,\"state_code\":null,\"city\":\"Gateshead\",\"geonames_city\":{\"id\":2648773,\"city\":\"Gateshead\",\"geonames_admin1\":{\"name\":\"England\",\"id\":6269131,\"ascii_name\":\"England\",\"code\":\"GB.ENG\"},\"geonames_admin2\":{\"name\":\"Gateshead\",\"id\":2648772,\"ascii_name\":\"Gateshead\",\"code\":\"GB.ENG.E5\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"NORTH
+        EAST (ENGLAND)\",\"code\":\"UKC\"},\"nuts_level2\":{\"name\":\"Northumberland
+        and Tyne and Wear\",\"code\":\"UKC2\"},\"nuts_level3\":{\"name\":\"Tyneside\",\"code\":\"UKC22\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2635167}],\"links\":[\"http://www.nhs.uk/Services/hospitals/Overview/DefaultView.aspx?id=1293\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_Gateshead\",\"labels\":[],\"country\":{\"country_name\":\"United
+        Kingdom\",\"country_code\":\"GB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0400 3364\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270338\"]},\"GRID\":{\"preferred\":\"grid.415506.3\",\"all\":\"grid.415506.3\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03npxtg86\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1980,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Cambridge\",\"type\":\"Related\",\"id\":\"https://ror.org/013meh722\"},{\"label\":\"University
+        of East Anglia\",\"type\":\"Related\",\"id\":\"https://ror.org/026k5mg93\"},{\"label\":\"Queen
+        Elizabeth Hospital King's Lynn NHS Foundation Trust\",\"type\":\"Parent\",\"id\":\"https://ror.org/01m6k8878\"}],\"addresses\":[{\"lat\":52.7566,\"lng\":0.4471,\"state\":null,\"state_code\":null,\"city\":\"Kings
+        Lynn\",\"geonames_city\":{\"id\":2645456,\"city\":\"King's Lynn\",\"geonames_admin1\":{\"name\":\"England\",\"id\":6269131,\"ascii_name\":\"England\",\"code\":\"GB.ENG\"},\"geonames_admin2\":{\"name\":\"Norfolk\",\"id\":2641455,\"ascii_name\":\"Norfolk\",\"code\":\"GB.ENG.I9\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"EAST
+        OF ENGLAND\",\"code\":\"UKH\"},\"nuts_level2\":{\"name\":\"East Anglia\",\"code\":\"UKH1\"},\"nuts_level3\":{\"name\":\"North\_and
+        West Norfolk\",\"code\":\"UKH16\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2635167}],\"links\":[\"http://www.qehkl.nhs.uk/news-story.asp?id=681&s=news&ss=articles&p=news.story\"],\"aliases\":[\"The
+        QE\"],\"acronyms\":[\"QEH\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_King%27s_Lynn\",\"labels\":[],\"country\":{\"country_name\":\"United
+        Kingdom\",\"country_code\":\"GB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0399 2586\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270339\"]},\"GRID\":{\"preferred\":\"grid.415519.d\",\"all\":\"grid.415519.d\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05ee2qy47\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1963,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Hospital
+        Authority\",\"type\":\"Parent\",\"id\":\"https://ror.org/05sn8t512\"}],\"addresses\":[{\"lat\":22.30934,\"lng\":114.17561,\"state\":null,\"state_code\":null,\"city\":\"Hong
+        Kong\",\"geonames_city\":{\"id\":1819729,\"city\":\"Hong Kong\",\"geonames_admin1\":{\"name\":\"Central
+        and Western\",\"id\":7533598,\"ascii_name\":\"Central and Western\",\"code\":\"HK.HCW\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":1814991}],\"links\":[\"http://www3.ha.org.hk/qeh/\"],\"aliases\":[],\"acronyms\":[\"QE
+        \",\"QEH \"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital_(Hong_Kong)\",\"labels\":[],\"country\":{\"country_name\":\"China\",\"country_code\":\"CN\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1771 451X\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"2910465\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270340\"]},\"GRID\":{\"preferred\":\"grid.415499.4\",\"all\":\"grid.415499.4\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05pgywt51\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1957,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":5.956766,\"lng\":116.072844,\"state\":null,\"state_code\":null,\"city\":\"Kota
+        Kinabalu\",\"geonames_city\":{\"id\":1733432,\"city\":\"Kota Kinabalu\",\"geonames_admin1\":{\"name\":\"Sabah\",\"id\":1733039,\"ascii_name\":\"Sabah\",\"code\":\"MY.16\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":1733045}],\"links\":[\"http://qeh.moh.gov.my/v6/index.php/en/\"],\"aliases\":[],\"acronyms\":[\"QEH\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_Kota_Kinabalu\",\"labels\":[],\"country\":{\"country_name\":\"Malaysia\",\"country_code\":\"MY\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1772 8727\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270341\"]},\"GRID\":{\"preferred\":\"grid.415560.3\",\"all\":\"grid.415560.3\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.89,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05rbwvc13\",\"name\":\"Queen
+        Elizabeth Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1964,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":13.095191,\"lng\":-59.606915,\"state\":null,\"state_code\":null,\"city\":\"Bridgetown\",\"geonames_city\":{\"id\":3374036,\"city\":\"Bridgetown\",\"geonames_admin1\":{\"name\":\"Saint
+        Michael\",\"id\":3373557,\"ascii_name\":\"Saint Michael\",\"code\":\"BB.08\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3374084}],\"links\":[\"http://www.qehconnect.com/\"],\"aliases\":[],\"acronyms\":[\"QEH\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_Hospital,_Bridgetown\",\"labels\":[],\"country\":{\"country_name\":\"Barbados\",\"country_code\":\"BB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0570 5165\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270337\"]},\"GRID\":{\"preferred\":\"grid.415521.6\",\"all\":\"grid.415521.6\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.83,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00c8gax70\",\"name\":\"Queen
+        Elizabeth II Jubilee Hospital\",\"email_address\":null,\"ip_addresses\":[],\"established\":1980,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":-27.5594,\"lng\":153.0489,\"state\":\"Queensland\",\"state_code\":\"AU-QLD\",\"city\":\"Brisbane\",\"geonames_city\":{\"id\":2174003,\"city\":\"Brisbane\",\"geonames_admin1\":{\"name\":\"Queensland\",\"id\":2152274,\"ascii_name\":\"Queensland\",\"code\":\"AU.04\"},\"geonames_admin2\":{\"name\":\"Brisbane\",\"id\":7839562,\"ascii_name\":\"Brisbane\",\"code\":\"AU.04.31000\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2077456}],\"links\":[\"https://metrosouth.health.qld.gov.au/qeii-jubilee-hospital\"],\"aliases\":[],\"acronyms\":[\"QE
+        II\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Queen_Elizabeth_II_Jubilee_Hospital\",\"labels\":[],\"country\":{\"country_name\":\"Australia\",\"country_code\":\"AU\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0625 970X\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"3575022\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q7270363\"]},\"GRID\":{\"preferred\":\"grid.460796.a\",\"all\":\"grid.460796.a\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.63,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0071a2k97\",\"name\":\"Queen
+        Elizabeth II Medical Centre\",\"email_address\":null,\"ip_addresses\":[],\"established\":1953,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":-31.968613,\"lng\":115.81438,\"state\":\"Western
+        Australia\",\"state_code\":\"AU-WA\",\"city\":\"Nedlands\",\"geonames_city\":{\"id\":2064874,\"city\":\"Nedlands\",\"geonames_admin1\":{\"name\":\"Western
+        Australia\",\"id\":2058645,\"ascii_name\":\"Western Australia\",\"code\":\"AU.08\"},\"geonames_admin2\":{\"name\":\"Nedlands\",\"id\":7839622,\"ascii_name\":\"Nedlands\",\"code\":\"AU.08.56580\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2077456}],\"links\":[\"http://www.qeiimc.health.wa.gov.au/\"],\"aliases\":[\"QEII
+        Medical Centre\"],\"acronyms\":[\"QEIIMC\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Australia\",\"country_code\":\"AU\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 6091 201X\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q30280493\"]},\"GRID\":{\"preferred\":\"grid.415461.3\",\"all\":\"grid.415461.3\"}}}},{\"substring\":\"04
+        Queen Elizabeth Hospital II\",\"score\":0.58,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05bhhjy59\",\"name\":\"Queen
+        Elizabeth\u2019s Academy\",\"email_address\":null,\"ip_addresses\":[],\"established\":null,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":53.156225,\"lng\":-1.205073,\"state\":null,\"state_code\":null,\"city\":\"Mansfield\",\"geonames_city\":{\"id\":2643097,\"city\":\"Mansfield\",\"geonames_admin1\":{\"name\":\"England\",\"id\":6269131,\"ascii_name\":\"England\",\"code\":\"GB.ENG\"},\"geonames_admin2\":{\"name\":\"Nottinghamshire\",\"id\":2641169,\"ascii_name\":\"Nottinghamshire\",\"code\":\"GB.ENG.J9\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"EAST
+        MIDLANDS (ENGLAND)\",\"code\":\"UKF\"},\"nuts_level2\":{\"name\":\"Derbyshire
+        and Nottinghamshire\",\"code\":\"UKF1\"},\"nuts_level3\":{\"name\":\"North
+        Nottinghamshire\",\"code\":\"UKF15\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2635167}],\"links\":[\"https://www.queenelizabeths-ac.org.uk/\"],\"aliases\":[\"Queen
+        Elizabeth School\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/The_Queen_Elizabeth_Academy\",\"labels\":[],\"country\":{\"country_name\":\"United
+        Kingdom\",\"country_code\":\"GB\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0515 691X\"]},\"GRID\":{\"preferred\":\"grid.500799.2\",\"all\":\"grid.500799.2\"}}}}]}"
+    headers:
+      Allow:
+      - GET, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '16879'
+      Content-Type:
+      - application/json
+      Date:
+      - Thu, 27 Jul 2023 17:01:21 GMT
+      Server:
+      - nginx/1.18.0 + Phusion Passenger 6.0.7
+      Status:
+      - 200 OK
+      Vary:
+      - Cookie, Origin
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Powered-By:
+      - Phusion Passenger 6.0.7
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -17,7 +17,7 @@ def make_query(fake_sponsor_row):
     return results
 
 
-@vcr.use_cassette("tests/fixtures/vcr_casettes/chosen.yaml")
+@vcr.use_cassette("tests/fixtures/vcr_casettes/acronym.yaml")
 def test_process_ror_json_chosen():
     assert (
         make_query(
@@ -63,10 +63,23 @@ def test_process_ror_json_no_match_options():
             }
         )
     )
-    assert result["count_non_matches"] == 3
-    assert result["non_matches"][0] == {
-        "Centre Hospitalier Universitaire Dijon Bourgogne": 0.58
-    }
+    assert result["count_non_matches"] == 10
+    assert result["non_matches"][0] == {"Colorado Heights University": 0.9}
+
+
+@vcr.use_cassette("tests/fixtures/vcr_casettes/elizabeths.yaml")
+def test_process_ror_elizabeth():
+    result = make_query(
+        pandas.Series(
+            {
+                "NCTId": "NCT03473223",
+                "site": "4580004 - Queen Elizabeth Hospital II",
+                "city": "Kota Kinabalu",
+                "country": "MY",
+            }
+        )
+    )
+    assert result["ror"] == "https://ror.org/05pgywt51"
 
 
 def test_remove_noninformative():
