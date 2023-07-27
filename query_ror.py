@@ -228,6 +228,7 @@ def get_empty_results():
     return {
         "name_ror": None,
         "ror": None,
+        "organization_type": None,
         "method": None,
         "method_ror": None,
         "count_non_matches": 0,
@@ -238,6 +239,7 @@ def get_empty_results():
 def process_response(response, results, method="first", method_ror="chosen"):
     results["name_ror"] = response["organization"]["name"]
     results["ror"] = response["organization"]["id"]
+    results["organization_type"] = "_".join(response["organization"]["types"])
     results["method"] = method
     results["method_ror"] = method_ror
     return results
