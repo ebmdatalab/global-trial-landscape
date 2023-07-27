@@ -15,10 +15,10 @@ import requests_cache
 from requests_cache import NEVER_EXPIRE, CachedSession
 
 
-SPECIAL_CHARS_REGEX = r'[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^"\~\*\?\:\/\.\,\;]'
+SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 handler.setFormatter(
     logging.Formatter(
@@ -38,13 +38,6 @@ def filter_unindexed(a, b, unique_id):
         (a_indexed.index).difference(b.set_index(unique_id).index)
     ]
     return remaining.reset_index()
-
-
-def set_index(trials, unique_id, include_id=True):
-    cols = unique_id
-    if include_id:
-        cols = ["trial_id"] + cols
-    return trials.set_index(cols)
 
 
 def merge_drop_dups(left, right, on, how="left"):
@@ -73,16 +66,15 @@ def create_session(use_cache=False):
     return session
 
 
-def load_mapping_dict(mapping_dict_path, compare_id):
-    mapping_dict = pandas.read_csv(mapping_dict_path, index_col=compare_id)
+def load_mapping_dict(mapping_dict_path):
+    mapping_dict = pandas.read_csv(mapping_dict_path)
     # If the index was created with city and country, there may be duplicated entries
     # TODO: what to do with entries that do not have city and country?
-    # TODO: maybe do not allow them to be added?
-    return mapping_dict.loc[~mapping_dict.index.duplicated()]
+    return mapping_dict
 
 
 def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique_id):
-    mapping_dict = load_mapping_dict(mapping_dict_file, compare_id)
+    mapping_dict = load_mapping_dict(mapping_dict_file)
 
     merged = merge_drop_dups(df, mapping_dict, compare_id, how="left")
 
@@ -108,19 +100,16 @@ def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique
     return remaining
 
 
-def write_to_mapping_dict(df, mapping_dict_file):
+def write_to_mapping_dict(df, mapping_dict_file, compare_id):
     matches_map = df[df.ror.notnull()][
-        ["name", "name_ror", "ror", "city", "country"]
+        ["name", "name_ror", "ror", "organization_type", "city", "country"]
     ].drop_duplicates()
-    matches_map = set_index(matches_map, include_id=False)
     if mapping_dict_file.exists():
         mapping_dict = load_mapping_dict(mapping_dict_file)
-        joined = pandas.concat([mapping_dict, matches_map])
-        new_matches = joined.loc[joined.index.difference(mapping_dict.index)]
+        new_matches = filter_unindexed(matches_map, mapping_dict, compare_id)
     else:
         new_matches = matches_map
     if not new_matches.empty:
-        new_matches = new_matches.reset_index()
         assert (
             len(new_matches[(new_matches.ror.notnull()) & (new_matches.name.isnull())])
             == 0
@@ -309,16 +298,13 @@ def query(name, session, retries=2):
                     retries=retries - 1,
                 )
             elif e.response.status_code == 500:
-                logger.error("Server Error, trying to strip quotations")
+                logger.error(f"Server Error, trying to strip quotations {name}")
                 name = name.replace('"', "").replace("'", "")
-                return query(name, session, retries=retries)
-        else:
-            # NOTE: we should not get here, debug
-            logger.error("Query failed")
-            import code
-
-            code.interact(local=locals())
-            return
+                return query(name, session, retries=retries - 1)
+    else:
+        # NOTE: we should not get here, debug
+        logger.error(f"WARNING: failed to download {name}")
+        return
 
 
 def apply_ror(data, session):
@@ -418,7 +404,7 @@ def process_file(args):
                 .sort_index(axis=1)
             )
             if mapping_dict_file and add_to_mapping_dict:
-                write_to_mapping_dict(combined, mapping_dict_file)
+                write_to_mapping_dict(combined, mapping_dict_file, compare_id)
             combined.to_csv(
                 output_file, mode="a", header=not output_file.exists(), index=False
             )
