@@ -1,4 +1,4 @@
-# CT Scraper
+# Global Trial Landscape
 
 ### Where are clinical trials taking place globally? What can we learn from publicly available resources and automated methods?
 
