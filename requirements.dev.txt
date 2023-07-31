@@ -206,12 +206,6 @@ distlib==0.3.7 \
     --hash=sha256:2e24928bc811348f0feb63014e97aaae3037f2cf48712d51ae61df7fd6075057 \
     --hash=sha256:9dafe54b34a028eafd95039d5e5d4851a13734540f1331060d31c9916e7147a8
     # via virtualenv
-exceptiongroup==1.1.2 \
-    --hash=sha256:12c3e887d6485d16943a309616de20ae5582633e0a2eda17f4e10fd61c1e8af5 \
-    --hash=sha256:e346e69d186172ca7cf029c8c1d16235aa0e04035e5750b4b95039e65204328f
-    # via
-    #   cattrs
-    #   pytest
 filelock==3.12.2 \
     --hash=sha256:002740518d8aa59a26b0c76e10fb8c6e15eae825d34b6fdf670333fd7b938d81 \
     --hash=sha256:cbb791cdea2a72f23da6ac5b5269ab0a0d161e9ef0100e653b69049a7706d1ec
@@ -497,20 +491,6 @@ six==1.16.0 \
     # via
     #   python-dateutil
     #   url-normalize
-    #   vcrpy
-tomli==1.1.0 \
-    --hash=sha256:33d7984738f8bb699c9b0a816eb646a8178a69eaa792d258486776a5d21b8ca5 \
-    --hash=sha256:f4a182048010e89cbec0ae4686b21f550a7f2903f665e34a6de58ec15424f919
-    # via
-    #   black
-    #   build
-    #   pip-tools
-    #   pyproject-hooks
-    #   pytest
-typing-extensions==4.7.1 \
-    --hash=sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36 \
-    --hash=sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2
-    # via cattrs
 tzdata==2023.3 \
     --hash=sha256:11ef1e08e54acb0d4f95bdb1be05da659673de4acbd21bf9c69e94cc5e907a3a \
     --hash=sha256:7e65763eef3120314099b6939b5546db7adce1e7d6f2e179e3df563c70511eda
@@ -525,9 +505,9 @@ urllib3==2.0.4 \
     # via
     #   requests
     #   requests-cache
-vcrpy==5.0.0 \
-    --hash=sha256:1ef3ddea819a26eda10b560c70bd74c41855241d431745712e31a5b2de2d05a8 \
-    --hash=sha256:28b66c87be7678896e9e78fee4f6695e3fb153d5d7e5f635416a33658452bb44
+vcrpy==5.1.0 \
+    --hash=sha256:605e7b7a63dcd940db1df3ab2697ca7faf0e835c0852882142bafb19649d599e \
+    --hash=sha256:bbf1532f2618a04f11bce2a99af3a9647a32c880957293ff91e0a5f187b6b3d2
     # via -r requirements.dev.in
 virtualenv==20.21.1 \
     --hash=sha256:09ddbe1af0c8ed2bb4d6ed226b9e6415718ad18aef9fa0ba023d96b7a8356049 \
