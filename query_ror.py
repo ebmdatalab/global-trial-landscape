@@ -1,18 +1,13 @@
-import argparse
 import logging
 import math
-import pathlib
 import re
-import sys
-import time
 import urllib
 
 import country_converter as coco
 import numpy
 import pandas
-import requests
-import requests_cache
-from requests_cache import NEVER_EXPIRE, CachedSession
+
+from utils import create_session, filter_unindexed, load_trials, query
 
 
 SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
@@ -29,17 +24,6 @@ handler.setFormatter(
 logger.addHandler(handler)
 
 
-def filter_unindexed(a, b, unique_id):
-    """
-    Given two unindexed dataframes, remove rows in b from a, as matched by unique_id
-    """
-    a_indexed = a.set_index(unique_id)
-    remaining = a_indexed.loc[
-        (a_indexed.index).difference(b.set_index(unique_id).index)
-    ]
-    return remaining.reset_index()
-
-
 def merge_drop_dups(left, right, on, how="left"):
     if on == "index":
         merged = left.merge(
@@ -54,16 +38,6 @@ def merge_drop_dups(left, right, on, how="left"):
         merged = left.merge(right, on=on, how=how, suffixes=("", "_y"), indicator=True)
     merged = merged.drop(merged.filter(regex="_y$").columns, axis=1)
     return merged
-
-
-def create_session(use_cache=False):
-    if use_cache:
-        requests_cache.install_cache("ror_cache", backend="sqlite")
-        # Do not expire the cache
-        session = CachedSession(expire_after=NEVER_EXPIRE)
-    else:
-        session = requests.Session()
-    return session
 
 
 def load_mapping_dict(mapping_dict_path):
@@ -188,23 +162,7 @@ def convert_country(country_column, to="ISO2"):
     return cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
 
 
-def load_trials(name, unique_id, drop_duplicates=True):
-    # NOTE: the name field can be either a sponsor or a site
-    necessary_columns = unique_id + ["source"]
-    try:
-        trials = pandas.read_csv(name)
-    except FileNotFoundError:
-        return pandas.DataFrame(columns=necessary_columns)
-    missing_columns = set(necessary_columns) - set(trials.columns)
-    if len(missing_columns) > 0:
-        print(",".join(missing_columns) + " must be columns in the input file")
-        sys.exit(1)
-    # Drop any unnamed columns
-    # We do this rather than having to know whether the file contains an index on load
-    trials = trials.drop(
-        trials.columns[trials.columns.str.contains("unnamed", case=False)], axis=1
-    )
-
+def clean_trials(trials):
     # Remove non-informative
     trials["name"] = remove_noninformative(trials.name)
 
@@ -246,7 +204,7 @@ def process_ror_json(name, session, results, extra_data):
     2. The highest score above 0.8 without country/city match, if industry
     3. Chosen (look for false positives)
     """
-    resp = query(name, session)
+    resp = query_ror(name, session)
     if not resp:
         return results
     potential_matches = []
@@ -280,35 +238,19 @@ def process_ror_json(name, session, results, extra_data):
     return results
 
 
-def query(name, session, retries=2):
-    """
-    Given a name, query the ror api
-    """
-    url = (
-        f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
-    )
-    if retries > 0:
-        try:
-            response = session.get(url)
-            response.raise_for_status()
-            return response.json()
-        except Exception as e:
-            if e.response.status_code == 403:
-                logger.error(f"Failed to download, retries left {retries}")
-                time.sleep(60)
-                return query(
-                    name,
-                    session,
-                    retries=retries - 1,
-                )
-            elif e.response.status_code == 500:
-                logger.error(f"Server Error, trying to strip quotations {name}")
-                name = name.replace('"', "").replace("'", "")
-                return query(name, session, retries=retries - 1)
-    else:
-        # NOTE: we should not get here, debug
-        logger.error(f"WARNING: failed to download {name}")
-        return
+def query_ror(name, session):
+    def make_url(name):
+        return f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
+
+    url = make_url(name)
+    try:
+        return query(url, session)
+    except Exception as e:
+        if e.response.status_code == 500:
+            logger.error(f"Server Error, trying to strip quotations {name}")
+            name = name.replace('"', "").replace("'", "")
+            url = make_url(name)
+            return query(name, session, retries=1)
 
 
 def apply_ror(data, session):
@@ -367,7 +309,7 @@ def process_file(args):
     output_dir = trial_file.parent
     output_file = output_dir / output_name
 
-    session = create_session(use_cache)
+    session = create_session("ror_cache", use_cache)
 
     if data_type == "site":
         compare_id = ["name", "city", "country"]
@@ -376,6 +318,7 @@ def process_file(args):
     unique_id = ["trial_id"] + compare_id
 
     trials = load_trials(trial_file, unique_id, (not keep_dups))
+    trials = clean_trials(trials)
     already_processed = load_trials(output_file, unique_id)
 
     # Filter out entries already present in the output file
@@ -503,60 +446,3 @@ def make_tables(args):
             processed_file,
             "only_ror",
         )
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-
-    # For the query command
-    query_parser = subparsers.add_parser("query")
-    query_parser.set_defaults(func=process_file)
-    query_parser.add_argument(
-        "--trial-file",
-        required=True,
-        type=pathlib.Path,
-        help="File with the following columns: trial_id, name (site/sponsor), source (ctgov etc) and optionally city, country",
-    )
-    query_parser.add_argument(
-        "--output-name", type=str, required=True, help="Name of output file"
-    )
-    query_parser.add_argument(
-        "--data-type",
-        choices=["site", "sponsor"],
-        required=True,
-        help="Site data assumes city/country columns, sponsor does not",
-    )
-    query_parser.add_argument(
-        "--mapping-dict-file",
-        type=pathlib.Path,
-        help="Path to dictionary with definted matches",
-    )
-    query_parser.add_argument(
-        "--use-cache",
-        action="store_true",
-        help="Cache queries and/or use cache",
-    )
-    query_parser.add_argument(
-        "--keep-duplicates",
-        action="store_true",
-        help="Do not drop completely duplicated rows",
-    )
-    query_parser.add_argument(
-        "--add-to-mapping-dict",
-        action="store_true",
-        help="Add newly resolved ids to the mapping dict",
-    )
-    query_parser.add_argument(
-        "--chunk-size", type=int, help="Save the output every n queries", default=1000
-    )
-
-    # For the table command
-    table_parser = subparsers.add_parser("table")
-    table_parser.set_defaults(func=make_tables)
-    table_parser.add_argument(
-        "--processed-file", required=True, type=pathlib.Path, help="File with ROR data"
-    )
-
-    args = parser.parse_args()
-    args.func(args)

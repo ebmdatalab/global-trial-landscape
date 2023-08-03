@@ -2,11 +2,11 @@ import pandas
 import vcr
 
 from query_ror import (
-    create_session,
     get_empty_results,
     process_ror_json,
     remove_noninformative,
 )
+from utils import create_session
 
 
 def make_query(fake_sponsor_row):
