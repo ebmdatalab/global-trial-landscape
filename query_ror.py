@@ -101,9 +101,13 @@ def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique
 
 
 def write_to_mapping_dict(df, mapping_dict_file, compare_id):
-    matches_map = df[df.ror.notnull()][
-        ["name", "name_ror", "ror", "organization_type", "city", "country"]
-    ].drop_duplicates()
+    matches_map = (
+        df[df.ror.notnull()][
+            ["name", "name_ror", "ror", "organization_type", "city", "country"]
+        ]
+        .drop_duplicates()
+        .sort_index(axis=1)
+    )
     if mapping_dict_file.exists():
         mapping_dict = load_mapping_dict(mapping_dict_file)
         new_matches = filter_unindexed(matches_map, mapping_dict, compare_id)
