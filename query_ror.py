@@ -1,5 +1,7 @@
+import argparse
 import logging
 import math
+import pathlib
 import re
 import urllib
 
@@ -7,21 +9,11 @@ import country_converter as coco
 import numpy
 import pandas
 
+from setup import get_base_parser, get_full_parser, setup_logger
 from utils import create_session, filter_unindexed, load_trials, query
 
 
 SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter(
-        fmt="%(asctime)s [%(levelname)-9s] %(message)s [%(module)s]",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-)
-logger.addHandler(handler)
 
 
 def merge_drop_dups(left, right, on, how="left"):
@@ -243,11 +235,12 @@ def query_ror(name, session):
         return f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
 
     url = make_url(name)
+    logging.error(f"{url}")
     try:
         return query(url, session)
     except Exception as e:
         if e.response.status_code == 500:
-            logger.error(f"Server Error, trying to strip quotations {name}")
+            logging.error(f"Server Error, trying to strip quotations {name}")
             name = name.replace('"', "").replace("'", "")
             url = make_url(name)
             return query(name, session, retries=1)
@@ -262,16 +255,16 @@ def apply_ror(data, session):
     results = get_empty_results()
     name = data["name"]
     if name != name:
-        logger.debug("skipping null name")
+        logging.debug("skipping null name")
         return results
     no_special = remove_special_chars(name, replace="")
     if no_special.isnumeric() or len(no_special) == 0:
-        logger.debug(f"skipping numeric/special char name {name}")
+        logging.debug(f"skipping numeric/special char name {name}")
         return results
     results = process_ror_json(name, session, results, extra_data=data)
     # Try adding the country and city into the query
     if not results["name_ror"] and data.get("country") and data.get("city"):
-        logger.debug("Adding in city and country")
+        logging.debug("Adding in city and country")
         results["method"] = "city/country"
         results = process_ror_json(
             name + f",{data.get('city')}, {data.get('country')}",
@@ -281,7 +274,7 @@ def apply_ror(data, session):
         )
     if not results["name_ror"]:
         if no_special != name:
-            logger.debug("Checking removing special chars")
+            logging.debug("Checking removing special chars")
             # ROR splits on special chars, remove special chars and try again
             # https://github.com/ror-community/ror-api/blob/master/rorapi/matching.py#L28C1-L28C20
             # i.e. Federal State Budgetary Scientific Institution
@@ -297,17 +290,14 @@ def apply_ror(data, session):
 
 
 def process_file(args):
-    trial_file = args.trial_file
-    output_name = args.output_name
+    trial_file = args.input_file
+    output_file = args.output_file
     data_type = args.data_type
     mapping_dict_file = args.mapping_dict_file
     use_cache = args.use_cache
     keep_dups = args.keep_duplicates
     add_to_mapping_dict = args.add_to_mapping_dict
     chunk_size = args.chunk_size
-
-    output_dir = trial_file.parent
-    output_file = output_dir / output_name
 
     session = create_session("ror_cache", use_cache)
 
@@ -334,9 +324,9 @@ def process_file(args):
     query_num = 0
     total_chunks = math.ceil(len(remaining) / chunk_size)
     for key, data in remaining.groupby(compare_id):
-        logger.debug(f"chunk: ({query_num // chunk_size}/{total_chunks})")
+        logging.debug(f"chunk: ({query_num // chunk_size}/{total_chunks})")
         results = apply_ror(dict(zip(compare_id, key)), session)
-        logger.debug(
+        logging.debug(
             f"{query_num % chunk_size}/{chunk_size} chunk {query_num // chunk_size}/{total_chunks}: {key[0]} {results}"
         )
         for index in data.index:
@@ -400,8 +390,11 @@ def papers_by_site_table(df, groupby):
 
 
 def make_tables(args):
-    processed_file = args.processed_file
-    output_dir = processed_file.parent
+    processed_file = args.input_file
+    if args.output_dir:
+        output_dir = args.output_dir
+    else:
+        output_dir = processed_file.parent
 
     df = pandas.read_csv(processed_file)
 
@@ -446,3 +439,54 @@ def make_tables(args):
             processed_file,
             "only_ror",
         )
+
+
+if __name__ == "__main__":
+    parent = get_full_parser()
+    ror_parser = argparse.ArgumentParser()
+    subparsers = ror_parser.add_subparsers()
+
+    query_parser = subparsers.add_parser("query", parents=[parent])
+    query_parser.set_defaults(func=process_file)
+    query_parser.add_argument(
+        "--data-type",
+        choices=["site", "sponsor"],
+        required=True,
+        help="Site data assumes city/country columns, sponsor does not",
+    )
+    query_parser.add_argument(
+        "--mapping-dict-file",
+        type=pathlib.Path,
+        help="Path to dictionary with definted matches",
+    )
+    query_parser.add_argument(
+        "--use-cache",
+        action="store_true",
+        help="Cache queries and/or use cache",
+    )
+    query_parser.add_argument(
+        "--keep-duplicates",
+        action="store_true",
+        help="Do not drop completely duplicated rows",
+    )
+    query_parser.add_argument(
+        "--add-to-mapping-dict",
+        action="store_true",
+        help="Add newly resolved ids to the mapping dict",
+    )
+
+    base = get_base_parser()
+    table_parser = subparsers.add_parser("tables", parents=[base])
+    table_parser.set_defaults(func=make_tables)
+    table_parser.add_argument(
+        "--output-dir",
+        type=pathlib.Path,
+        help="Alternate directory to store tables",
+    )
+
+    args = ror_parser.parse_args()
+    if hasattr(args, "func"):
+        setup_logger(args.verbosity)
+        args.func(args)
+    else:
+        ror_parser.print_help()
