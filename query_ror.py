@@ -3,17 +3,35 @@ import logging
 import math
 import pathlib
 import re
+import sys
 import urllib
 
-import country_converter as coco
-import numpy
 import pandas
 
 from setup import get_base_parser, get_full_parser, setup_logger
-from utils import create_session, filter_unindexed, load_trials, query
+from utils import (
+    convert_country,
+    create_session,
+    filter_unindexed,
+    load_trials,
+    preprocess_trial_file,
+    query,
+)
 
 
 SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
+
+
+def merge_and_update(left, right, on):
+    overlapping_columns = list(left.columns.intersection(right.columns))
+    overlapping_columns.remove(on)
+    merged = left.reset_index().merge(right, on=on, how="left").set_index("index")
+    for col in overlapping_columns:
+        merged[col] = merged[f"{col}_y"].combine_first(merged[f"{col}_x"])
+    # Drop the redundant columns
+    for col in overlapping_columns:
+        merged.drop([f"{col}_x", f"{col}_y"], axis=1, inplace=True)
+    return merged
 
 
 def merge_drop_dups(left, right, on, how="left"):
@@ -32,8 +50,21 @@ def merge_drop_dups(left, right, on, how="left"):
     return merged
 
 
+def check_mapping_dict(mapping_dict):
+    errors = mapping_dict.groupby(["name", "city", "country"]).filter(
+        lambda group: group["ror"].nunique() > 1
+    )
+    if len(errors) > 1:
+        logging.error(
+            "The following rows in the mapping dictionary may have errors and need to be fixed manually"
+        )
+        print(errors[["name", "city", "country", "ror"]])
+        sys.exit(1)
+
+
 def load_mapping_dict(mapping_dict_path):
     mapping_dict = pandas.read_csv(mapping_dict_path)
+    check_mapping_dict(mapping_dict)
     # If the index was created with city and country, there may be duplicated entries
     # TODO: what to do with entries that do not have city and country?
     return mapping_dict
@@ -48,14 +79,12 @@ def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique
     remaining = merged[merged._merge == "left_only"].drop("_merge", axis=1)
 
     assert (len(remaining) + len(already_mapped)) == len(df)
-    # Nothing that is mapped should have a null ror or name_ror
-    assert already_mapped.ror.notnull().all()
-    assert already_mapped.name_ror.notnull().all()
+    # Nothing that is mapped should have a null name_resolved
+    assert (already_mapped.name_resolved.notnull() | already_mapped.ror.notnull).all()
 
     # TODO: make sure this has the same columns as chunked outputs
     already_mapped["method"] = "dict"
     already_mapped["count_non_matches"] = 0
-    already_mapped["method_ror"] = None
     already_mapped["non_matches"] = None
     # Sort the columns alphabetically
     already_mapped = already_mapped.sort_index(axis=1)
@@ -67,23 +96,28 @@ def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique
 
 
 def write_to_mapping_dict(df, mapping_dict_file, compare_id):
+    necessary_columns = [
+        "name",
+        "name_resolved",
+        "ror",
+        "organization_type",
+        "lattitude",
+        "longitude",
+        "city",
+        "country",
+    ]
     matches_map = (
-        df[df.ror.notnull()][
-            ["name", "name_ror", "ror", "organization_type", "city", "country"]
-        ]
+        df[df.name_resolved.notnull()]
+        .reindex(columns=necessary_columns, fill_value=None)
         .drop_duplicates()
-        .sort_index(axis=1)
     )
     if mapping_dict_file.exists():
         mapping_dict = load_mapping_dict(mapping_dict_file)
         new_matches = filter_unindexed(matches_map, mapping_dict, compare_id)
     else:
         new_matches = matches_map
+    new_matches = new_matches.sort_index(axis=1)
     if not new_matches.empty:
-        assert (
-            len(new_matches[(new_matches.ror.notnull()) & (new_matches.name.isnull())])
-            == 0
-        )
         new_matches.to_csv(
             mapping_dict_file,
             mode="a",
@@ -96,95 +130,28 @@ def remove_special_chars(name, replace=" "):
     return re.sub(SPECIAL_CHARS_REGEX, replace, name)
 
 
-def extract_before_regex_ignorecase(line, criteria):
-    """
-    Extract the string before any of the criteria, ignoring case
-    """
-    loc = re.search(criteria, line, flags=re.IGNORECASE)
-    if loc:
-        return line[0 : loc.start()].strip()  # noqa: E203
-
-    else:
-        return line
-
-
-def remove_noninformative(name):
-    """
-    The following strings were commonly the entire name, in which case
-    we do not want to try to match. If they are part of the string they may
-    hamper the ror affiliation matching.
-
-    We do not use split because we want to use a regex and ingnorecase
-    We do not use name.str.extract because we are trying to extract text
-    BEFORE any of the criteria (.*?)(criteria) would give us more than one
-    match group
-
-    There were instances of both Investigative Site and investigative Site
-    """
-    non_informative = [
-        "study center",
-        "research site",
-        "study site",
-        "clinical trial site",
-        "clinical research site",
-        "local institution",
-        "clinical study site",
-        "investigator site",
-        "investigative site",
-        "investigational site",
-        "clinical site",
-        "medical facility",
-        "\\(site",
-        "/id#",
-    ]
-    criteria = "(" + "|".join(non_informative) + ")"
-    name = name.apply(
-        lambda x: extract_before_regex_ignorecase(x, criteria) if x == x else x
-    ).replace("", numpy.nan)
-    return name
-
-
-def convert_country(country_column, to="ISO2"):
-    """
-    Standardise to a country code
-    Use ISO2 as per the ror schema
-    https://ror.readme.io/docs/all-ror-fields-and-sub-fields
-    """
-    cc = coco.CountryConverter()
-    return cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
-
-
-def clean_trials(trials):
-    # Remove non-informative
-    trials["name"] = remove_noninformative(trials.name)
-
-    # Convert country to ISO-2
-    trials.loc[:, "country"] = convert_country(trials.country)
-
-    # Drop duplicates AFTER we have done some cleaning
-    trials = trials.drop_duplicates()
-
-    return trials
-
-
 def get_empty_results():
     return {
-        "name_ror": None,
+        "name_resolved": None,
         "ror": None,
         "organization_type": None,
+        "lattitude": None,
+        "longitude": None,
         "method": None,
-        "method_ror": None,
         "count_non_matches": 0,
         "non_matches": [],
     }
 
 
-def process_response(response, results, method="first", method_ror="chosen"):
-    results["name_ror"] = response["organization"]["name"]
-    results["ror"] = response["organization"]["id"]
-    results["organization_type"] = "_".join(response["organization"]["types"])
+def process_response(response, results, method=None):
+    if response.get("organization"):
+        response = response.get("organization")
+    results["name_resolved"] = response["name"]
+    results["ror"] = response["id"]
+    results["organization_type"] = "_".join(response["types"])
+    results["lattitude"] = response["addresses"][0]["lat"]
+    results["longitude"] = response["addresses"][0]["lng"]
     results["method"] = method
-    results["method_ror"] = method_ror
     return results
 
 
@@ -212,9 +179,20 @@ def process_ror_json(name, session, results, extra_data):
                 item["organization"]["country"]["country_code"]
                 == extra_data.get("country")
             ) and (
-                item["organization"]["addresses"][0]["city"] == extra_data.get("city")
+                # Sometimes they are encoded differently, check city and geonames city
+                (item["organization"]["addresses"][0]["city"] == extra_data.get("city"))
+                or (
+                    item["organization"]["addresses"][0]["geonames_city"]["city"]
+                    == extra_data.get("city")
+                )
             ):
                 return process_response(item, results, method="city/country")
+    elif extra_data.get("country"):
+        for item in potential_matches:
+            if item["organization"]["country"]["country_code"] == extra_data.get(
+                "country"
+            ):
+                return process_response(item, results, method="country")
     for item in potential_matches:
         if "Company" in item["organization"]["types"]:
             return process_response(item, results, method="industry")
@@ -235,7 +213,6 @@ def query_ror(name, session):
         return f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
 
     url = make_url(name)
-    logging.error(f"{url}")
     try:
         return query(url, session)
     except Exception as e:
@@ -243,7 +220,7 @@ def query_ror(name, session):
             logging.error(f"Server Error, trying to strip quotations {name}")
             name = name.replace('"', "").replace("'", "")
             url = make_url(name)
-            return query(name, session, retries=1)
+            return query(url, session, retries=1)
 
 
 def apply_ror(data, session):
@@ -258,21 +235,11 @@ def apply_ror(data, session):
         logging.debug("skipping null name")
         return results
     no_special = remove_special_chars(name, replace="")
-    if no_special.isnumeric() or len(no_special) == 0:
+    if no_special.replace(" ", "").isnumeric() or len(no_special) == 0:
         logging.debug(f"skipping numeric/special char name {name}")
         return results
     results = process_ror_json(name, session, results, extra_data=data)
-    # Try adding the country and city into the query
-    if not results["name_ror"] and data.get("country") and data.get("city"):
-        logging.debug("Adding in city and country")
-        results["method"] = "city/country"
-        results = process_ror_json(
-            name + f",{data.get('city')}, {data.get('country')}",
-            session,
-            results,
-            extra_data=data,
-        )
-    if not results["name_ror"]:
+    if not results["name_resolved"]:
         if no_special != name:
             logging.debug("Checking removing special chars")
             # ROR splits on special chars, remove special chars and try again
@@ -291,24 +258,31 @@ def apply_ror(data, session):
 
 def process_file(args):
     trial_file = args.input_file
-    output_file = args.output_file
-    data_type = args.data_type
     mapping_dict_file = args.mapping_dict_file
     use_cache = args.use_cache
     keep_dups = args.keep_duplicates
     add_to_mapping_dict = args.add_to_mapping_dict
     chunk_size = args.chunk_size
 
+    if args.output_dir:
+        output_dir = args.output_dir
+    else:
+        output_dir = trial_file.parent
+
+    output_file = add_suffix(output_dir, trial_file, "ror")
+
     session = create_session("ror_cache", use_cache)
 
-    if data_type == "site":
-        compare_id = ["name", "city", "country"]
-    else:
-        compare_id = ["name"]
+    column_names = pandas.read_csv(trial_file).columns
+
+    compare_id = ["name"]
+    if "country" in column_names:
+        compare_id += ["country"]
+    if "city" in column_names:
+        compare_id += ["city"]
     unique_id = ["trial_id"] + compare_id
 
     trials = load_trials(trial_file, unique_id, (not keep_dups))
-    trials = clean_trials(trials)
     already_processed = load_trials(output_file, unique_id)
 
     # Filter out entries already present in the output file
@@ -343,7 +317,10 @@ def process_file(args):
             if mapping_dict_file and add_to_mapping_dict:
                 write_to_mapping_dict(combined, mapping_dict_file, compare_id)
             combined.to_csv(
-                output_file, mode="a", header=not output_file.exists(), index=False
+                output_file,
+                mode="a",
+                header=not output_file.exists(),
+                index=False,
             )
             all_results = {}
         query_num += 1
@@ -355,8 +332,59 @@ def process_file(args):
     )
     assert len(combined[(combined.ror.notnull()) & (combined.name.isnull())]) == 0
     if mapping_dict_file and add_to_mapping_dict:
-        write_to_mapping_dict(combined, mapping_dict_file)
+        write_to_mapping_dict(combined, mapping_dict_file, compare_id)
     combined.to_csv(output_file, mode="a", header=not output_file.exists(), index=False)
+
+
+def get_ror_metadata(df, session, update_all=False):
+    def make_url(ror_id):
+        return f"https://api.ror.org/organizations/{ror_id}"
+
+    to_update = df[df.ror.notnull()]
+    if not update_all:
+        # TODO: potentially also check lattitude?
+        if "name_resolved" in to_update.columns:
+            to_update = to_update[to_update.name_resolved.isnull()]
+    ror_ids = to_update.ror.dropna().unique()
+    all_results = []
+    for ror_id in ror_ids:
+        url = make_url(ror_id)
+        results = {}
+        # TODO: catch errors
+        resp = query(url, session)
+        process_response(resp, results)
+        all_results.append(results)
+
+    resolved = pandas.DataFrame(all_results)
+    # Add metadata to any row with a matching ror id
+    # NOTE: this preserves the index
+    merged = merge_and_update(to_update, resolved, on="ror")
+    # Make sure the original dataframe has all the necessary columns
+    df = df.reindex(columns=df.columns.union(merged.columns).unique())
+    # Only update the rows we wanted to update
+    df.loc[merged.index] = merged
+    return merged
+
+
+def map_ror_file(args):
+    trial_file = args.input_file
+    mapping_dict_file = args.mapping_dict_file
+    use_cache = args.use_cache
+
+    column_names = pandas.read_csv(trial_file).columns
+
+    compare_id = ["name"]
+    if "country" in column_names:
+        compare_id += ["country"]
+    if "city" in column_names:
+        compare_id += ["city"]
+    unique_id = ["trial_id"] + compare_id
+
+    trials = load_trials(trial_file, unique_id, True)
+
+    session = create_session("ror_cache", use_cache)
+    trials = get_ror_metadata(trials, session, update_all=False)
+    write_to_mapping_dict(trials, mapping_dict_file, compare_id)
 
 
 def pcnt_ror_table(df, groupby):
@@ -371,8 +399,12 @@ def pcnt_ror_table(df, groupby):
     return table
 
 
+def add_suffix(output_dir, input_file, suffix):
+    return output_dir / f"{input_file.stem}_table_{suffix}.csv"
+
+
 def write_table(df, output_dir, input_file, suffix):
-    path = output_dir / f"{input_file.stem}_table_{suffix}.csv"
+    path = add_suffix(output_dir, input_file, suffix)
     df.to_csv(path)
 
 
@@ -403,7 +435,10 @@ def make_tables(args):
         df["continent"] = convert_country(df["country"], to="continent")
 
         write_table(
-            pcnt_ror_table(df, ["country"]), output_dir, processed_file, "by_country"
+            pcnt_ror_table(df, ["country"]),
+            output_dir,
+            processed_file,
+            "by_country",
         )
         write_table(
             pcnt_ror_table(df, ["continent"]),
@@ -413,14 +448,14 @@ def make_tables(args):
         )
 
         write_table(
-            papers_by_site_table(df, ["name_ror", "city", "country"]),
+            papers_by_site_table(df, ["name_resolved", "city", "country"]),
             output_dir,
             processed_file,
             "only_ror",
         )
         africa = df[df.continent == "Africa"]
         write_table(
-            papers_by_site_table(africa, ["name_ror", "city", "country"]),
+            papers_by_site_table(africa, ["name_resolved", "city", "country"]),
             output_dir,
             processed_file,
             "only_ror_africa",
@@ -434,7 +469,7 @@ def make_tables(args):
             "counts",
         )
         write_table(
-            papers_by_site_table(df, ["name_ror"]),
+            papers_by_site_table(df, ["name_resolved"]),
             output_dir,
             processed_file,
             "only_ror",
@@ -442,18 +477,40 @@ def make_tables(args):
 
 
 if __name__ == "__main__":
+    base = get_base_parser()
     parent = get_full_parser()
     ror_parser = argparse.ArgumentParser()
     subparsers = ror_parser.add_subparsers()
 
+    preprocess_parser = subparsers.add_parser("preprocess", parents=[base])
+    preprocess_parser.set_defaults(func=preprocess_trial_file)
+    preprocess_parser.add_argument(
+        "--source",
+        required=True,
+        help="Trial registry type i.e. pactr, anzctr",
+    )
+
+    map_parser = subparsers.add_parser("map_existing", parents=[base])
+    map_parser.set_defaults(func=map_ror_file)
+    map_parser.add_argument(
+        "--mapping-dict-file",
+        type=pathlib.Path,
+        help="Path to dictionary with definted matches",
+        required=True,
+    )
+    map_parser.add_argument(
+        "--update-all",
+        action="store_true",
+        help="Re-query ror for additional metadata",
+    )
+    map_parser.add_argument(
+        "--use-cache",
+        action="store_true",
+        help="Cache queries and/or use cache",
+    )
+
     query_parser = subparsers.add_parser("query", parents=[parent])
     query_parser.set_defaults(func=process_file)
-    query_parser.add_argument(
-        "--data-type",
-        choices=["site", "sponsor"],
-        required=True,
-        help="Site data assumes city/country columns, sponsor does not",
-    )
     query_parser.add_argument(
         "--mapping-dict-file",
         type=pathlib.Path,
@@ -475,14 +532,8 @@ if __name__ == "__main__":
         help="Add newly resolved ids to the mapping dict",
     )
 
-    base = get_base_parser()
-    table_parser = subparsers.add_parser("tables", parents=[base])
+    table_parser = subparsers.add_parser("tables", parents=[parent])
     table_parser.set_defaults(func=make_tables)
-    table_parser.add_argument(
-        "--output-dir",
-        type=pathlib.Path,
-        help="Alternate directory to store tables",
-    )
 
     args = ror_parser.parse_args()
     if hasattr(args, "func"):

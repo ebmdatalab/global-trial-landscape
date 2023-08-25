@@ -53,7 +53,7 @@ def get_full_parser():
     base = get_base_parser()
     parent = argparse.ArgumentParser(add_help=False, parents=[base])
     parent.add_argument(
-        "--output-file", type=pathlib.Path, required=True, help="Path to output file"
+        "--output-dir", type=pathlib.Path, help="Alternate directory to store results"
     )
     parent.add_argument(
         "--chunk-size",
