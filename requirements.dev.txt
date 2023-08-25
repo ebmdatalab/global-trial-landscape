@@ -96,8 +96,18 @@ six==1.16.0
     # via
     #   python-dateutil
     #   url-normalize
+tomli==1.1.0
+    # via
+    #   black
+    #   build
+    #   pip-tools
+    #   pytest
+typing-extensions==4.7.1
+    # via cattrs
 tzdata==2023.3
     # via pandas
+unidecode==1.3.6
+    # via -r requirements.dev.in
 url-normalize==1.4.3
     # via requests-cache
 urllib3==2.0.4
