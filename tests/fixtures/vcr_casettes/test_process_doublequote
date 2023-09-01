@@ -1,0 +1,232 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.ror.org/organizations?affiliation=ATTIKON+University+Hospital
+  response:
+    body:
+      string: "{\"number_of_results\":21,\"items\":[{\"substring\":\"ATTIKON University
+        Hospital\",\"score\":0.84,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02gm5zw39\",\"name\":\"Universit\xE4tsklinikum
+        Aachen\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1966,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"RWTH
+        Aachen University\",\"type\":\"Related\",\"id\":\"https://ror.org/04xfq0f34\"},{\"label\":\"Ophthalmology
+        Clinic\",\"type\":\"Child\",\"id\":\"https://ror.org/0431amh23\"}],\"addresses\":[{\"lat\":50.77664,\"lng\":6.08342,\"state\":null,\"state_code\":null,\"city\":\"Aachen\",\"geonames_city\":{\"id\":3247449,\"city\":\"Aachen\",\"geonames_admin1\":{\"name\":\"North
+        Rhine-Westphalia\",\"id\":2861876,\"ascii_name\":\"North Rhine-Westphalia\",\"code\":\"DE.07\"},\"geonames_admin2\":{\"name\":\"Cologne
+        District\",\"id\":2886241,\"ascii_name\":\"Cologne District\",\"code\":\"DE.07.053\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2921044}],\"links\":[\"http://www.ukaachen.de/\"],\"aliases\":[\"Uniklinik
+        RWTH Aachen\"],\"acronyms\":[\"UKA\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Uniklinikum_Aachen\",\"labels\":[{\"label\":\"University
+        Hospital Aachen\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Germany\",\"country_code\":\"DE\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 8653 1507\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q560144\"]},\"GRID\":{\"preferred\":\"grid.412301.5\",\"all\":\"grid.412301.5\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.83,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03ad39j10\",\"name\":\"University
+        of Pisa\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1343,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"Ospedale
+        Cisanello\",\"type\":\"Related\",\"id\":\"https://ror.org/00mc91w09\"}],\"addresses\":[{\"lat\":43.716429,\"lng\":10.398687,\"state\":\"Toscana\",\"state_code\":\"IT-52\",\"city\":\"Pisa\",\"geonames_city\":{\"id\":3170647,\"city\":\"Pisa\",\"geonames_admin1\":{\"name\":\"Tuscany\",\"id\":3165361,\"ascii_name\":\"Tuscany\",\"code\":\"IT.16\"},\"geonames_admin2\":{\"name\":\"Province
+        of Pisa\",\"id\":3170646,\"ascii_name\":\"Province of Pisa\",\"code\":\"IT.16.PI\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"CENTRO
+        (IT)\",\"code\":\"ITI\"},\"nuts_level2\":{\"name\":\"Toscana\",\"code\":\"ITI1\"},\"nuts_level3\":{\"name\":\"Pisa\",\"code\":\"ITI17\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3175395}],\"links\":[\"http://www.unipi.it/\"],\"aliases\":[],\"acronyms\":[\"UniPi\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Pisa\",\"labels\":[{\"label\":\"Universit\xE0
+        di Pisa\",\"iso639\":\"it\"},{\"label\":\"Universit\xE4t Pisa\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9
+        de Pise\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Italy\",\"country_code\":\"IT\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1757 3729\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100007514\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"453158\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q645663\"]},\"GRID\":{\"preferred\":\"grid.5395.a\",\"all\":\"grid.5395.a\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.81,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00q74jp45\",\"name\":\"Canakkale
+        Onsekiz Mart Universitesi Tip Fakultesi Hastanesi\",\"email_address\":null,\"ip_addresses\":[],\"established\":2000,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"\xC7anakkale
+        Onsekiz Mart University\",\"type\":\"Related\",\"id\":\"https://ror.org/05rsv8p09\"}],\"addresses\":[{\"lat\":40.110535,\"lng\":26.416314,\"state\":null,\"state_code\":null,\"city\":\"\xC7anakkale\",\"geonames_city\":{\"id\":749780,\"city\":\"\xC7anakkale\",\"geonames_admin1\":{\"name\":\"Canakkale\",\"id\":749778,\"ascii_name\":\"Canakkale\",\"code\":\"TR.17\"},\"geonames_admin2\":{\"name\":null,\"id\":null,\"ascii_name\":null,\"code\":null},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":298795}],\"links\":[\"http://hastane.comu.edu.tr/ksayfalar/sayfa/41/89/hakkimizda\"],\"aliases\":[\"COMU
+        Hospital\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/COMU_Hospital\",\"labels\":[{\"label\":\"\xC7anakkale
+        University Hospital\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Turkey\",\"country_code\":\"TR\"},\"external_ids\":{\"Wikidata\":{\"preferred\":null,\"all\":[\"Q5013386\"]},\"GRID\":{\"preferred\":\"grid.461260.7\",\"all\":\"grid.461260.7\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.81,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00s4vhs88\",\"name\":\"Hospital
+        Universitario de Gran Canaria Doctor Negr\xEDn\",\"email_address\":null,\"ip_addresses\":[],\"established\":1999,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":28.12063,\"lng\":-15.444603,\"state\":null,\"state_code\":null,\"city\":\"Las
+        Palmas de Gran Canaria\",\"geonames_city\":{\"id\":2515270,\"city\":\"Las
+        Palmas de Gran Canaria\",\"geonames_admin1\":{\"name\":\"Canary Islands\",\"id\":2593110,\"ascii_name\":\"Canary
+        Islands\",\"code\":\"ES.53\"},\"geonames_admin2\":{\"name\":\"Provincia de
+        Las Palmas\",\"id\":2515271,\"ascii_name\":\"Provincia de Las Palmas\",\"code\":\"ES.53.GC\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"CANARIAS\",\"code\":\"ES7\"},\"nuts_level2\":{\"name\":\"Canarias\",\"code\":\"ES70\"},\"nuts_level3\":{\"name\":\"Gran
+        Canaria\",\"code\":\"ES705\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2510769}],\"links\":[\"http://www3.gobiernodecanarias.org/sanidad/scs/organica.jsp?idCarpeta=887001ae-541d-11de-9665-998e1388f7ed\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Doctor
+        Negr\xEDn University Hospital\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Spain\",\"country_code\":\"ES\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0399 7109\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q5902989\"]},\"GRID\":{\"preferred\":\"grid.411250.3\",\"all\":\"grid.411250.3\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.81,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05qec5a53\",\"name\":\"Centre
+        Hospitalier Universitaire de Rennes\",\"email_address\":null,\"ip_addresses\":[],\"established\":1995,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Rennes\",\"type\":\"Related\",\"id\":\"https://ror.org/015m7wh34\"},{\"label\":\"CIC
+        Rennes\",\"type\":\"Child\",\"id\":\"https://ror.org/02baj6743\"},{\"label\":\"l'H\xF4pital
+        Pontchaillou\",\"type\":\"Child\",\"id\":\"https://ror.org/02r25sw81\"}],\"addresses\":[{\"lat\":48.11198,\"lng\":-1.67429,\"state\":null,\"state_code\":null,\"city\":\"Rennes\",\"geonames_city\":{\"id\":2983990,\"city\":\"Rennes\",\"geonames_admin1\":{\"name\":\"Brittany\",\"id\":3030293,\"ascii_name\":\"Brittany\",\"code\":\"FR.53\"},\"geonames_admin2\":{\"name\":\"Ille-et-Vilaine\",\"id\":3012849,\"ascii_name\":\"Ille-et-Vilaine\",\"code\":\"FR.53.35\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://www.chu-rennes.fr/sections\"],\"aliases\":[\"CHU
+        de Rennes\",\"CHU Rennes\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Rennes_University_Hospital\",\"labels\":[{\"label\":\"Rennes
+        University Hospital\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 2175 0984\"]},\"FundRef\":{\"preferred\":\"501100018950\",\"all\":[\"501100018950\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2945770\"]},\"GRID\":{\"preferred\":\"grid.411154.4\",\"all\":\"grid.411154.4\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.78,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/041rhpw39\",\"name\":\"Centre
+        Hospitalier Universitaire de Grenoble\",\"email_address\":null,\"ip_addresses\":[],\"established\":1974,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Grenoble
+        Alpes University\",\"type\":\"Related\",\"id\":\"https://ror.org/02rx3b187\"},{\"label\":\"H\xF4pital
+        Albert Michallon\",\"type\":\"Child\",\"id\":\"https://ror.org/05kfvx519\"},{\"label\":\"H\xF4pital
+        Couple Enfant\",\"type\":\"Child\",\"id\":\"https://ror.org/00dxw4v18\"},{\"label\":\"Institut
+        Albert Bonniot\",\"type\":\"Child\",\"id\":\"https://ror.org/05kwbf598\"}],\"addresses\":[{\"lat\":45.20266,\"lng\":5.741598,\"state\":null,\"state_code\":null,\"city\":\"Grenoble\",\"geonames_city\":{\"id\":3014728,\"city\":\"Grenoble\",\"geonames_admin1\":{\"name\":\"Auvergne-Rh\xF4ne-Alpes\",\"id\":11071625,\"ascii_name\":\"Auvergne-Rhone-Alpes\",\"code\":\"FR.84\"},\"geonames_admin2\":{\"name\":\"D\xE9partement
+        de l'Is\xE8re\",\"id\":3012715,\"ascii_name\":\"Departement de l'Isere\",\"code\":\"FR.84.38\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"CENTRE-EST\",\"code\":\"FR7\"},\"nuts_level2\":{\"name\":\"Rh\xF4ne-Alpes\",\"code\":\"FR71\"},\"nuts_level3\":{\"name\":\"Is\xE8re\",\"code\":\"FR714\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3017382}],\"links\":[\"http://www.chu-grenoble.fr/\"],\"aliases\":[],\"acronyms\":[\"CHUG\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Centre_Hospitalier_Universitaire_de_Grenoble\",\"labels\":[{\"label\":\"Grenoble
+        University Hospital Centre\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"France\",\"country_code\":\"FR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 0792 4829\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2945764\"]},\"GRID\":{\"preferred\":\"grid.410529.b\",\"all\":\"grid.410529.b\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.78,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0462dsc42\",\"name\":\"Klini\u010Dki
+        Bolni\u010Dki Centar Split\",\"email_address\":null,\"ip_addresses\":[],\"established\":1784,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Split\",\"type\":\"Related\",\"id\":\"https://ror.org/00m31ft63\"}],\"addresses\":[{\"lat\":43.503889,\"lng\":16.458333,\"state\":null,\"state_code\":null,\"city\":\"Split\",\"geonames_city\":{\"id\":3190261,\"city\":\"Split\",\"geonames_admin1\":{\"name\":\"Split-Dalmatia\",\"id\":3337527,\"ascii_name\":\"Split-Dalmatia\",\"code\":\"HR.15\"},\"geonames_admin2\":{\"name\":\"Grad
+        Split\",\"id\":3190259,\"ascii_name\":\"Grad Split\",\"code\":\"HR.15.3190259\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"HRVATSKA\",\"code\":\"HR0\"},\"nuts_level2\":{\"name\":\"Jadranska
+        Hrvatska\",\"code\":\"HR03\"},\"nuts_level3\":{\"name\":\"Splitsko-dalmatinska
+        \u017Eupanija\",\"code\":\"HR035\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3202326}],\"links\":[\"http://www.kbsplit.hr/\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Split
+        University Hospital Centre\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Croatia\",\"country_code\":\"HR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0366 9017\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q15700015\"]},\"GRID\":{\"preferred\":\"grid.412721.3\",\"all\":\"grid.412721.3\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.77,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03nzegx43\",\"name\":\"Hospital
+        de Cruces\",\"email_address\":null,\"ip_addresses\":[],\"established\":1955,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":43.282025,\"lng\":-2.984339,\"state\":null,\"state_code\":null,\"city\":\"Barakaldo\",\"geonames_city\":{\"id\":3109453,\"city\":\"Barakaldo\",\"geonames_admin1\":{\"name\":\"Basque
+        Country\",\"id\":3336903,\"ascii_name\":\"Basque Country\",\"code\":\"ES.59\"},\"geonames_admin2\":{\"name\":\"Bizkaia\",\"id\":3104469,\"ascii_name\":\"Bizkaia\",\"code\":\"ES.59.BI\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"NORESTE\",\"code\":\"ES2\"},\"nuts_level2\":{\"name\":\"Pa\xEDs
+        Vasco\",\"code\":\"ES21\"},\"nuts_level3\":{\"name\":\"Bizkaia\",\"code\":\"ES213\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2510769}],\"links\":[\"http://www.hospitalcruces.com/\"],\"aliases\":[\"Gurutzetako
+        Unibertsitate Ospitalea\",\"Kurutzetako Unibersidade Ospitalia\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Cruces
+        University Hospital\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Spain\",\"country_code\":\"ES\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1767 5135\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"47002837\"]},\"GRID\":{\"preferred\":\"grid.411232.7\",\"all\":\"grid.411232.7\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.74,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00mpdg388\",\"name\":\"Complejo
+        Hospitalario Universitario de Santiago\",\"email_address\":null,\"ip_addresses\":[],\"established\":1993,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Santiago de Compostela\",\"type\":\"Related\",\"id\":\"https://ror.org/030eybx10\"}],\"addresses\":[{\"lat\":42.860908,\"lng\":-8.55272,\"state\":null,\"state_code\":null,\"city\":\"Santiago
+        de Compostela\",\"geonames_city\":{\"id\":3109642,\"city\":\"Santiago de Compostela\",\"geonames_admin1\":{\"name\":\"Galicia\",\"id\":3336902,\"ascii_name\":\"Galicia\",\"code\":\"ES.58\"},\"geonames_admin2\":{\"name\":\"Provincia
+        da Coru\xF1a\",\"id\":3119840,\"ascii_name\":\"Provincia da Coruna\",\"code\":\"ES.58.C\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"NOROESTE\",\"code\":\"ES1\"},\"nuts_level2\":{\"name\":\"Galicia\",\"code\":\"ES11\"},\"nuts_level3\":{\"name\":\"A
+        Coru\xF1a\",\"code\":\"ES111\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2510769}],\"links\":[\"http://www.usc.es/en/servizos/chus/index.html\"],\"aliases\":[],\"acronyms\":[\"CHUS\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"USC
+        University Hospital Complex\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Spain\",\"country_code\":\"ES\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 8816 6945\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q30253892\"]},\"GRID\":{\"preferred\":\"grid.411048.8\",\"all\":\"grid.411048.8\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.74,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02s6k3f65\",\"name\":\"University
+        of Basel\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1460,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"Friedrich
+        Miescher Institute\",\"type\":\"Related\",\"id\":\"https://ror.org/01bmjkv45\"},{\"label\":\"Swiss
+        Tropical and Public Health Institute\",\"type\":\"Related\",\"id\":\"https://ror.org/03adhka07\"},{\"label\":\"University
+        Children\u2019s Hospital Basel\",\"type\":\"Related\",\"id\":\"https://ror.org/02nhqek82\"},{\"label\":\"University
+        Hospital of Basel\",\"type\":\"Related\",\"id\":\"https://ror.org/04k51q396\"},{\"label\":\"Universit\xE4re
+        Psychiatrische Kliniken Basel\",\"type\":\"Related\",\"id\":\"https://ror.org/05fw3jg78\"},{\"label\":\"Swiss
+        National Data and Service Center for the Humanities\",\"type\":\"Related\",\"id\":\"https://ror.org/047f01g80\"},{\"label\":\"Swiss
+        Nanoscience Institute\",\"type\":\"Child\",\"id\":\"https://ror.org/02mrd0686\"}],\"addresses\":[{\"lat\":47.55839,\"lng\":7.57327,\"state\":null,\"state_code\":null,\"city\":\"Basel\",\"geonames_city\":{\"id\":2661604,\"city\":\"Basel\",\"geonames_admin1\":{\"name\":\"Basel-City\",\"id\":2661602,\"ascii_name\":\"Basel-City\",\"code\":\"CH.BS\"},\"geonames_admin2\":{\"name\":\"Basel-Stadt\",\"id\":6458763,\"ascii_name\":\"Basel-Stadt\",\"code\":\"CH.BS.1200\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"https://www.unibas.ch/de\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Basel\",\"labels\":[{\"label\":\"Universit\xE4t
+        Basel\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9 de B\xE2le\",\"iso639\":\"fr\"},{\"label\":\"Universit\xE0
+        di Basilea\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1937 0642\"]},\"FundRef\":{\"preferred\":\"100008375\",\"all\":[\"100008375\",\"501100008595\",\"100018710\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"427614\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q372608\"]},\"GRID\":{\"preferred\":\"grid.6612.3\",\"all\":\"grid.6612.3\"}}}},{\"substring\":\"University
+        of ATTIKON\",\"score\":0.71,\"matching_type\":\"HEURISTICS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03gb7n667\",\"name\":\"University
+        General Hospital Attikon\",\"email_address\":null,\"ip_addresses\":[],\"established\":2003,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":38.016983,\"lng\":23.666563,\"state\":null,\"state_code\":null,\"city\":\"Athens\",\"geonames_city\":{\"id\":264371,\"city\":\"Athens\",\"geonames_admin1\":{\"name\":\"Attica\",\"id\":6692632,\"ascii_name\":\"Attica\",\"code\":\"GR.ESYE31\"},\"geonames_admin2\":{\"name\":\"Nomarch\xEDa
+        Ath\xEDnas\",\"id\":445408,\"ascii_name\":\"Nomarchia Athinas\",\"code\":\"GR.ESYE31.445408\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":390903}],\"links\":[\"http://www.attikonhospital.gr/index.php\"],\"aliases\":[\"Attikon
+        Hospital\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"\u03A0\u0391\u039D\u0395\u03A0\u0399\u03A3\u03A4\u0397\u039C\u0399\u0391\u039A\u039F
+        \u0393\u0395\u039D\u0399\u039A\u039F \u039D\u039F\u03A3\u039F\u039A\u039F\u039C\u0395\u0399\u039F
+        \\\"\u0391\u03A4\u03A4\u0399\u039A\u039F\u039D\\\"\",\"iso639\":\"el\"}],\"country\":{\"country_name\":\"Greece\",\"country_code\":\"GR\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0622 4662\"]},\"GRID\":{\"preferred\":\"grid.411449.d\",\"all\":\"grid.411449.d\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.7,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0030f2a11\",\"name\":\"Universit\xE4tsklinikum
+        Erlangen\",\"email_address\":null,\"ip_addresses\":[],\"established\":1815,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Erlangen-Nuremberg\",\"type\":\"Related\",\"id\":\"https://ror.org/00f7hpc57\"}],\"addresses\":[{\"lat\":49.59099,\"lng\":11.00783,\"state\":null,\"state_code\":null,\"city\":\"Erlangen\",\"geonames_city\":{\"id\":2929567,\"city\":\"Erlangen\",\"geonames_admin1\":{\"name\":\"Bavaria\",\"id\":2951839,\"ascii_name\":\"Bavaria\",\"code\":\"DE.02\"},\"geonames_admin2\":{\"name\":\"Middle
+        Franconia\",\"id\":2870736,\"ascii_name\":\"Middle Franconia\",\"code\":\"DE.02.095\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2921044}],\"links\":[\"http://www.uk-erlangen.de/en/\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"University
+        Hospital Erlangen\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Germany\",\"country_code\":\"DE\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 9935 6525\"]},\"FundRef\":{\"preferred\":\"501100018935\",\"all\":[\"501100018935\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q1544159\"]},\"GRID\":{\"preferred\":\"grid.411668.c\",\"all\":\"grid.411668.c\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.68,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/019whta54\",\"name\":\"University
+        of Lausanne\",\"email_address\":null,\"ip_addresses\":[],\"established\":1537,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"Cantonal
+        and University Library of Lausanne\",\"type\":\"Related\",\"id\":\"https://ror.org/010dca812\"},{\"label\":\"University
+        Hospital of Lausanne\",\"type\":\"Related\",\"id\":\"https://ror.org/05a353079\"},{\"label\":\"Institut
+        Sup\xE9rieur pour l'\xC9tude des Religions et de la La\xEFcit\xE9\",\"type\":\"Child\",\"id\":\"https://ror.org/01ap27310\"},{\"label\":\"Institute
+        of Social and Preventive Medicine\",\"type\":\"Child\",\"id\":\"https://ror.org/038esz880\"},{\"label\":\"Swiss
+        Cancer Center L\xE9man\",\"type\":\"Child\",\"id\":\"https://ror.org/03kwyfa97\"},{\"label\":\"Swiss
+        National Data and Service Center for the Humanities\",\"type\":\"Related\",\"id\":\"https://ror.org/047f01g80\"},{\"label\":\"Institute
+        of Radiation Physics\",\"type\":\"Related\",\"id\":\"https://ror.org/03ts7z477\"}],\"addresses\":[{\"lat\":46.516,\"lng\":6.63282,\"state\":null,\"state_code\":null,\"city\":\"Lausanne\",\"geonames_city\":{\"id\":2659994,\"city\":\"Lausanne\",\"geonames_admin1\":{\"name\":\"Vaud\",\"id\":2658182,\"ascii_name\":\"Vaud\",\"code\":\"CH.VD\"},\"geonames_admin2\":{\"name\":\"Lausanne
+        District\",\"id\":6458866,\"ascii_name\":\"Lausanne District\",\"code\":\"CH.VD.2225\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"http://www.unil.ch/central/en/home.html\"],\"aliases\":[\"Schola
+        Lausannensis\"],\"acronyms\":[\"UNIL\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Lausanne\",\"labels\":[{\"label\":\"Universit\xE9
+        de Lausanne\",\"iso639\":\"fr\"},{\"label\":\"Universit\xE4t Lausanne\",\"iso639\":\"de\"},{\"label\":\"Universit\xE0
+        di Losanna\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 2165 4204\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100006390\"]},\"OrgRef\":{\"preferred\":\"79810\",\"all\":[\"79810\",\"14665582\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q658975\"]},\"GRID\":{\"preferred\":\"grid.9851.5\",\"all\":\"grid.9851.5\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.68,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02rc97e94\",\"name\":\"University
+        of Calabria\",\"email_address\":null,\"ip_addresses\":[],\"established\":1972,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":39.358391,\"lng\":16.225531,\"state\":null,\"state_code\":null,\"city\":\"Rende\",\"geonames_city\":{\"id\":2523623,\"city\":\"Rende\",\"geonames_admin1\":{\"name\":\"Calabria\",\"id\":2525468,\"ascii_name\":\"Calabria\",\"code\":\"IT.03\"},\"geonames_admin2\":{\"name\":\"Provincia
+        di Cosenza\",\"id\":2524906,\"ascii_name\":\"Provincia di Cosenza\",\"code\":\"IT.03.CS\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"SUD\",\"code\":\"ITF\"},\"nuts_level2\":{\"name\":\"Calabria\",\"code\":\"ITF6\"},\"nuts_level3\":{\"name\":\"Cosenza\",\"code\":\"ITF61\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3175395}],\"links\":[\"http://www.unical.it/portale/\"],\"aliases\":[],\"acronyms\":[\"UNICAL\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Calabria\",\"labels\":[{\"label\":\"Universit\xE0
+        della Calabria\",\"iso639\":\"it\"},{\"label\":\"Universit\xE4t Kalabrien\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9
+        de la calabre\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Italy\",\"country_code\":\"IT\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1937 0319\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100007069\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"1810404\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q1752540\"]},\"GRID\":{\"preferred\":\"grid.7778.f\",\"all\":\"grid.7778.f\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.67,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02crff812\",\"name\":\"University
+        of Zurich\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1833,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"University
+        Children's Hospital Zurich\",\"type\":\"Related\",\"id\":\"https://ror.org/035vb3h42\"},{\"label\":\"University
+        Hospital of Zurich\",\"type\":\"Related\",\"id\":\"https://ror.org/01462r250\"},{\"label\":\"Institute
+        for Biomedical Engineering\",\"type\":\"Child\",\"id\":\"https://ror.org/00baskk38\"},{\"label\":\"Laboratory
+        for Social and Neural Systems Research\",\"type\":\"Child\",\"id\":\"https://ror.org/021p56f43\"},{\"label\":\"Wyss
+        Institute for Biologically Inspired Engineering\",\"type\":\"Related\",\"id\":\"https://ror.org/008cfmj78\"}],\"addresses\":[{\"lat\":47.36667,\"lng\":8.55,\"state\":null,\"state_code\":null,\"city\":\"Zurich\",\"geonames_city\":{\"id\":2657896,\"city\":\"Zurich\",\"geonames_admin1\":{\"name\":\"Zurich\",\"id\":2657895,\"ascii_name\":\"Zurich\",\"code\":\"CH.ZH\"},\"geonames_admin2\":{\"name\":\"Z\xFCrich
+        District\",\"id\":6458798,\"ascii_name\":\"Z\xFCrich District\",\"code\":\"CH.ZH.112\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"http://www.uzh.ch/index_en.html\"],\"aliases\":[],\"acronyms\":[\"UZH\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Zurich\",\"labels\":[{\"label\":\"Universit\xE4t
+        Z\xFCrich\",\"iso639\":\"de\"},{\"label\":\"Universit\xE0 di Zurigo\",\"iso639\":\"it\"},{\"label\":\"Universit\xE9
+        de Zurich\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1937 0650\"]},\"FundRef\":{\"preferred\":\"501100006447\",\"all\":[\"501100006447\",\"501100008481\",\"501100006448\",\"501100003290\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"314803\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q206702\"]},\"GRID\":{\"preferred\":\"grid.7400.3\",\"all\":\"grid.7400.3\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.67,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02k7v4d05\",\"name\":\"University
+        of Bern\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1834,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"University
+        Hospital of Bern\",\"type\":\"Related\",\"id\":\"https://ror.org/01q9sj412\"},{\"label\":\"Wiederk\xE4uerklinik\",\"type\":\"Related\",\"id\":\"https://ror.org/003bz8x96\"},{\"label\":\"Wyss
+        Academy for Nature\",\"type\":\"Child\",\"id\":\"https://ror.org/03dz0k314\"}],\"addresses\":[{\"lat\":46.94809,\"lng\":7.44744,\"state\":null,\"state_code\":null,\"city\":\"Bern\",\"geonames_city\":{\"id\":2661552,\"city\":\"Bern\",\"geonames_admin1\":{\"name\":\"Bern\",\"id\":2661551,\"ascii_name\":\"Bern\",\"code\":\"CH.BE\"},\"geonames_admin2\":{\"name\":\"Bern-Mittelland
+        District\",\"id\":8260142,\"ascii_name\":\"Bern-Mittelland District\",\"code\":\"CH.BE.246\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"http://www.unibe.ch/eng/\"],\"aliases\":[],\"acronyms\":[\"UB\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Bern\",\"labels\":[{\"label\":\"Universit\xE4t
+        Bern\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9 de Berne\",\"iso639\":\"fr\"},{\"label\":\"Universit\xE0
+        di Berna\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 0726 5157\"]},\"FundRef\":{\"preferred\":\"100009068\",\"all\":[\"100009068\",\"501100007282\",\"100009070\",\"100009069\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"1157515\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q659080\"]},\"GRID\":{\"preferred\":\"grid.5734.5\",\"all\":\"grid.5734.5\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.65,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/00kgrkn83\",\"name\":\"University
+        of Lucerne\",\"email_address\":null,\"ip_addresses\":[],\"established\":2000,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":47.05048,\"lng\":8.30635,\"state\":null,\"state_code\":null,\"city\":\"Lucerne\",\"geonames_city\":{\"id\":2659811,\"city\":\"Lucerne\",\"geonames_admin1\":{\"name\":\"Lucerne\",\"id\":2659810,\"ascii_name\":\"Lucerne\",\"code\":\"CH.LU\"},\"geonames_admin2\":{\"name\":\"Lucerne-Stadt
+        District\",\"id\":8718163,\"ascii_name\":\"Lucerne-Stadt District\",\"code\":\"CH.LU.311\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"http://www.unilu.ch/\"],\"aliases\":[],\"acronyms\":[\"UNILU\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/University_of_Lucerne\",\"labels\":[{\"label\":\"Universit\xE4t
+        Luzern\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9 de Lucerne\",\"iso639\":\"fr\"},{\"label\":\"Universit\xE0
+        di Lucerna\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 1456 7938\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"21004764\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q673308\"]},\"GRID\":{\"preferred\":\"grid.449852.6\",\"all\":\"grid.449852.6\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.65,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01111rn36\",\"name\":\"University
+        of Bologna\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1088,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"Policlinico
+        S.Orsola-Malpighi\",\"type\":\"Related\",\"id\":\"https://ror.org/00t4vnv68\"},{\"label\":\"INFN
+        Sezione di Bologna\",\"type\":\"Related\",\"id\":\"https://ror.org/04j0x0h93\"}],\"addresses\":[{\"lat\":44.49381,\"lng\":11.33875,\"state\":null,\"state_code\":null,\"city\":\"Bologna\",\"geonames_city\":{\"id\":3181928,\"city\":\"Bologna\",\"geonames_admin1\":{\"name\":\"Emilia-Romagna\",\"id\":3177401,\"ascii_name\":\"Emilia-Romagna\",\"code\":\"IT.05\"},\"geonames_admin2\":{\"name\":\"Bologna\",\"id\":3181927,\"ascii_name\":\"Bologna\",\"code\":\"IT.05.BO\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3175395}],\"links\":[\"http://www.unibo.it/en/homepage\"],\"aliases\":[],\"acronyms\":[\"UNIBO\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Bologna\",\"labels\":[{\"label\":\"Universit\xE0
+        di Bologna\",\"iso639\":\"it\"},{\"label\":\"Universitat de Bolonya\",\"iso639\":\"ca\"},{\"label\":\"Universit\xE4t
+        Bologna\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9 de bologne\",\"iso639\":\"fr\"}],\"country\":{\"country_name\":\"Italy\",\"country_code\":\"IT\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1757 1758\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100005969\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"263329\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q131262\"]},\"GRID\":{\"preferred\":\"grid.6292.f\",\"all\":\"grid.6292.f\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.63,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/022fs9h90\",\"name\":\"University
+        of Fribourg\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1889,\"types\":[\"Education\"],\"relationships\":[{\"label\":\"HFR
+        Freiburg Kantonsspital\",\"type\":\"Related\",\"id\":\"https://ror.org/00fz8k419\"},{\"label\":\"Adolphe
+        Merkle Institute\",\"type\":\"Child\",\"id\":\"https://ror.org/01yx62742\"}],\"addresses\":[{\"lat\":46.806488,\"lng\":7.151782,\"state\":\"Freiburg\",\"state_code\":\"CH-FR\",\"city\":\"Fribourg\",\"geonames_city\":{\"id\":2660718,\"city\":\"Fribourg\",\"geonames_admin1\":{\"name\":\"Fribourg\",\"id\":2660717,\"ascii_name\":\"Fribourg\",\"code\":\"CH.FR\"},\"geonames_admin2\":{\"name\":\"Sarine
+        District\",\"id\":6458767,\"ascii_name\":\"Sarine District\",\"code\":\"CH.FR.1004\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2658434}],\"links\":[\"http://www.unifr.ch/home/welcomeE.php\"],\"aliases\":[],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_of_Fribourg\",\"labels\":[{\"label\":\"Universit\xE9
+        de Fribourg\",\"iso639\":\"fr\"},{\"label\":\"Universit\xE4t Freiburg\",\"iso639\":\"de\"},{\"label\":\"Universit\xE0
+        di Friburgo\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Switzerland\",\"country_code\":\"CH\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0478 1713\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100005869\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"535267\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q36188\"]},\"GRID\":{\"preferred\":\"grid.8534.a\",\"all\":\"grid.8534.a\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.59,\"matching_type\":\"COMMON TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/009x1kj44\",\"name\":\"Uniwersytecki
+        Szpital Dzieci\u0119cy\",\"email_address\":null,\"ip_addresses\":[],\"established\":1965,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":50.011363,\"lng\":20.000443,\"state\":null,\"state_code\":null,\"city\":\"Krakow\",\"geonames_city\":{\"id\":3094802,\"city\":\"Krak\xF3w\",\"geonames_admin1\":{\"name\":\"Lesser
+        Poland\",\"id\":858786,\"ascii_name\":\"Lesser Poland\",\"code\":\"PL.77\"},\"geonames_admin2\":{\"name\":\"Krak\xF3w\",\"id\":6690154,\"ascii_name\":\"Krakow\",\"code\":\"PL.77.1261\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"REGION
+        PO\u0141UDNIOWY\",\"code\":\"PL2\"},\"nuts_level2\":{\"name\":\"Ma\u0142opolskie\",\"code\":\"PL21\"},\"nuts_level3\":{\"name\":\"Krakowski\",\"code\":\"PL214\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":798544}],\"links\":[\"http://www.szpitalzdrowia.pl/o-szpitalu/english-info/\"],\"aliases\":[],\"acronyms\":[\"UCH\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"University
+        Children\u2019s Hospital\",\"iso639\":\"en\"}],\"country\":{\"country_name\":\"Poland\",\"country_code\":\"PL\"},\"external_ids\":{\"GRID\":{\"preferred\":\"grid.415112.2\",\"all\":\"grid.415112.2\"}}}},{\"substring\":\"ATTIKON
+        University Hospital\",\"score\":0.58,\"matching_type\":\"FUZZY\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01yjpt684\",\"name\":\"Pontifical
+        Urban University\",\"email_address\":null,\"ip_addresses\":[],\"established\":1627,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":41.899923,\"lng\":12.458225,\"state\":null,\"state_code\":null,\"city\":\"Rome\",\"geonames_city\":{\"id\":3169070,\"city\":\"Rome\",\"geonames_admin1\":{\"name\":\"Latium\",\"id\":3174976,\"ascii_name\":\"Latium\",\"code\":\"IT.07\"},\"geonames_admin2\":{\"name\":\"Citt\xE0
+        metropolitana di Roma Capitale\",\"id\":3169069,\"ascii_name\":\"Citta metropolitana
+        di Roma Capitale\",\"code\":\"IT.07.RM\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"CENTRO
+        (IT)\",\"code\":\"ITI\"},\"nuts_level2\":{\"name\":\"Lazio\",\"code\":\"ITI4\"},\"nuts_level3\":{\"name\":\"Roma\",\"code\":\"ITI43\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":3175395}],\"links\":[\"http://www.urbaniana.edu/\"],\"aliases\":[\"Urbaniana\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Pontifical_Urban_University\",\"labels\":[{\"label\":\"P\xE4pstliche
+        Universit\xE4t Urbaniana\",\"iso639\":\"de\"},{\"label\":\"Universit\xE9 pontificale
+        urbaniana\",\"iso639\":\"fr\"},{\"label\":\"Pontificia Universit\xE0 Urbaniana\",\"iso639\":\"it\"}],\"country\":{\"country_name\":\"Italy\",\"country_code\":\"IT\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 1797 7432\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"7922067\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2032536\"]},\"GRID\":{\"preferred\":\"grid.449323.b\",\"all\":\"grid.449323.b\"}}}}]}"
+    headers:
+      Allow:
+      - GET, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '35951'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 30 Aug 2023 10:50:42 GMT
+      Server:
+      - nginx/1.18.0 + Phusion Passenger 6.0.7
+      Status:
+      - 200 OK
+      Vary:
+      - Cookie, Origin
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Powered-By:
+      - Phusion Passenger 6.0.7
+    status:
+      code: 200
+      message: OK
+version: 1

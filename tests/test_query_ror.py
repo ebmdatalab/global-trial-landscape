@@ -3,6 +3,7 @@ import pandas
 import vcr
 
 from query_ror import (
+    apply_ror,
     get_empty_results,
     merge_and_update,
     process_ror_json,
@@ -83,6 +84,38 @@ def test_process_ror_elizabeth():
     assert result["ror"] == "https://ror.org/05pgywt51"
 
 
+@vcr.use_cassette(cassette_library_dir="tests/fixtures/vcr_casettes")
+def test_process_substring():
+    session = create_session()
+    result = apply_ror(
+        pandas.Series(
+            {
+                "NCTId": "NCT05941169",
+                "name": "Amsterdam Universitair Medische Centra - Academisch Medisch Centrum",
+            }
+        ),
+        session,
+    )
+    assert result["ror"] == "https://ror.org/05grdyy37"
+
+
+@vcr.use_cassette(cassette_library_dir="tests/fixtures/vcr_casettes")
+def test_process_doublequote():
+    session = create_session()
+    result = apply_ror(
+        pandas.Series(
+            {
+                "NCTId": "NCT03595553",
+                "name": '"' + "ATTIKON University Hospital" + '"',  # noqa: ISC003
+            }
+        ),
+        session,
+    )
+    # Do not resolve as Colorado University Hospital
+    # Or any other "University Hospital"
+    assert result["name_resolved"] is None
+
+
 def test_remove_noninformative():
     # Remove non-informative (case insensitive)
     series = pandas.Series(["GSK Investigational Site", "GSK investigational Site"])
@@ -132,7 +165,7 @@ def test_merge_and_update():
             "name_resolved": pandas.Series(["Name 1", "Name 2"]),
         }
     )
-    merged = merge_and_update(df, resolved, on="ror")
+    merged = merge_and_update(df, resolved, on=["ror"])
     # preserve index
     assert list(merged.index) == [1, 5, 7]
     # make sure all the columns are there

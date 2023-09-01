@@ -1,4 +1,5 @@
 import difflib
+import html
 import json
 import logging
 import re
@@ -36,6 +37,38 @@ SPECIFIC_TRIAL_PROTOCOL = (
 )
 
 
+def append_safe(df, filepath):
+    if pandas.io.common.file_exists(filepath):
+        existing_df = pandas.read_csv(filepath)
+        existing_num_columns = existing_df.shape[1]
+    else:
+        existing_num_columns = None
+
+    if existing_num_columns is None or existing_num_columns == df.shape[1]:
+        df.to_csv(
+            filepath, mode="a", header=(existing_num_columns is None), index=False
+        )
+    else:
+        raise pandas.errors.EmptyDataError(
+            f"The dataframe does not have the same number of columns as {filepath.name}"
+        )
+
+
+def add_suffix(output_dir, input_file, suffix):
+    return output_dir / f"{input_file.stem}_{suffix}.csv"
+
+
+def is_surrounded_by_double_quotes(input_string):
+    return input_string.startswith('"') and input_string.endswith('"')
+
+
+def remove_surrounding_double_quotes(input_string):
+    if is_surrounded_by_double_quotes(input_string):
+        return input_string[1:-1]
+    else:
+        return input_string
+
+
 def latin_to_utf8(string):
     try:
         fixed = string.encode("latin-1").decode("utf-8")
@@ -45,6 +78,14 @@ def latin_to_utf8(string):
             return None
     except Exception:
         return None
+
+
+def convert_country_simple(country_column, to="ISO2"):
+    """
+    Standardise to a country code
+    """
+    cc = coco.CountryConverter()
+    return cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
 
 
 def convert_country(country_column, to="ISO2"):
@@ -156,6 +197,10 @@ def clean_trials(trials):
     if "country" in trials.columns:
         trials.loc[:, "country"] = convert_country(trials.country)
 
+    # Standardise city name
+    if "city" in trials.columns:
+        trials.loc[:, "city"] = trials.city.apply(lambda x: unidecode(str(x)))
+
     # Drop duplicates AFTER we have done some cleaning
     trials = trials.drop_duplicates(
         subset=trials.columns.difference(["site_country_list"])
@@ -247,7 +292,7 @@ def split_country_list(site_country_list):
     exploded = non_null.explode().reset_index()
     countries = convert_country(exploded["site_country_list"])
     exploded["site_country_list"] = countries
-    grouped = exploded.groupby("index").site_country_list.apply(list)
+    grouped = exploded.groupby("index", dropna=False).site_country_list.apply(list)
     site_country_list.loc[grouped.index] = grouped
     site_country_list.loc[site_country_list.isnull()] = site_country_list.loc[
         site_country_list.isnull()
@@ -255,7 +300,7 @@ def split_country_list(site_country_list):
     return site_country_list
 
 
-def expand_sites(df, set_country=None, site_column_name="sites"):
+def expand_sites(df):
     # One row per site
     assert not df.empty
     df.loc[:, "sites"] = df.apply(
@@ -275,9 +320,6 @@ def expand_sites(df, set_country=None, site_column_name="sites"):
         df["country"] = df.site_country_list.apply(
             lambda x: x[0] if len(x) == 1 else None
         )
-
-    if set_country:
-        df["country"] = df.apply(lambda x: set_country if x["name"] else "", axis=1)
     return df
 
 
@@ -339,7 +381,7 @@ def find_city_country(
             ~all_matches[0].str.lower().isin([item.lower() for item in to_remove])
         ]
     matched = (
-        all_matches.groupby(level=0)
+        all_matches.groupby(level=0, dropna=False)
         .tail(1)
         .reset_index()
         .drop("match", axis=1)
@@ -376,6 +418,19 @@ def map_country(country_column):
     country_map = pandas.Series(countries)
 
     return country_column.map(country_map)
+
+
+# https://ourworldindata.org/grapher/who-regions
+def map_who(country_column):
+    """
+    Map country to WHO region
+    Ensure that both datasets are using ISO2 first
+    """
+    country_column = convert_country_simple(country_column)
+    who_map = pandas.read_csv("who-regions.csv")
+    who_map["Code"] = convert_country_simple(who_map["Code"])
+    who_map = who_map.set_index("Code")
+    return country_column.map(who_map["WHO region"])
 
 
 def find_country(df, other_column="address"):
@@ -419,7 +474,9 @@ def preprocess_trial_file(args):
         df = df.rename(columns={"cris_sites": "sites"})
         set_country = "KR"
     elif source == "ctri":
-        df = df.rename(columns={"spon_address": "address", "spon_type": "type"})
+        df = df.rename(
+            columns={"name": "sponsor", "spon_address": "address", "spon_type": "type"}
+        )
         df = find_city_country(df, "address", "IN", "india_states.txt")
         df = find_country(df)
     elif source == "drks":
@@ -436,6 +493,7 @@ def preprocess_trial_file(args):
     elif source == "isrctn":
         df = df.rename(
             columns={
+                "name": "sponsor",
                 "rec_sites": "sites",
                 "spon_city": "city",
                 "spon_country": "country",
@@ -474,7 +532,7 @@ def preprocess_trial_file(args):
         df = df.rename(columns={"spon_city": "city"})
         set_country = "IR"
     elif source == "tctr":
-        pass
+        df["sponsor"] = df.sponsor.apply(lambda x: html.unescape(str(x)))
     elif source == "repec":
         site_column_name = "institution"
         set_country = "PE"
@@ -529,14 +587,14 @@ def preprocess_trial_file(args):
                     df.columns[
                         df.columns.isin(["trial_id", "sites", "site_country_list"])
                     ]
-                ],
-                set_country=set_country,
-                site_column_name=site_column_name,
+                ]
             )
         except Exception:
             logging.info("Sites failed to expand, assuming already expanded")
             sites = df
         sites = sites.rename(columns={site_column_name: "name"})
+        if set_country:
+            sites.loc[sites.name.notnull(), "country"] = set_country
         sites["source"] = source
         if source == "ctri":
             sites = find_city_country(sites, "address", "IN")
@@ -544,9 +602,10 @@ def preprocess_trial_file(args):
             sites.loc[sites.country.isnull(), "country"] = "IN"
         elif source == "drks":
             sites = find_city_country(sites, "name", "DE")
+        elif source == "tctr":
+            df["name"] = df["name"].apply(lambda x: html.unescape(str(x)))
 
         sites = clean_trials(sites)
-        sites = sites[sites.name.notnull()].reset_index(drop=True)
         sites[
             sites.columns[
                 sites.columns.isin(

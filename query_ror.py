@@ -4,28 +4,37 @@ import math
 import pathlib
 import re
 import sys
+import time
 import urllib
 
 import pandas
 
 from setup import get_base_parser, get_full_parser, setup_logger
 from utils import (
-    convert_country,
+    add_suffix,
+    append_safe,
     create_session,
     filter_unindexed,
     load_trials,
     preprocess_trial_file,
     query,
+    remove_surrounding_double_quotes,
 )
 
 
 SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
 
 
-def merge_and_update(left, right, on):
+def merge_and_update(left, right, on, indicator=False):
+    assert isinstance(on, list)
     overlapping_columns = list(left.columns.intersection(right.columns))
-    overlapping_columns.remove(on)
-    merged = left.reset_index().merge(right, on=on, how="left").set_index("index")
+    for col in on:
+        overlapping_columns.remove(col)
+    merged = (
+        left.reset_index()
+        .merge(right, on=on, how="left", indicator=indicator)
+        .set_index("index")
+    )
     for col in overlapping_columns:
         merged[col] = merged[f"{col}_y"].combine_first(merged[f"{col}_x"])
     # Drop the redundant columns
@@ -50,21 +59,20 @@ def merge_drop_dups(left, right, on, how="left"):
     return merged
 
 
-def check_mapping_dict(mapping_dict):
-    errors = mapping_dict.groupby(["name", "city", "country"]).filter(
+def check_mapping_dict(mapping_dict, compare_id):
+    errors = mapping_dict.groupby(compare_id, dropna=False).filter(
         lambda group: group["ror"].nunique() > 1
     )
     if len(errors) > 1:
         logging.error(
             "The following rows in the mapping dictionary may have errors and need to be fixed manually"
         )
-        print(errors[["name", "city", "country", "ror"]])
+        print(errors[compare_id])
         sys.exit(1)
 
 
 def load_mapping_dict(mapping_dict_path):
     mapping_dict = pandas.read_csv(mapping_dict_path)
-    check_mapping_dict(mapping_dict)
     # If the index was created with city and country, there may be duplicated entries
     # TODO: what to do with entries that do not have city and country?
     return mapping_dict
@@ -73,42 +81,40 @@ def load_mapping_dict(mapping_dict_path):
 def filter_already_mapped(mapping_dict_file, df, output_file, compare_id, unique_id):
     mapping_dict = load_mapping_dict(mapping_dict_file)
 
-    merged = merge_drop_dups(df, mapping_dict, compare_id, how="left")
+    # If the map has more info (city/country) than df we could have multiple matches
+    # Only allow those with one match, throw the rest back to ror
+    mapping_dict = mapping_dict[
+        mapping_dict.groupby(compare_id)["ror"].transform("count").eq(1)
+    ]
+
+    merged = merge_and_update(df, mapping_dict, compare_id, indicator=True)
 
     already_mapped = merged[merged._merge == "both"].drop("_merge", axis=1)
     remaining = merged[merged._merge == "left_only"].drop("_merge", axis=1)
 
     assert (len(remaining) + len(already_mapped)) == len(df)
     # Nothing that is mapped should have a null name_resolved
-    assert (already_mapped.name_resolved.notnull() | already_mapped.ror.notnull).all()
+    assert (already_mapped.name_resolved.notnull() | already_mapped.ror.notnull()).all()
 
-    # TODO: make sure this has the same columns as chunked outputs
+    # Make sure what we write will match the following output
+    ror_columns = get_empty_results().keys()
+    necessary_columns = list(ror_columns) + list(df.columns)
     already_mapped["method"] = "dict"
     already_mapped["count_non_matches"] = 0
-    already_mapped["non_matches"] = None
+    already_mapped["non_matches"] = len(already_mapped) * [[]]
+    already_mapped = already_mapped.reindex(columns=necessary_columns)
     # Sort the columns alphabetically
     already_mapped = already_mapped.sort_index(axis=1)
-    already_mapped.to_csv(
-        output_file, mode="a", header=not output_file.exists(), index=False
-    )
-
+    append_safe(already_mapped, output_file)
     return remaining
 
 
 def write_to_mapping_dict(df, mapping_dict_file, compare_id):
-    necessary_columns = [
-        "name",
-        "name_resolved",
-        "ror",
-        "organization_type",
-        "lattitude",
-        "longitude",
-        "city",
-        "country",
-    ]
+    ror_columns = get_empty_results().keys()
+    necessary_columns = list(ror_columns) + compare_id
     matches_map = (
         df[df.name_resolved.notnull()]
-        .reindex(columns=necessary_columns, fill_value=None)
+        .reindex(columns=necessary_columns)
         .drop_duplicates()
     )
     if mapping_dict_file.exists():
@@ -118,12 +124,8 @@ def write_to_mapping_dict(df, mapping_dict_file, compare_id):
         new_matches = matches_map
     new_matches = new_matches.sort_index(axis=1)
     if not new_matches.empty:
-        new_matches.to_csv(
-            mapping_dict_file,
-            mode="a",
-            header=not mapping_dict_file.exists(),
-            index=False,
-        )
+        check_mapping_dict(mapping_dict, compare_id)
+        append_safe(new_matches, mapping_dict_file)
 
 
 def remove_special_chars(name, replace=" "):
@@ -137,6 +139,8 @@ def get_empty_results():
         "organization_type": None,
         "lattitude": None,
         "longitude": None,
+        "city_ror": None,
+        "country_ror": None,
         "method": None,
         "count_non_matches": 0,
         "non_matches": [],
@@ -151,6 +155,8 @@ def process_response(response, results, method=None):
     results["organization_type"] = "_".join(response["types"])
     results["lattitude"] = response["addresses"][0]["lat"]
     results["longitude"] = response["addresses"][0]["lng"]
+    results["city_ror"] = response["addresses"][0]["city"]
+    results["country_ror"] = response["country"]["country_code"]
     results["method"] = method
     return results
 
@@ -163,35 +169,45 @@ def process_ror_json(name, session, results, extra_data):
     2. The highest score above 0.8 without country/city match, if industry
     3. Chosen (look for false positives)
     """
-    resp = query_ror(name, session)
+    try:
+        resp = query_ror(name, session)
+    except Exception:
+        resp = None
     if not resp:
+        results["method"] = "query_failed"
         return results
     potential_matches = []
+    extra_city = extra_data.get("city")
+    extra_country = extra_data.get("country")
     chosen = None
     for item in resp["items"]:
         if item["chosen"]:
             chosen = item
         if item["score"] >= 0.8:
             potential_matches.append(item)
-    if extra_data.get("country") and extra_data.get("city"):
+    # Make sure we skip numpy.nan
+    if (extra_country and extra_country == extra_country) and (
+        extra_city and extra_city == extra_city
+    ):
         for item in potential_matches:
-            if (
-                item["organization"]["country"]["country_code"]
-                == extra_data.get("country")
-            ) and (
+            if (item["organization"]["country"]["country_code"] == extra_country) and (
                 # Sometimes they are encoded differently, check city and geonames city
-                (item["organization"]["addresses"][0]["city"] == extra_data.get("city"))
+                (
+                    item["organization"]["addresses"][0]["city"].lower()
+                    == extra_city.lower()
+                )
                 or (
-                    item["organization"]["addresses"][0]["geonames_city"]["city"]
-                    == extra_data.get("city")
+                    item["organization"]["addresses"][0]["geonames_city"][
+                        "geonames_admin1"
+                    ]["ascii_name"].lower()
+                    == extra_city.lower()
                 )
             ):
                 return process_response(item, results, method="city/country")
-    elif extra_data.get("country"):
+    # Make sure we skip numpy.nan
+    elif extra_country and extra_country == extra_country:
         for item in potential_matches:
-            if item["organization"]["country"]["country_code"] == extra_data.get(
-                "country"
-            ):
+            if item["organization"]["country"]["country_code"] == extra_country:
                 return process_response(item, results, method="country")
     for item in potential_matches:
         if "Company" in item["organization"]["types"]:
@@ -218,9 +234,10 @@ def query_ror(name, session):
     except Exception as e:
         if e.response.status_code == 500:
             logging.error(f"Server Error, trying to strip quotations {name}")
-            name = name.replace('"', "").replace("'", "")
-            url = make_url(name)
-            return query(url, session, retries=1)
+            replaced = name.replace('"', "").replace("'", "")
+            if replaced != name:
+                url = make_url(name)
+                return query(url, session, retries=1)
 
 
 def apply_ror(data, session):
@@ -231,6 +248,9 @@ def apply_ror(data, session):
     """
     results = get_empty_results()
     name = data["name"]
+    # TODO: this could/should happen once at the df level
+    # TODO: this could be part of general cleaning/standardising
+    name = remove_surrounding_double_quotes(str(name))
     if name != name:
         logging.debug("skipping null name")
         return results
@@ -241,14 +261,10 @@ def apply_ror(data, session):
     results = process_ror_json(name, session, results, extra_data=data)
     if not results["name_resolved"]:
         if no_special != name:
-            logging.debug("Checking removing special chars")
-            # ROR splits on special chars, remove special chars and try again
-            # https://github.com/ror-community/ror-api/blob/master/rorapi/matching.py#L28C1-L28C20
-            # i.e. Federal State Budgetary Scientific Institution
-            # ""Federal Research Centre of Nutrition, Biotechnology""
-            results["method"] = "remove_special"
+            logging.debug("Checking substring")
+            results["method"] = "substring"
             results = process_ror_json(
-                remove_special_chars(name),
+                '"' + name + '"',
                 session,
                 results,
                 extra_data=data,
@@ -289,6 +305,7 @@ def process_file(args):
     remaining = filter_unindexed(trials, already_processed, unique_id)
 
     # If a harcoded map is provided, resolve those first
+    # TODO: things that have ror already resolved
     if mapping_dict_file and mapping_dict_file.exists():
         remaining = filter_already_mapped(
             mapping_dict_file, remaining, output_file, compare_id, unique_id
@@ -297,7 +314,7 @@ def process_file(args):
     all_results = {}
     query_num = 0
     total_chunks = math.ceil(len(remaining) / chunk_size)
-    for key, data in remaining.groupby(compare_id):
+    for key, data in remaining.groupby(compare_id, dropna=False):
         logging.debug(f"chunk: ({query_num // chunk_size}/{total_chunks})")
         results = apply_ror(dict(zip(compare_id, key)), session)
         logging.debug(
@@ -316,12 +333,7 @@ def process_file(args):
             )
             if mapping_dict_file and add_to_mapping_dict:
                 write_to_mapping_dict(combined, mapping_dict_file, compare_id)
-            combined.to_csv(
-                output_file,
-                mode="a",
-                header=not output_file.exists(),
-                index=False,
-            )
+            append_safe(combined, output_file)
             all_results = {}
         query_num += 1
     results_df = pandas.DataFrame.from_dict(all_results).T
@@ -330,46 +342,58 @@ def process_file(args):
         .drop("_merge", axis=1)
         .sort_index(axis=1)
     )
-    assert len(combined[(combined.ror.notnull()) & (combined.name.isnull())]) == 0
-    if mapping_dict_file and add_to_mapping_dict:
-        write_to_mapping_dict(combined, mapping_dict_file, compare_id)
-    combined.to_csv(output_file, mode="a", header=not output_file.exists(), index=False)
+    if not combined.empty:
+        assert len(combined[(combined.ror.notnull()) & (combined.name.isnull())]) == 0
+        if mapping_dict_file and add_to_mapping_dict:
+            write_to_mapping_dict(combined, mapping_dict_file, compare_id)
+        append_safe(combined, output_file)
+    check_finished(trials, output_file)
 
 
-def get_ror_metadata(df, session, update_all=False):
+def check_finished(trials, output_file):
+    assert len(trials) == len(pandas.read_csv(output_file))
+
+
+def get_ror_metadata(df, session, update_all=False, ror_column="ror"):
     def make_url(ror_id):
         return f"https://api.ror.org/organizations/{ror_id}"
 
-    to_update = df[df.ror.notnull()]
+    to_update = df[df[ror_column].notnull()]
     if not update_all:
         # TODO: potentially also check lattitude?
         if "name_resolved" in to_update.columns:
             to_update = to_update[to_update.name_resolved.isnull()]
-    ror_ids = to_update.ror.dropna().unique()
+    ror_ids = to_update[ror_column].dropna().unique()
     all_results = []
     for ror_id in ror_ids:
         url = make_url(ror_id)
         results = {}
         # TODO: catch errors
         resp = query(url, session)
+        time.sleep(0.1)
         process_response(resp, results)
         all_results.append(results)
 
-    resolved = pandas.DataFrame(all_results)
-    # Add metadata to any row with a matching ror id
-    # NOTE: this preserves the index
-    merged = merge_and_update(to_update, resolved, on="ror")
-    # Make sure the original dataframe has all the necessary columns
-    df = df.reindex(columns=df.columns.union(merged.columns).unique())
-    # Only update the rows we wanted to update
-    df.loc[merged.index] = merged
-    return merged
+    if len(all_results) > 0:
+        resolved = pandas.DataFrame(all_results)
+        resolved = resolved.rename(columns={"ror": ror_column})
+        # Add metadata to any row with a matching ror id
+        # NOTE: this preserves the index
+        merged = merge_and_update(to_update, resolved, on=[ror_column])
+        # Make sure the original dataframe has all the necessary columns
+        df = df.reindex(columns=df.columns.union(merged.columns).unique())
+        # Only update the rows we wanted to update
+        df.loc[merged.index] = merged
+        return df
+    logging.info("No ror metadata to update")
+    return df
 
 
 def map_ror_file(args):
     trial_file = args.input_file
     mapping_dict_file = args.mapping_dict_file
     use_cache = args.use_cache
+    update_all = args.update_all
 
     column_names = pandas.read_csv(trial_file).columns
 
@@ -383,97 +407,36 @@ def map_ror_file(args):
     trials = load_trials(trial_file, unique_id, True)
 
     session = create_session("ror_cache", use_cache)
-    trials = get_ror_metadata(trials, session, update_all=False)
+    trials = get_ror_metadata(trials, session, update_all=update_all)
     write_to_mapping_dict(trials, mapping_dict_file, compare_id)
 
 
-def pcnt_ror_table(df, groupby):
-    # % ROR
-    table = df.groupby(groupby).agg({"ror": "count", "trial_id": "count"})
-    table.loc["Total"] = table.sum()
-    table.columns = ["Has ROR", "Total Trials"]
-    table["% Has ROR"] = (100 * table["Has ROR"] / table["Total Trials"]).astype(int)
-    table = table.sort_values(["% Has ROR", "Total Trials"], ascending=False)
-    total = table.T.pop("Total")
-    table = pandas.concat([total.to_frame().T, table.drop("Total")], axis=0)
-    return table
+def update_metadata(args):
+    trial_file = args.input_file
+    use_cache = args.use_cache
+    update_all = args.update_all
+    ror_column = args.ror_column
+    output_name = add_suffix(trial_file.parent, trial_file, "metadata")
 
+    column_names = pandas.read_csv(trial_file).columns
+    assert ror_column in column_names
 
-def add_suffix(output_dir, input_file, suffix):
-    return output_dir / f"{input_file.stem}_table_{suffix}.csv"
+    compare_id = ["name"]
+    if "country" in column_names:
+        compare_id += ["country"]
+    if "city" in column_names:
+        compare_id += ["city"]
+    unique_id = ["trial_id"] + compare_id
 
+    trials = load_trials(trial_file, unique_id, True)
+    # In case manually added ror has leading/trailing spaces
+    trials[ror_column] = trials[ror_column].str.strip()
 
-def write_table(df, output_dir, input_file, suffix):
-    path = add_suffix(output_dir, input_file, suffix)
-    df.to_csv(path)
-
-
-def papers_by_site_table(df, groupby):
-    # Among those with ROR, count of papers by site
-    ror = df[df.ror.notnull()]
-    table = (
-        ror.groupby(groupby)
-        .agg({"trial_id": "count", "name": pandas.Series.nunique})
-        .sort_values(by="trial_id", ascending=False)
+    session = create_session("ror_cache", use_cache)
+    trials = get_ror_metadata(
+        trials, session, update_all=update_all, ror_column=ror_column
     )
-    # table.index = counts.index.set_names(["Site Name", "City", "Country"])
-    table.columns = ["Total Trials", "Unique Names"]
-    return table
-
-
-def make_tables(args):
-    processed_file = args.input_file
-    if args.output_dir:
-        output_dir = args.output_dir
-    else:
-        output_dir = processed_file.parent
-
-    df = pandas.read_csv(processed_file)
-
-    if "country" in df.columns:
-        df["country"] = convert_country(df["country"], to="name")
-        df["continent"] = convert_country(df["country"], to="continent")
-
-        write_table(
-            pcnt_ror_table(df, ["country"]),
-            output_dir,
-            processed_file,
-            "by_country",
-        )
-        write_table(
-            pcnt_ror_table(df, ["continent"]),
-            output_dir,
-            processed_file,
-            "by_continent",
-        )
-
-        write_table(
-            papers_by_site_table(df, ["name_resolved", "city", "country"]),
-            output_dir,
-            processed_file,
-            "only_ror",
-        )
-        africa = df[df.continent == "Africa"]
-        write_table(
-            papers_by_site_table(africa, ["name_resolved", "city", "country"]),
-            output_dir,
-            processed_file,
-            "only_ror_africa",
-        )
-
-    else:
-        write_table(
-            pcnt_ror_table(df, ["organization_type"]),
-            output_dir,
-            processed_file,
-            "counts",
-        )
-        write_table(
-            papers_by_site_table(df, ["name_resolved"]),
-            output_dir,
-            processed_file,
-            "only_ror",
-        )
+    trials.to_csv(output_name, index=False)
 
 
 if __name__ == "__main__":
@@ -488,6 +451,25 @@ if __name__ == "__main__":
         "--source",
         required=True,
         help="Trial registry type i.e. pactr, anzctr",
+    )
+
+    meta_parser = subparsers.add_parser("update_metadata", parents=[base])
+    meta_parser.set_defaults(func=update_metadata)
+    meta_parser.add_argument(
+        "--update-all",
+        action="store_true",
+        help="Re-query ror for additional metadata",
+    )
+    meta_parser.add_argument(
+        "--ror-column",
+        type=str,
+        default="ror",
+        help="Column name with ror url",
+    )
+    meta_parser.add_argument(
+        "--use-cache",
+        action="store_true",
+        help="Cache queries and/or use cache",
     )
 
     map_parser = subparsers.add_parser("map_existing", parents=[base])
@@ -531,9 +513,6 @@ if __name__ == "__main__":
         action="store_true",
         help="Add newly resolved ids to the mapping dict",
     )
-
-    table_parser = subparsers.add_parser("tables", parents=[parent])
-    table_parser.set_defaults(func=make_tables)
 
     args = ror_parser.parse_args()
     if hasattr(args, "func"):
