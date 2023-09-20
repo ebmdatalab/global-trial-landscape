@@ -3,41 +3,17 @@ import logging
 import math
 import pathlib
 import re
-import sys
-import time
 import urllib
 
 import country_converter as coco
 import numpy
 import pandas
-import requests
-import requests_cache
-from requests_cache import NEVER_EXPIRE, CachedSession
+
+from setup import get_base_parser, get_full_parser, setup_logger
+from utils import create_session, filter_unindexed, load_trials, query
 
 
 SPECIAL_CHARS_REGEX = r"[\+\-\=\|\>\<\!\(\)\\\{\}\[\]\^\"\~\*\?\:\/\.\,\;]"
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-handler.setFormatter(
-    logging.Formatter(
-        fmt="%(asctime)s [%(levelname)-9s] %(message)s [%(module)s]",
-        datefmt="%Y-%m-%d %H:%M:%S",
-    )
-)
-logger.addHandler(handler)
-
-
-def filter_unindexed(a, b, unique_id):
-    """
-    Given two unindexed dataframes, remove rows in b from a, as matched by unique_id
-    """
-    a_indexed = a.set_index(unique_id)
-    remaining = a_indexed.loc[
-        (a_indexed.index).difference(b.set_index(unique_id).index)
-    ]
-    return remaining.reset_index()
 
 
 def merge_drop_dups(left, right, on, how="left"):
@@ -54,16 +30,6 @@ def merge_drop_dups(left, right, on, how="left"):
         merged = left.merge(right, on=on, how=how, suffixes=("", "_y"), indicator=True)
     merged = merged.drop(merged.filter(regex="_y$").columns, axis=1)
     return merged
-
-
-def create_session(use_cache=False):
-    if use_cache:
-        requests_cache.install_cache("ror_cache", backend="sqlite")
-        # Do not expire the cache
-        session = CachedSession(expire_after=NEVER_EXPIRE)
-    else:
-        session = requests.Session()
-    return session
 
 
 def load_mapping_dict(mapping_dict_path):
@@ -188,23 +154,7 @@ def convert_country(country_column, to="ISO2"):
     return cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
 
 
-def load_trials(name, unique_id, drop_duplicates=True):
-    # NOTE: the name field can be either a sponsor or a site
-    necessary_columns = unique_id + ["source"]
-    try:
-        trials = pandas.read_csv(name)
-    except FileNotFoundError:
-        return pandas.DataFrame(columns=necessary_columns)
-    missing_columns = set(necessary_columns) - set(trials.columns)
-    if len(missing_columns) > 0:
-        print(",".join(missing_columns) + " must be columns in the input file")
-        sys.exit(1)
-    # Drop any unnamed columns
-    # We do this rather than having to know whether the file contains an index on load
-    trials = trials.drop(
-        trials.columns[trials.columns.str.contains("unnamed", case=False)], axis=1
-    )
-
+def clean_trials(trials):
     # Remove non-informative
     trials["name"] = remove_noninformative(trials.name)
 
@@ -246,7 +196,7 @@ def process_ror_json(name, session, results, extra_data):
     2. The highest score above 0.8 without country/city match, if industry
     3. Chosen (look for false positives)
     """
-    resp = query(name, session)
+    resp = query_ror(name, session)
     if not resp:
         return results
     potential_matches = []
@@ -280,35 +230,20 @@ def process_ror_json(name, session, results, extra_data):
     return results
 
 
-def query(name, session, retries=2):
-    """
-    Given a name, query the ror api
-    """
-    url = (
-        f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
-    )
-    if retries > 0:
-        try:
-            response = session.get(url)
-            response.raise_for_status()
-            return response.json()
-        except Exception as e:
-            if e.response.status_code == 403:
-                logger.error(f"Failed to download, retries left {retries}")
-                time.sleep(60)
-                return query(
-                    name,
-                    session,
-                    retries=retries - 1,
-                )
-            elif e.response.status_code == 500:
-                logger.error(f"Server Error, trying to strip quotations {name}")
-                name = name.replace('"', "").replace("'", "")
-                return query(name, session, retries=retries - 1)
-    else:
-        # NOTE: we should not get here, debug
-        logger.error(f"WARNING: failed to download {name}")
-        return
+def query_ror(name, session):
+    def make_url(name):
+        return f"https://api.ror.org/organizations?affiliation={urllib.parse.quote_plus(name)}"
+
+    url = make_url(name)
+    logging.error(f"{url}")
+    try:
+        return query(url, session)
+    except Exception as e:
+        if e.response.status_code == 500:
+            logging.error(f"Server Error, trying to strip quotations {name}")
+            name = name.replace('"', "").replace("'", "")
+            url = make_url(name)
+            return query(name, session, retries=1)
 
 
 def apply_ror(data, session):
@@ -320,16 +255,16 @@ def apply_ror(data, session):
     results = get_empty_results()
     name = data["name"]
     if name != name:
-        logger.debug("skipping null name")
+        logging.debug("skipping null name")
         return results
     no_special = remove_special_chars(name, replace="")
     if no_special.isnumeric() or len(no_special) == 0:
-        logger.debug(f"skipping numeric/special char name {name}")
+        logging.debug(f"skipping numeric/special char name {name}")
         return results
     results = process_ror_json(name, session, results, extra_data=data)
     # Try adding the country and city into the query
     if not results["name_ror"] and data.get("country") and data.get("city"):
-        logger.debug("Adding in city and country")
+        logging.debug("Adding in city and country")
         results["method"] = "city/country"
         results = process_ror_json(
             name + f",{data.get('city')}, {data.get('country')}",
@@ -339,7 +274,7 @@ def apply_ror(data, session):
         )
     if not results["name_ror"]:
         if no_special != name:
-            logger.debug("Checking removing special chars")
+            logging.debug("Checking removing special chars")
             # ROR splits on special chars, remove special chars and try again
             # https://github.com/ror-community/ror-api/blob/master/rorapi/matching.py#L28C1-L28C20
             # i.e. Federal State Budgetary Scientific Institution
@@ -355,8 +290,8 @@ def apply_ror(data, session):
 
 
 def process_file(args):
-    trial_file = args.trial_file
-    output_name = args.output_name
+    trial_file = args.input_file
+    output_file = args.output_file
     data_type = args.data_type
     mapping_dict_file = args.mapping_dict_file
     use_cache = args.use_cache
@@ -364,10 +299,7 @@ def process_file(args):
     add_to_mapping_dict = args.add_to_mapping_dict
     chunk_size = args.chunk_size
 
-    output_dir = trial_file.parent
-    output_file = output_dir / output_name
-
-    session = create_session(use_cache)
+    session = create_session("ror_cache", use_cache)
 
     if data_type == "site":
         compare_id = ["name", "city", "country"]
@@ -376,6 +308,7 @@ def process_file(args):
     unique_id = ["trial_id"] + compare_id
 
     trials = load_trials(trial_file, unique_id, (not keep_dups))
+    trials = clean_trials(trials)
     already_processed = load_trials(output_file, unique_id)
 
     # Filter out entries already present in the output file
@@ -391,9 +324,9 @@ def process_file(args):
     query_num = 0
     total_chunks = math.ceil(len(remaining) / chunk_size)
     for key, data in remaining.groupby(compare_id):
-        logger.debug(f"chunk: ({query_num // chunk_size}/{total_chunks})")
+        logging.debug(f"chunk: ({query_num // chunk_size}/{total_chunks})")
         results = apply_ror(dict(zip(compare_id, key)), session)
-        logger.debug(
+        logging.debug(
             f"{query_num % chunk_size}/{chunk_size} chunk {query_num // chunk_size}/{total_chunks}: {key[0]} {results}"
         )
         for index in data.index:
@@ -457,8 +390,11 @@ def papers_by_site_table(df, groupby):
 
 
 def make_tables(args):
-    processed_file = args.processed_file
-    output_dir = processed_file.parent
+    processed_file = args.input_file
+    if args.output_dir:
+        output_dir = args.output_dir
+    else:
+        output_dir = processed_file.parent
 
     df = pandas.read_csv(processed_file)
 
@@ -506,21 +442,12 @@ def make_tables(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
+    parent = get_full_parser()
+    ror_parser = argparse.ArgumentParser()
+    subparsers = ror_parser.add_subparsers()
 
-    # For the query command
-    query_parser = subparsers.add_parser("query")
+    query_parser = subparsers.add_parser("query", parents=[parent])
     query_parser.set_defaults(func=process_file)
-    query_parser.add_argument(
-        "--trial-file",
-        required=True,
-        type=pathlib.Path,
-        help="File with the following columns: trial_id, name (site/sponsor), source (ctgov etc) and optionally city, country",
-    )
-    query_parser.add_argument(
-        "--output-name", type=str, required=True, help="Name of output file"
-    )
     query_parser.add_argument(
         "--data-type",
         choices=["site", "sponsor"],
@@ -547,16 +474,19 @@ if __name__ == "__main__":
         action="store_true",
         help="Add newly resolved ids to the mapping dict",
     )
-    query_parser.add_argument(
-        "--chunk-size", type=int, help="Save the output every n queries", default=1000
-    )
 
-    # For the table command
-    table_parser = subparsers.add_parser("table")
+    base = get_base_parser()
+    table_parser = subparsers.add_parser("tables", parents=[base])
     table_parser.set_defaults(func=make_tables)
     table_parser.add_argument(
-        "--processed-file", required=True, type=pathlib.Path, help="File with ROR data"
+        "--output-dir",
+        type=pathlib.Path,
+        help="Alternate directory to store tables",
     )
 
-    args = parser.parse_args()
-    args.func(args)
+    args = ror_parser.parse_args()
+    if hasattr(args, "func"):
+        setup_logger(args.verbosity)
+        args.func(args)
+    else:
+        ror_parser.print_help()
