@@ -30,10 +30,6 @@ coverage==7.2.7
     # via -r requirements.dev.in
 distlib==0.3.7
     # via virtualenv
-exceptiongroup==1.1.2
-    # via
-    #   cattrs
-    #   pytest
 filelock==3.12.2
     # via virtualenv
 identify==2.5.26
@@ -78,7 +74,7 @@ pre-commit==3.3.3
     # via -r requirements.dev.in
 pyproject-hooks==1.0.0
     # via build
-pytest==7.4.0
+pytest==7.4.2
     # via -r requirements.dev.in
 python-dateutil==2.8.2
     # via pandas
@@ -100,15 +96,6 @@ six==1.16.0
     # via
     #   python-dateutil
     #   url-normalize
-tomli==2.0.1
-    # via
-    #   black
-    #   build
-    #   pip-tools
-    #   pyproject-hooks
-    #   pytest
-typing-extensions==4.7.1
-    # via cattrs
 tzdata==2023.3
     # via pandas
 url-normalize==1.4.3
