@@ -32,19 +32,25 @@ def get_env_setting(setting):
         raise MissingEnvironmentVariable(error_msg)
 
 
+def get_verbosity_parser():
+    verb = argparse.ArgumentParser(add_help=False)
+    verb.add_argument(
+        "--verbosity",
+        type=int,
+        choices=[0, 1, 2, 3],
+        default=0,
+    )
+    return verb
+
+
 def get_base_parser():
-    base = argparse.ArgumentParser(add_help=False)
+    verb = get_verbosity_parser()
+    base = argparse.ArgumentParser(add_help=False, parents=[verb])
     base.add_argument(
         "--input-file",
         required=True,
         type=pathlib.Path,
         help="Path to input file",
-    )
-    base.add_argument(
-        "--verbosity",
-        type=int,
-        choices=[0, 1, 2, 3],
-        default=0,
     )
     return base
 
@@ -53,7 +59,7 @@ def get_full_parser():
     base = get_base_parser()
     parent = argparse.ArgumentParser(add_help=False, parents=[base])
     parent.add_argument(
-        "--output-file", type=pathlib.Path, required=True, help="Path to output file"
+        "--output-dir", type=pathlib.Path, help="Alternate directory to store results"
     )
     parent.add_argument(
         "--chunk-size",

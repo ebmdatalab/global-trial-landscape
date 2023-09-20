@@ -1,0 +1,243 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.ror.org/organizations?affiliation=Amsterdam+Universitair+Medische+Centra+-+Academisch+Medisch+Centrum
+  response:
+    body:
+      string: "{\"number_of_results\":8,\"items\":[{\"substring\":\"Amsterdam Universitair
+        Medische Centra Academisch Medisch Centrum\",\"score\":0.74,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05grdyy37\",\"name\":\"Amsterdam
+        University Medical Centers\",\"email_address\":null,\"ip_addresses\":[],\"established\":2018,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Academic
+        Medical Center\",\"type\":\"Child\",\"id\":\"https://ror.org/03t4gr691\"},{\"label\":\"Amsterdam
+        UMC Location VUmc\",\"type\":\"Child\",\"id\":\"https://ror.org/00q6h8f30\"},{\"label\":\"Amsterdam
+        health & technology institute\",\"type\":\"Related\",\"id\":\"https://ror.org/052b8a564\"}],\"addresses\":[{\"lat\":52.37403,\"lng\":4.88969,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.amsterdamumc.org\"],\"aliases\":[\"Amsterdam
+        UMC\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Amsterdam
+        Universitair Medische Centra\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 6880 3010\"]},\"FundRef\":{\"preferred\":\"100019573\",\"all\":[\"100019573\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q56682938\"]},\"GRID\":{\"preferred\":\"grid.509540.d\",\"all\":\"grid.509540.d\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.69,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01k0v6g02\",\"name\":\"SURFsara
+        (Netherlands)\",\"email_address\":null,\"ip_addresses\":[],\"established\":1971,\"types\":[\"Company\"],\"relationships\":[],\"addresses\":[{\"lat\":52.356731,\"lng\":4.954666,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"WEST-NEDERLAND\",\"code\":\"NL3\"},\"nuts_level2\":{\"name\":\"Noord-Holland\",\"code\":\"NL32\"},\"nuts_level3\":{\"name\":\"Groot-Amsterdam\",\"code\":\"NL326\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.surf.nl/en/about-surf/subsidiaries/surfsara/\"],\"aliases\":[],\"acronyms\":[\"SARA\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Stichting
+        Academisch Rekencentrum Amsterdam\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"Wikidata\":{\"preferred\":null,\"all\":[\"Q1954989\"]},\"GRID\":{\"preferred\":\"grid.426550.0\",\"all\":\"grid.426550.0\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.67,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/04x5wnb75\",\"name\":\"Academic
+        Center for Dentistry Amsterdam\",\"email_address\":null,\"ip_addresses\":[],\"established\":1984,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":52.336713,\"lng\":4.86113,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"WEST-NEDERLAND\",\"code\":\"NL3\"},\"nuts_level2\":{\"name\":\"Noord-Holland\",\"code\":\"NL32\"},\"nuts_level3\":{\"name\":\"Groot-Amsterdam\",\"code\":\"NL326\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.acta.nl/en/\"],\"aliases\":[],\"acronyms\":[\"ACTA\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Academisch
+        Centrum Tandheelkunde Amsterdam\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 0295 4797\"]},\"GRID\":{\"preferred\":\"grid.424087.d\",\"all\":\"grid.424087.d\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.65,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05xvt9f17\",\"name\":\"Leiden
+        University Medical Center\",\"email_address\":null,\"ip_addresses\":[],\"established\":1990,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Leiden
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/027bh9e22\"},{\"label\":\"Jon
+        J van Rood Centre for Clinical Transfusion Research\",\"type\":\"Child\",\"id\":\"https://ror.org/04cm10r73\"},{\"label\":\"Willem-Alexander
+        Kinderziekenhuis\",\"type\":\"Child\",\"id\":\"https://ror.org/02xmm1048\"},{\"label\":\"Endo-ERN\",\"type\":\"Related\",\"id\":\"https://ror.org/05s4nk876\"}],\"addresses\":[{\"lat\":52.15833,\"lng\":4.49306,\"state\":null,\"state_code\":null,\"city\":\"Leiden\",\"geonames_city\":{\"id\":2751773,\"city\":\"Leiden\",\"geonames_admin1\":{\"name\":\"South
+        Holland\",\"id\":2743698,\"ascii_name\":\"South Holland\",\"code\":\"NL.11\"},\"geonames_admin2\":{\"name\":\"Leiden\",\"id\":2751772,\"ascii_name\":\"Leiden\",\"code\":\"NL.11.0546\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.lumc.nl/?setlanguage=English&setcountry=en\"],\"aliases\":[],\"acronyms\":[\"LUMC\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Leiden_University_Medical_Center\",\"labels\":[{\"label\":\"Leids
+        Universitair Medisch Centrum\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 8945 2978\"]},\"FundRef\":{\"preferred\":\"501100005039\",\"all\":[\"501100005039\",\"501100005038\",\"501100005040\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"490672\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2406409\"]},\"GRID\":{\"preferred\":\"grid.10419.3d\",\"all\":\"grid.10419.3d\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.61,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02dm2pb39\",\"name\":\"Netherlands
+        Federation of University Medical Centres\",\"email_address\":null,\"ip_addresses\":[],\"established\":2004,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":52.09083,\"lng\":5.12222,\"state\":null,\"state_code\":null,\"city\":\"Utrecht\",\"geonames_city\":{\"id\":2745912,\"city\":\"Utrecht\",\"geonames_admin1\":{\"name\":\"Utrecht\",\"id\":2745909,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09\"},\"geonames_admin2\":{\"name\":\"Utrecht\",\"id\":2745911,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09.0344\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.nfu.nl/english/about-the-nfu/\"],\"aliases\":[],\"acronyms\":[\"NFU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Nederlandse
+        Federatie van Universitair Medische Centra\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0649 0813\"]},\"FundRef\":{\"preferred\":\"501100012524\",\"all\":[\"501100012524\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2177238\"]},\"GRID\":{\"preferred\":\"grid.278411.9\",\"all\":\"grid.278411.9\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.58,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03cv38k47\",\"name\":\"University
+        Medical Center Groningen\",\"email_address\":null,\"ip_addresses\":[],\"established\":2005,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Groningen\",\"type\":\"Related\",\"id\":\"https://ror.org/012p63287\"},{\"label\":\"Beatrix
+        Kinderziekenhuis\",\"type\":\"Child\",\"id\":\"https://ror.org/02zyr1680\"}],\"addresses\":[{\"lat\":53.222794,\"lng\":6.574039,\"state\":\"Groningen\",\"state_code\":\"NL-GR\",\"city\":\"Groningen\",\"geonames_city\":{\"id\":2755251,\"city\":\"Groningen\",\"geonames_admin1\":{\"name\":\"Groningen\",\"id\":2755249,\"ascii_name\":\"Groningen\",\"code\":\"NL.04\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Groningen\",\"id\":2755250,\"ascii_name\":\"Gemeente Groningen\",\"code\":\"NL.04.0014\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"NOORD-NEDERLAND\",\"code\":\"NL1\"},\"nuts_level2\":{\"name\":\"Groningen\",\"code\":\"NL11\"},\"nuts_level3\":{\"name\":\"Overig
+        Groningen\",\"code\":\"NL113\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.umcg.nl/EN\"],\"aliases\":[\"Groningen
+        University Hospital\"],\"acronyms\":[\"UMCG\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/University_Medical_Center_Groningen\",\"labels\":[{\"label\":\"Universitair
+        Medisch Centrum Groningen\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 9558 4598\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100005075\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"10637920\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2057113\"]},\"GRID\":{\"preferred\":\"grid.4494.d\",\"all\":\"grid.4494.d\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.57,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03t4gr691\",\"name\":\"Academic
+        Medical Center\",\"email_address\":null,\"ip_addresses\":[],\"established\":1983,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Amsterdam\",\"type\":\"Related\",\"id\":\"https://ror.org/04dkp9463\"},{\"label\":\"Amsterdam
+        University Medical Centers\",\"type\":\"Parent\",\"id\":\"https://ror.org/05grdyy37\"},{\"label\":\"Amsterdam
+        Institute for Addiction Research\",\"type\":\"Child\",\"id\":\"https://ror.org/022gvqh28\"},{\"label\":\"Amsterdam
+        Neuroscience\",\"type\":\"Child\",\"id\":\"https://ror.org/01x2d9f70\"}],\"addresses\":[{\"lat\":52.37403,\"lng\":4.88969,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.amc.nl/web/Zorg.htm\"],\"aliases\":[],\"acronyms\":[\"AMC\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Academic_Medical_Center\",\"labels\":[{\"label\":\"Academisch
+        Medisch Centrum\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0465 4431\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100003180\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"8986821\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2487297\"]},\"GRID\":{\"preferred\":\"grid.5650.6\",\"all\":\"grid.5650.6\"}}}},{\"substring\":\"Amsterdam
+        Universitair Medische Centra Academisch Medisch Centrum\",\"score\":0.55,\"matching_type\":\"COMMON
+        TERMS\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0575yy874\",\"name\":\"University
+        Medical Center Utrecht\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1999,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Hubrecht
+        Institute for Developmental Biology and Stem Cell Research\",\"type\":\"Related\",\"id\":\"https://ror.org/023qc4a07\"},{\"label\":\"Princess
+        M\xE1xima Center\",\"type\":\"Related\",\"id\":\"https://ror.org/02aj7yc53\"},{\"label\":\"Utrecht
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/04pp8hn57\"},{\"label\":\"Wilhelmina
+        Children's Hospital\",\"type\":\"Child\",\"id\":\"https://ror.org/05fqypv61\"},{\"label\":\"ERN
+        RITA\",\"type\":\"Related\",\"id\":\"https://ror.org/0208ges23\"}],\"addresses\":[{\"lat\":52.09083,\"lng\":5.12222,\"state\":null,\"state_code\":null,\"city\":\"Utrecht\",\"geonames_city\":{\"id\":2745912,\"city\":\"Utrecht\",\"geonames_admin1\":{\"name\":\"Utrecht\",\"id\":2745909,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09\"},\"geonames_admin2\":{\"name\":\"Utrecht\",\"id\":2745911,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09.0344\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.umcutrecht.nl/nl/\"],\"aliases\":[\"UMC
+        Utrecht\"],\"acronyms\":[\"UMC\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_Medical_Center_Utrecht\",\"labels\":[{\"label\":\"Universitair
+        Medisch Centrum Utrecht\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 9012 6352\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100003761\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"10637978\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2456800\"]},\"GRID\":{\"preferred\":\"grid.7692.a\",\"all\":\"grid.7692.a\"}}}}]}"
+    headers:
+      Allow:
+      - GET, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '14081'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 30 Aug 2023 10:50:42 GMT
+      Server:
+      - nginx/1.18.0 + Phusion Passenger 6.0.7
+      Status:
+      - 200 OK
+      Vary:
+      - Cookie, Origin
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Powered-By:
+      - Phusion Passenger 6.0.7
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.31.0
+    method: GET
+    uri: https://api.ror.org/organizations?affiliation=%22Amsterdam+Universitair+Medische+Centra+-+Academisch+Medisch+Centrum%22
+  response:
+    body:
+      string: "{\"number_of_results\":10,\"items\":[{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":1.0,\"matching_type\":\"EXACT\",\"chosen\":true,\"organization\":{\"id\":\"https://ror.org/03t4gr691\",\"name\":\"Academic
+        Medical Center\",\"email_address\":null,\"ip_addresses\":[],\"established\":1983,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Amsterdam\",\"type\":\"Related\",\"id\":\"https://ror.org/04dkp9463\"},{\"label\":\"Amsterdam
+        University Medical Centers\",\"type\":\"Parent\",\"id\":\"https://ror.org/05grdyy37\"},{\"label\":\"Amsterdam
+        Institute for Addiction Research\",\"type\":\"Child\",\"id\":\"https://ror.org/022gvqh28\"},{\"label\":\"Amsterdam
+        Neuroscience\",\"type\":\"Child\",\"id\":\"https://ror.org/01x2d9f70\"}],\"addresses\":[{\"lat\":52.37403,\"lng\":4.88969,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.amc.nl/web/Zorg.htm\"],\"aliases\":[],\"acronyms\":[\"AMC\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Academic_Medical_Center\",\"labels\":[{\"label\":\"Academisch
+        Medisch Centrum\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0465 4431\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100003180\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"8986821\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2487297\"]},\"GRID\":{\"preferred\":\"grid.5650.6\",\"all\":\"grid.5650.6\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":1.0,\"matching_type\":\"EXACT\",\"chosen\":true,\"organization\":{\"id\":\"https://ror.org/05grdyy37\",\"name\":\"Amsterdam
+        University Medical Centers\",\"email_address\":null,\"ip_addresses\":[],\"established\":2018,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Academic
+        Medical Center\",\"type\":\"Child\",\"id\":\"https://ror.org/03t4gr691\"},{\"label\":\"Amsterdam
+        UMC Location VUmc\",\"type\":\"Child\",\"id\":\"https://ror.org/00q6h8f30\"},{\"label\":\"Amsterdam
+        health & technology institute\",\"type\":\"Related\",\"id\":\"https://ror.org/052b8a564\"}],\"addresses\":[{\"lat\":52.37403,\"lng\":4.88969,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.amsterdamumc.org\"],\"aliases\":[\"Amsterdam
+        UMC\"],\"acronyms\":[],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Amsterdam
+        Universitair Medische Centra\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 6880 3010\"]},\"FundRef\":{\"preferred\":\"100019573\",\"all\":[\"100019573\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q56682938\"]},\"GRID\":{\"preferred\":\"grid.509540.d\",\"all\":\"grid.509540.d\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.86,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03bfc4534\",\"name\":\"Zuyderland
+        Medisch Centrum\",\"email_address\":null,\"ip_addresses\":[],\"established\":null,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Maaslandziekenhuis\",\"type\":\"Parent\",\"id\":\"https://ror.org/04cm78a24\"}],\"addresses\":[{\"lat\":50.982792,\"lng\":5.84497,\"state\":null,\"state_code\":null,\"city\":\"Sittard\",\"geonames_city\":{\"id\":2747203,\"city\":\"Sittard\",\"geonames_admin1\":{\"name\":\"Limburg\",\"id\":2751596,\"ascii_name\":\"Limburg\",\"code\":\"NL.05\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Sittard-Geleen\",\"id\":6544255,\"ascii_name\":\"Gemeente Sittard-Geleen\",\"code\":\"NL.05.1883\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"ZUID-NEDERLAND\",\"code\":\"NL4\"},\"nuts_level2\":{\"name\":\"Limburg
+        (NL)\",\"code\":\"NL42\"},\"nuts_level3\":{\"name\":\"Zuid-Limburg\",\"code\":\"NL423\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.zuyderland.nl/\"],\"aliases\":[\"Orbis
+        Medisch Centrum\"],\"acronyms\":[\"OMC\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"GRID\":{\"preferred\":\"grid.416905.f\",\"all\":\"grid.416905.f\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.85,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/05xvt9f17\",\"name\":\"Leiden
+        University Medical Center\",\"email_address\":null,\"ip_addresses\":[],\"established\":1990,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Leiden
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/027bh9e22\"},{\"label\":\"Jon
+        J van Rood Centre for Clinical Transfusion Research\",\"type\":\"Child\",\"id\":\"https://ror.org/04cm10r73\"},{\"label\":\"Willem-Alexander
+        Kinderziekenhuis\",\"type\":\"Child\",\"id\":\"https://ror.org/02xmm1048\"},{\"label\":\"Endo-ERN\",\"type\":\"Related\",\"id\":\"https://ror.org/05s4nk876\"}],\"addresses\":[{\"lat\":52.15833,\"lng\":4.49306,\"state\":null,\"state_code\":null,\"city\":\"Leiden\",\"geonames_city\":{\"id\":2751773,\"city\":\"Leiden\",\"geonames_admin1\":{\"name\":\"South
+        Holland\",\"id\":2743698,\"ascii_name\":\"South Holland\",\"code\":\"NL.11\"},\"geonames_admin2\":{\"name\":\"Leiden\",\"id\":2751772,\"ascii_name\":\"Leiden\",\"code\":\"NL.11.0546\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.lumc.nl/?setlanguage=English&setcountry=en\"],\"aliases\":[],\"acronyms\":[\"LUMC\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/Leiden_University_Medical_Center\",\"labels\":[{\"label\":\"Leids
+        Universitair Medisch Centrum\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 8945 2978\"]},\"FundRef\":{\"preferred\":\"501100005039\",\"all\":[\"501100005039\",\"501100005038\",\"501100005040\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"490672\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2406409\"]},\"GRID\":{\"preferred\":\"grid.10419.3d\",\"all\":\"grid.10419.3d\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.78,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/0575yy874\",\"name\":\"University
+        Medical Center Utrecht\",\"email_address\":\"\",\"ip_addresses\":[],\"established\":1999,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"Hubrecht
+        Institute for Developmental Biology and Stem Cell Research\",\"type\":\"Related\",\"id\":\"https://ror.org/023qc4a07\"},{\"label\":\"Princess
+        M\xE1xima Center\",\"type\":\"Related\",\"id\":\"https://ror.org/02aj7yc53\"},{\"label\":\"Utrecht
+        University\",\"type\":\"Related\",\"id\":\"https://ror.org/04pp8hn57\"},{\"label\":\"Wilhelmina
+        Children's Hospital\",\"type\":\"Child\",\"id\":\"https://ror.org/05fqypv61\"},{\"label\":\"ERN
+        RITA\",\"type\":\"Related\",\"id\":\"https://ror.org/0208ges23\"}],\"addresses\":[{\"lat\":52.09083,\"lng\":5.12222,\"state\":null,\"state_code\":null,\"city\":\"Utrecht\",\"geonames_city\":{\"id\":2745912,\"city\":\"Utrecht\",\"geonames_admin1\":{\"name\":\"Utrecht\",\"id\":2745909,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09\"},\"geonames_admin2\":{\"name\":\"Utrecht\",\"id\":2745911,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09.0344\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.umcutrecht.nl/nl/\"],\"aliases\":[\"UMC
+        Utrecht\"],\"acronyms\":[\"UMC\"],\"status\":\"active\",\"wikipedia_url\":\"http://en.wikipedia.org/wiki/University_Medical_Center_Utrecht\",\"labels\":[{\"label\":\"Universitair
+        Medisch Centrum Utrecht\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 9012 6352\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100003761\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"10637978\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2456800\"]},\"GRID\":{\"preferred\":\"grid.7692.a\",\"all\":\"grid.7692.a\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.74,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/03cv38k47\",\"name\":\"University
+        Medical Center Groningen\",\"email_address\":null,\"ip_addresses\":[],\"established\":2005,\"types\":[\"Healthcare\"],\"relationships\":[{\"label\":\"University
+        of Groningen\",\"type\":\"Related\",\"id\":\"https://ror.org/012p63287\"},{\"label\":\"Beatrix
+        Kinderziekenhuis\",\"type\":\"Child\",\"id\":\"https://ror.org/02zyr1680\"}],\"addresses\":[{\"lat\":53.222794,\"lng\":6.574039,\"state\":\"Groningen\",\"state_code\":\"NL-GR\",\"city\":\"Groningen\",\"geonames_city\":{\"id\":2755251,\"city\":\"Groningen\",\"geonames_admin1\":{\"name\":\"Groningen\",\"id\":2755249,\"ascii_name\":\"Groningen\",\"code\":\"NL.04\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Groningen\",\"id\":2755250,\"ascii_name\":\"Gemeente Groningen\",\"code\":\"NL.04.0014\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"NOORD-NEDERLAND\",\"code\":\"NL1\"},\"nuts_level2\":{\"name\":\"Groningen\",\"code\":\"NL11\"},\"nuts_level3\":{\"name\":\"Overig
+        Groningen\",\"code\":\"NL113\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.umcg.nl/EN\"],\"aliases\":[\"Groningen
+        University Hospital\"],\"acronyms\":[\"UMCG\"],\"status\":\"active\",\"wikipedia_url\":\"https://en.wikipedia.org/wiki/University_Medical_Center_Groningen\",\"labels\":[{\"label\":\"Universitair
+        Medisch Centrum Groningen\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0000 9558 4598\"]},\"FundRef\":{\"preferred\":null,\"all\":[\"501100005075\"]},\"OrgRef\":{\"preferred\":null,\"all\":[\"10637920\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2057113\"]},\"GRID\":{\"preferred\":\"grid.4494.d\",\"all\":\"grid.4494.d\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.7,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/04vccmr34\",\"name\":\"Medisch
+        Centrum Alkmaar\",\"email_address\":null,\"ip_addresses\":[],\"established\":1930,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":52.627647,\"lng\":4.737995,\"state\":null,\"state_code\":null,\"city\":\"Alkmaar\",\"geonames_city\":{\"id\":2759899,\"city\":\"Alkmaar\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Alkmaar\",\"id\":2759898,\"ascii_name\":\"Gemeente Alkmaar\",\"code\":\"NL.07.0361\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"WEST-NEDERLAND\",\"code\":\"NL3\"},\"nuts_level2\":{\"name\":\"Noord-Holland\",\"code\":\"NL32\"},\"nuts_level3\":{\"name\":\"Alkmaar
+        en omgeving\",\"code\":\"NL322\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.mca.nl/English/Patients-Visitors.aspx\"],\"aliases\":[],\"acronyms\":[\"MCA\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0368 5519\"]},\"GRID\":{\"preferred\":\"grid.414828.3\",\"all\":\"grid.414828.3\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.61,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/02dm2pb39\",\"name\":\"Netherlands
+        Federation of University Medical Centres\",\"email_address\":null,\"ip_addresses\":[],\"established\":2004,\"types\":[\"Healthcare\"],\"relationships\":[],\"addresses\":[{\"lat\":52.09083,\"lng\":5.12222,\"state\":null,\"state_code\":null,\"city\":\"Utrecht\",\"geonames_city\":{\"id\":2745912,\"city\":\"Utrecht\",\"geonames_admin1\":{\"name\":\"Utrecht\",\"id\":2745909,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09\"},\"geonames_admin2\":{\"name\":\"Utrecht\",\"id\":2745911,\"ascii_name\":\"Utrecht\",\"code\":\"NL.09.0344\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":null,\"code\":null},\"nuts_level2\":{\"name\":null,\"code\":null},\"nuts_level3\":{\"name\":null,\"code\":null}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.nfu.nl/english/about-the-nfu/\"],\"aliases\":[],\"acronyms\":[\"NFU\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Nederlandse
+        Federatie van Universitair Medische Centra\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0004 0649 0813\"]},\"FundRef\":{\"preferred\":\"501100012524\",\"all\":[\"501100012524\"]},\"Wikidata\":{\"preferred\":null,\"all\":[\"Q2177238\"]},\"GRID\":{\"preferred\":\"grid.278411.9\",\"all\":\"grid.278411.9\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.56,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/01k0v6g02\",\"name\":\"SURFsara
+        (Netherlands)\",\"email_address\":null,\"ip_addresses\":[],\"established\":1971,\"types\":[\"Company\"],\"relationships\":[],\"addresses\":[{\"lat\":52.356731,\"lng\":4.954666,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"WEST-NEDERLAND\",\"code\":\"NL3\"},\"nuts_level2\":{\"name\":\"Noord-Holland\",\"code\":\"NL32\"},\"nuts_level3\":{\"name\":\"Groot-Amsterdam\",\"code\":\"NL326\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"https://www.surf.nl/en/about-surf/subsidiaries/surfsara/\"],\"aliases\":[],\"acronyms\":[\"SARA\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Stichting
+        Academisch Rekencentrum Amsterdam\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"Wikidata\":{\"preferred\":null,\"all\":[\"Q1954989\"]},\"GRID\":{\"preferred\":\"grid.426550.0\",\"all\":\"grid.426550.0\"}}}},{\"substring\":\"\\\"Amsterdam
+        Universitair Medische Centra - Academisch Medisch Centrum\\\"\",\"score\":0.51,\"matching_type\":\"EXACT\",\"chosen\":false,\"organization\":{\"id\":\"https://ror.org/04x5wnb75\",\"name\":\"Academic
+        Center for Dentistry Amsterdam\",\"email_address\":null,\"ip_addresses\":[],\"established\":1984,\"types\":[\"Education\"],\"relationships\":[],\"addresses\":[{\"lat\":52.336713,\"lng\":4.86113,\"state\":null,\"state_code\":null,\"city\":\"Amsterdam\",\"geonames_city\":{\"id\":2759794,\"city\":\"Amsterdam\",\"geonames_admin1\":{\"name\":\"North
+        Holland\",\"id\":2749879,\"ascii_name\":\"North Holland\",\"code\":\"NL.07\"},\"geonames_admin2\":{\"name\":\"Gemeente
+        Amsterdam\",\"id\":2759793,\"ascii_name\":\"Gemeente Amsterdam\",\"code\":\"NL.07.0363\"},\"license\":{\"attribution\":\"Data
+        from geonames.org under a CC-BY 3.0 license\",\"license\":\"http://creativecommons.org/licenses/by/3.0/\"},\"nuts_level1\":{\"name\":\"WEST-NEDERLAND\",\"code\":\"NL3\"},\"nuts_level2\":{\"name\":\"Noord-Holland\",\"code\":\"NL32\"},\"nuts_level3\":{\"name\":\"Groot-Amsterdam\",\"code\":\"NL326\"}},\"postcode\":null,\"primary\":false,\"line\":null,\"country_geonames_id\":2750405}],\"links\":[\"http://www.acta.nl/en/\"],\"aliases\":[],\"acronyms\":[\"ACTA\"],\"status\":\"active\",\"wikipedia_url\":\"\",\"labels\":[{\"label\":\"Academisch
+        Centrum Tandheelkunde Amsterdam\",\"iso639\":\"nl\"}],\"country\":{\"country_name\":\"Netherlands\",\"country_code\":\"NL\"},\"external_ids\":{\"ISNI\":{\"preferred\":null,\"all\":[\"0000
+        0001 0295 4797\"]},\"GRID\":{\"preferred\":\"grid.424087.d\",\"all\":\"grid.424087.d\"}}}}]}"
+    headers:
+      Allow:
+      - GET, HEAD, OPTIONS
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '16860'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 30 Aug 2023 10:50:42 GMT
+      Server:
+      - nginx/1.18.0 + Phusion Passenger 6.0.7
+      Status:
+      - 200 OK
+      Vary:
+      - Cookie, Origin
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Powered-By:
+      - Phusion Passenger 6.0.7
+    status:
+      code: 200
+      message: OK
+version: 1
