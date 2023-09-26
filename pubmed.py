@@ -10,7 +10,7 @@ from io import StringIO
 
 import pandas
 
-from setup import get_env_setting, setup_logger, setup_parser
+from setup import get_env_setting, get_full_parser, setup_logger
 from utils import (
     create_session,
     filter_unindexed,
@@ -167,7 +167,7 @@ def add_pubmed_metadata(args):
 
 
 if __name__ == "__main__":
-    parent = setup_parser()
+    parent = get_full_parser()
     pubmed_parser = argparse.ArgumentParser(parents=[parent])
     subparsers = pubmed_parser.add_subparsers()
 
