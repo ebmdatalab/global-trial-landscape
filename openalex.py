@@ -7,6 +7,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 
+import numpy
 import pandas
 
 from setup import get_base_parser, get_verbosity_parser, setup_logger
@@ -14,6 +15,47 @@ from utils import create_session
 
 
 DEFAULT_PROTOCOL = "(clinicaltrial[Filter] NOT editorial)"
+
+ids_exact = [
+    r"(?i)NCT\s*\W*0\d{7}",
+    r"20\d{2}\W*0\d{5}\W*\d{2}",
+    r"(?i)PACTR\s*\W*20\d{13}",
+    r"(?i)ACTRN\s*\W*126\d{11}",
+    r"(?i)ANZCTR\s*\W*126\d{11}",
+    r"(?i)NTR\s*\W*\d{4}",
+    r"(?i)KCT\s*\W*00\d{5}",
+    r"(?i)DRKS\s*\W*000\d{5}",
+    r"(?i)ISRCTN\s*\W*\d{8}",
+    r"(?i)ChiCTR\s*\W*20000\d{5}",
+    r"(?i)IRCT\s*\W*20\d{10,11}N\d{1,3}",
+    r"(?i)CTRI\s?\W*\/\s*\W*202\d{1}\s?\W*\/\s*\W*\d{2,3}\s*\W*\/\s*\W*0\d{5}",
+    r"(?i)Japic\s*CTI\s*\W*\d{6}",
+    r"(?i)jrct\W*\w{1}\W*\d{9}",
+    r"(?i)UMIN\s*\W*\d{9}",
+    r"(?i)JMA\W*IIA00\d{3}",
+    r"(?i)RBR\s*\W*\d\w{5}",
+    r"(?i)RPCEC\s*\W*0{5}\d{3}",
+    r"(?i)LBCTR\s*\W*\d{10}",
+    r"(?i)SLCTR\s*\W*\d{4}\s*\W*\d{3}",
+    r"(?i)TCTR\s*\W*202\d{8}",
+    r"{?i}PER\s*\W*\d{3}\s*\W*\d{2}",
+]
+
+
+def read_dataset(fpath):
+    df = pandas.read_csv(
+        fpath,
+        delimiter="\t",
+        names=[
+            "pmid",
+            "accession",
+            "abstract",
+            "pubdate",
+        ],
+        parse_dates=["pubdate"],
+        na_values="-",
+    )
+    return df
 
 
 def build_cohort(args):
@@ -31,22 +73,31 @@ def build_cohort(args):
         logging.error("Is edirect installed?")
     # The date MUST be included in the query with [dp] (rather than
     # -mindate -maxdate) in order for 10k+ queries to work
-    cmd = f"esearch -db pubmed -query '({start_date}:{end_date}[dp]) AND ({protocol})' | efetch -format uid > {output_file}"
+    # cmd = f"efetch -db pubmed -id 30553130 -format xml | xtract -pattern PubmedArticle -sep '|' -def '-' -element MedlineCitation/PMID -element AccessionNumber -element AbstractText -block PubDate -sep '-' -element Year,Month,Day > {output_file}"
+    cmd = f"esearch -db pubmed -query '({start_date}:{end_date}[dp]) AND ({protocol})' | efetch -format xml | xtract -pattern PubmedArticle -sep '|' -def '-' -element MedlineCitation/PMID -element AccessionNumber -element AbstractText -block PubDate -sep '-' -element Year,Month,Day > {output_file}"
     logging.info(cmd)
     edirect.pipeline(cmd)
+
+    df = read_dataset(output_file)
+    df = split_bar(df, columns=["accession"])
+    df = get_ids_from_abstract(df)
+
+    df.to_csv(output_file, index=False)
     return
 
 
-# TODO: take in a dataset file rather than pmid list so we can add oa data
-# TODO: to any df
-# TODO: get accession and abstract from pubmed
+def split_bar(df, columns=[]):
+    for col in columns:
+        df[col] = df[col].str.split("|")
+    return df
 
 
-def load_pmids(name):
-    with open(name) as f:
-        pmids = f.read().splitlines()
-    ordered = sorted(set(pmids))
-    return ordered
+def get_ids_from_abstract(df):
+    criteria = "(" + "|".join([rf"{x}" for x in ids_exact]) + ")"
+    found = df.abstract.str.extractall(criteria).groupby(level=0)[0].apply(list)
+    df.loc[found.index, "abstract"] = found
+    df.loc[~df.index.isin(found.index), "abstract"] = numpy.nan
+    return df
 
 
 def chunk_pmids(pmids, chunk_size=20):
@@ -83,31 +134,36 @@ def query(pmids, session, email_address=None, use_cache=False):
 def process_response(response, pmids, first_last=True):
     results = []
     # One row per author
-    index = 0
     for paper in response:
-        import code
-
-        code.interact(local=locals())
         paper_dict = defaultdict(str)
         paper_dict["pmid"] = paper["ids"]["pmid"].split("/")[-1]
-        index = index + 1
         paper_dict["doi"] = paper["ids"].get("doi", None)
-        paper_dict["openalex_paper"] = paper["ids"]["openalex"]
+        paper_dict["paper_openalex"] = paper["ids"]["openalex"]
         for author in paper["authorships"]:
-            # TODO: also get author name from openalex
-            # TODO: orcid? is_corresponding?
-            author_dict = paper_dict.copy()
             position = author["author_position"]
             if first_last and position == "middle":
                 continue
-            author_dict["position"] = position
-            author_dict["affiliation_raw"] = author["raw_affiliation_string"]
-            author_dict["openalex_author"] = author["author"].get("id", None)
-            author_dict["display_name"] = author["author"].get("display_name", None)
+            author_dict = paper_dict.copy()
+            author_dict["author_orcid"] = author["author"]["orcid"]
+            author_dict["author_name"] = author["author"]["display_name"]
+            author_dict["author_corresponding"] = author["is_corresponding"]
+            author_dict["author_position"] = position
+            author_dict["author_affiliation_raw"] = author["raw_affiliation_string"]
+            author_dict["author_openalex"] = author["author"].get("id", None)
+            author_dict["author_name"] = author["author"].get("display_name", None)
+            # NOTE: author can have multiple rows for multiple affiliations
             for institution in author["institutions"]:
                 # One row per author affiliation
-                institution_dict = author_dict.copy() | institution
+                institution_dict = author_dict.copy()
+                institution_dict["institution_openalex"] = institution["id"]
+                institution_dict["institution_ror"] = institution["ror"]
+                institution_dict["institution_country"] = institution["country_code"]
+                institution_dict["institution_type"] = institution["type"]
+                institution_dict["institution_name"] = institution["display_name"]
                 results.append(institution_dict)
+            # NOTE: authors may not have any resolved institutions
+            if len(author["institutions"]) == 0:
+                results.append(author_dict)
     return results
 
 
@@ -122,7 +178,8 @@ def query_openalex(args):
 
     session = create_session("openalex_cache", use_cache=use_cache)
 
-    pmids = load_pmids(input_file)
+    df = pandas.read_csv(input_file, dtype={"pmid": str})
+    pmids = df.pmid.unique()
     # https://docs.openalex.org/how-to-use-the-api/get-lists-of-entities/filter-entity-lists#addition-or
     # openalex allows up to 50 works in a query, to be safe use 40
     chunks = chunk_pmids(pmids, 40)
@@ -130,7 +187,13 @@ def query_openalex(args):
         results = query(
             chunk, session, email_address=email_address, use_cache=use_cache
         )
-        pandas.DataFrame.from_dict(results).to_csv(
+        metadata = pandas.DataFrame(results)
+        # Use an outer join so that we only write the current chunk
+        merged = df[df.pmid.isin(chunk)].merge(
+            metadata, left_on="pmid", right_on="pmid", how="outer"
+        )
+        assert merged.pmid.nunique() == len(chunk)
+        merged.to_csv(
             output_file, mode="a", header=not output_file.exists(), index=False
         )
 
