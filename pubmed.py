@@ -2,16 +2,19 @@ import argparse
 import logging
 import multiprocessing as mp
 import os
+import pathlib
 import re
 import shutil
 import sys
 from functools import partial
 from io import StringIO
 
+import matplotlib.pyplot as plt
 import pandas
 
-from setup import get_env_setting, get_full_parser, setup_logger
+from setup import get_env_setting, get_full_parser, get_verbosity_parser, setup_logger
 from utils import (
+    REGISTRY_MAP,
     create_session,
     filter_unindexed,
     load_trials,
@@ -26,7 +29,7 @@ def analyse_metadata(args):
         input_file,
         parse_dates=["Date_enrollment", "epub_date", "journal_date"],
         index_col=[0],
-        dtype={"pmid": "str"},
+        dtype={"pmid": str},
     )
     df = df[~(df.title.str.contains("protocol", flags=re.IGNORECASE) is True)]
     import code
@@ -136,7 +139,8 @@ def add_pubmed_metadata(args):
     n = args.chunk_size
 
     df = pandas.read_csv(input_file, dtype={"pmids": "str"})
-    df["source"] = df.trial_id.str[0:3]
+    df["source"] = df.trial_id.str[0:3].str.upper()
+    df.loc[df.source.str.startswith("NL"), "source"] = "NTR"
     unique_pmids = df.pmids.dropna().unique()
     try:
         sys.path.insert(1, os.path.dirname(shutil.which("xtract")))
@@ -166,19 +170,55 @@ def add_pubmed_metadata(args):
     df.to_csv(output_file)
 
 
+def reported_over_time(args):
+    input_file = args.input_file
+    df = pandas.read_csv(input_file)
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    df["enrollment_year"] = pandas.to_datetime(df.Date_enrollment).dt.strftime("%Y")
+    df["source"] = df.source.map(REGISTRY_MAP)
+    counts = df.groupby(["enrollment_year", "source"]).agg(
+        {"trial_id": "count", "pmids": "count"}
+    )
+    counts["pcnt"] = 100 * (counts.pmids / counts.trial_id)
+    to_plot = counts.reset_index().pivot(index="source", columns=["enrollment_year"])[
+        "pcnt"
+    ]
+    to_plot = to_plot.sort_values("2014", ascending=False)
+    to_plot.plot.bar(ax=ax)
+    plt.legend(loc="upper left", bbox_to_anchor=(1, 1), title="Enrollment Year")
+    plt.title(
+        "Percent of trials with trial id in Pubmed Accession or Abstract by registry"
+    )
+    plt.xlabel("Registry")
+    plt.ylabel("Percent (%)")
+    plt.xticks(rotation=45)
+    plt.savefig("percent_reported.png", bbox_inches="tight")
+
+
 if __name__ == "__main__":
+    verb = get_verbosity_parser()
     parent = get_full_parser()
-    pubmed_parser = argparse.ArgumentParser(parents=[parent])
+    pubmed_parser = argparse.ArgumentParser()
     subparsers = pubmed_parser.add_subparsers()
 
-    query_parser = subparsers.add_parser("query")
+    query_parser = subparsers.add_parser("query", parents=[parent])
     query_parser.set_defaults(func=trials_in_pubmed)
 
-    metadata_parser = subparsers.add_parser("metadata")
+    metadata_parser = subparsers.add_parser("metadata", parents=[parent])
     metadata_parser.set_defaults(func=add_pubmed_metadata)
 
-    analyse_parser = subparsers.add_parser("analyse")
+    analyse_parser = subparsers.add_parser("analyse", parents=[parent])
     analyse_parser.set_defaults(func=analyse_metadata)
+
+    reported_parser = subparsers.add_parser("percent-reported", parents=[verb])
+    reported_parser.add_argument(
+        "--input-file",
+        required=True,
+        type=pathlib.Path,
+        help="Cohort file with discovered pmids",
+    )
+    reported_parser.set_defaults(func=reported_over_time)
 
     args = pubmed_parser.parse_args()
     if hasattr(args, "func"):

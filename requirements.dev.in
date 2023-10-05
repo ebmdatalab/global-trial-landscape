@@ -12,11 +12,13 @@ matplotlib
 numpy
 pandas
 pip-tools
+plotly
 pre-commit
 pytest
 requests
 requests-cache
 ruff
 schemdraw
+seaborn
 unidecode
 vcrpy

@@ -7,11 +7,12 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy
 import pandas
 
 from setup import get_base_parser, get_verbosity_parser, setup_logger
-from utils import create_session
+from utils import create_session, region_map
 
 
 DEFAULT_PROTOCOL = "(clinicaltrial[Filter] NOT editorial)"
@@ -45,15 +46,18 @@ ids_exact = [
 def read_dataset(fpath):
     df = pandas.read_csv(
         fpath,
-        delimiter="\t",
+        delimiter="%%",
         names=[
             "pmid",
+            "title",
             "accession",
             "abstract",
-            "pubdate",
+            "pub_types",
+            "journal_date",
+            "epub_date",
         ],
-        parse_dates=["pubdate"],
-        na_values="-",
+        parse_dates=["journal_date", "epub_date"],
+        dtype={"pmid": str},
     )
     return df
 
@@ -73,11 +77,14 @@ def build_cohort(args):
         logging.error("Is edirect installed?")
     # The date MUST be included in the query with [dp] (rather than
     # -mindate -maxdate) in order for 10k+ queries to work
-    # cmd = f"efetch -db pubmed -id 30553130 -format xml | xtract -pattern PubmedArticle -sep '|' -def '-' -element MedlineCitation/PMID -element AccessionNumber -element AbstractText -block PubDate -sep '-' -element Year,Month,Day > {output_file}"
-    cmd = f"esearch -db pubmed -query '({start_date}:{end_date}[dp]) AND ({protocol})' | efetch -format xml | xtract -pattern PubmedArticle -sep '|' -def '-' -element MedlineCitation/PMID -element AccessionNumber -element AbstractText -block PubDate -sep '-' -element Year,Month,Day > {output_file}"
+    # cmd = f"efetch -db pubmed -id 30553130 -format xml"
+    # cmd += f" | xtract -pattern PubmedArticle -def '' -sep '|' -tab '%%' -element MedlineCitation/PMID -element ArticleTitle -element AccessionNumber -element AbstractText -element PublicationType -block Journal -sep '-' -tab '%%' -element Year,Month -block ArticleDate -sep '-' -element Year,Month,Day > {output_file}"
+
+    cmd = f"esearch -db pubmed -query '({start_date}:{end_date}[dp]) AND ({protocol})' | efetch -format xml | xtract -pattern PubmedArticle -def '' -sep '|' -tab '%%' -element MedlineCitation/PMID -element ArticleTitle -element AccessionNumber -element AbstractText -element PublicationType -block Journal -sep '-' -tab '%%' -element Year,Month -block ArticleDate -sep '-' -element Year,Month,Day  > {output_file}"
     logging.info(cmd)
     edirect.pipeline(cmd)
 
+    # could do as stringio
     df = read_dataset(output_file)
     df = split_bar(df, columns=["accession"])
     df = get_ids_from_abstract(df)
@@ -198,6 +205,27 @@ def query_openalex(args):
         )
 
 
+def make_site_map(args):
+    input_file = args.input_file
+    output_file = args.output_file
+    last_author = args.last_author
+
+    df = pandas.read_csv(input_file)
+    if last_author:
+        df[df.author_position == "last"]
+        title = "Last Author Affiliation by WHO Region: Trials in Pubmed 2018-2023"
+    else:
+        df[df.author_position == "first"]
+        title = "First Author Affiliation by WHO Region: Trials in Pubmed 2018-2023"
+
+    counts = (
+        df.groupby(["pmid", "country"]).author_name.nunique().groupby("country").sum()
+    )
+    region_map(counts)
+    plt.suptitle(title)
+    plt.savefig(output_file, bbox_inches="tight")
+
+
 if __name__ == "__main__":
     verbosity_parser = get_verbosity_parser()
     base_parser = get_base_parser()
@@ -247,6 +275,19 @@ if __name__ == "__main__":
         required=True,
         help="Output file name to write openalex cohort",
     )
+
+    site_map_parser = subparsers.add_parser("site_map", parents=[base_parser])
+    site_map_parser.add_argument(
+        "--output-file",
+        type=pathlib.Path,
+        required=True,
+        help="Output file to save map",
+    )
+    site_map_parser.add_argument(
+        "--last-author", action="store_true", help="Use last author rather than first"
+    )
+    site_map_parser.set_defaults(func=make_site_map)
+
     args = openalex_parser.parse_args()
     if hasattr(args, "func"):
         setup_logger(args.verbosity)

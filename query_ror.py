@@ -7,18 +7,34 @@ import sys
 import time
 import urllib
 
+import matplotlib.pyplot as plt
 import pandas
+import plotly.graph_objects as go
+import schemdraw
+from schemdraw import flow
 
-from setup import get_base_parser, get_full_parser, setup_logger
+from setup import (
+    get_base_parser,
+    get_full_parser,
+    get_results_parser,
+    get_verbosity_parser,
+    setup_logger,
+)
 from utils import (
     add_suffix,
     append_safe,
     create_session,
     filter_unindexed,
+    load_glob,
     load_trials,
+    map_who,
+    match_paths,
     preprocess_trial_file,
     query,
+    region_map,
+    region_pie,
     remove_surrounding_double_quotes,
+    world_map,
 )
 
 
@@ -439,8 +455,167 @@ def update_metadata(args):
     trials.to_csv(output_name, index=False)
 
 
+def make_map(args):
+    input_files = args.input_files
+    file_filter = args.file_filter
+    plot_world = args.plot_world
+    country_column = args.country_column
+    title = args.title
+    df = load_glob(input_files, file_filter)
+
+    sources = sorted(df.source.unique())
+    if country_column not in df.columns:
+        raise argparse.ArgumentTypeError(f"Input data does not have {country_column}")
+
+    counts = df.groupby(country_column).trial_id.size()
+    if plot_world:
+        world_map(counts, country_column=country_column)
+    else:
+        region_map(counts, country_column=country_column)
+    plt.suptitle(f"{title}\nData from: {' '.join(sources)} ({file_filter})")
+    plt.savefig(f"{'_'.join(sources)}_map.png", bbox_inches="tight")
+
+
+def org_region(args):
+    input_files = args.input_files
+    df = load_glob(input_files, "ror")
+    sources = sorted(df.source.unique())
+    region_pie(df)
+    plt.suptitle(
+        f"Sponsor Type by WHO Region with Registry Data\nData from: {' '.join(sources)}"
+    )
+    plt.savefig(f"{'_'.join(sources)}_sponsor_by_region.png", bbox_inches="tight")
+
+
+def site_sponsor(args):
+    sponsor_files = args.sponsor_files
+    site_files = args.site_files
+    file_filter = args.file_filter
+
+    site_df = load_glob(site_files, file_filter)
+    site_df["who_region"] = map_who(site_df.country_ror)
+    sponsor_df = load_glob(sponsor_files, file_filter)
+    sponsor_df["sponsor_who_region"] = map_who(sponsor_df.country_ror)
+    merged = site_df.merge(
+        sponsor_df, left_on="trial_id", right_on="trial_id", how="left"
+    )
+    counts = (
+        merged.groupby(["who_region", "sponsor_who_region"])
+        .trial_id.count()
+        .reset_index()
+    )
+    # Map nodes to node ids
+    who_map = {name: index for index, name in enumerate(counts.who_region.unique())}
+    who_sponsor_map = {
+        name: index + len(who_map)
+        for index, name in enumerate(counts.sponsor_who_region.unique())
+    }
+    link = dict(
+        source=list(counts.who_region.map(who_map)),
+        target=list(counts.sponsor_who_region.map(who_sponsor_map)),
+        value=list(counts.trial_id),
+    )
+    data = go.Sankey(
+        link=link, node=dict(label=list(who_map.keys()) + list(who_sponsor_map.keys()))
+    )
+    fig = go.Figure(data)
+    sources = sorted(set(merged.source_x).intersection(set(merged.source_y)))
+    fig.update_layout(
+        title=f"Mapping Trials Sites Country to Sponsor Country by WHO Region (data from: {' '.join(sources)})",
+    )
+    fig.write_html("sankey.html")
+
+
+def flowchart(args):
+    input_files = args.input_files
+    df = load_glob(input_files, "manual")
+
+    total = df.shape[0]
+
+    individual = df.individual
+    no_manual = df.no_manual_match | df.name.isnull()
+
+    leftover = df[~(individual | no_manual)]
+
+    ror_manual = (
+        leftover.ror.isnull()
+        & leftover.name_manual.isnull()
+        & leftover.ror_manual.notnull()
+    )
+    ror_fixed = (
+        leftover.ror.notnull()
+        & leftover.name_manual.isnull()
+        & leftover.ror_manual.notnull()
+    )  # 32
+    ror_right = (
+        leftover.ror.notnull()
+        & leftover.name_manual.isnull()
+        & leftover.ror_manual.isnull()
+    )
+
+    ror_any = ror_manual | ror_fixed | ror_right
+
+    manual = leftover.name_manual.notnull()
+
+    assert (ror_any.sum() + manual.sum()) == len(leftover)
+
+    with schemdraw.Drawing() as d:
+        d.config(fontsize=10)
+        d += flow.Start(w=6, h=2).label(f"Total trials\nn={total}")
+        d += flow.Arrow().down(d.unit / 2)
+        d += (step1 := flow.Box(w=0, h=0))
+        d += flow.Arrow().down(d.unit / 2)
+        d += (step2 := flow.Box(w=0, h=0))
+
+        d += flow.Arrow().theta(-135)
+        d += (
+            flow.Box(w=6, h=4)
+            .label(f"ROR resolved\nn={ror_any.sum()}")
+            .label(f"\n\n\n\n(n={ror_fixed.sum()} ROR manually corrected)", fontsize=8)
+            .label(
+                f"\n\n\n\n\n\n\n(n={ror_manual.sum()} ROR manually resolved)",
+                fontsize=8,
+            )
+        )
+
+        d.move_from(step2.S)
+        d += flow.Arrow().theta(-45)
+        d += flow.Box(w=6, h=4).label(f"Name manually resolved\nn={manual.sum()}")
+
+        # Exclusions
+        d.config(fontsize=8)
+        d += flow.Arrow().right(d.unit / 4).at(step1.E)
+        d += flow.Box(w=6, h=1).anchor("W").label(f"Individual\nn={individual.sum()}")
+        d += flow.Arrow().right(d.unit / 4).at(step2.E)
+        d += (
+            flow.Box(w=6, h=1)
+            .anchor("W")
+            .label(f"No manual match\nn={no_manual.sum()}")
+        )
+
+    output_name = "_".join(sorted(df.source.unique()))
+    plt.savefig(f"{output_name}_flowchart")
+    if "manual_org_type" in leftover.columns:
+        leftover = leftover.organization_type.fillna(leftover.manual_org_type)
+    leftover.value_counts().to_csv(f"{output_name}_orgs.csv")
+
+
+def multisite(args):
+    input_files = args.input_files
+    df = load_glob(input_files, "none")
+    counts = df.groupby("trial_id").trial_id.count()
+    table = (
+        (counts > 1)
+        .value_counts()
+        .rename(index={False: "Single Site", True: "Multi-Site"})
+    )
+    output_name = "_".join(sorted(df.source.unique()))
+    table.to_csv(f"{output_name}_single_multi.csv")
+
+
 if __name__ == "__main__":
     base = get_base_parser()
+    results = get_results_parser()
     parent = get_full_parser()
     ror_parser = argparse.ArgumentParser()
     subparsers = ror_parser.add_subparsers()
@@ -513,6 +688,54 @@ if __name__ == "__main__":
         action="store_true",
         help="Add newly resolved ids to the mapping dict",
     )
+
+    map_parser = subparsers.add_parser("map", parents=[results])
+    map_parser.add_argument(
+        "--plot-world",
+        action="store_true",
+        help="Plot a world map, rather than by WHO region",
+    )
+    map_parser.add_argument("--title", type=str, help="Title for plot", required=True)
+    map_parser.add_argument(
+        "--country-column",
+        type=str,
+        help="Name of country column to use",
+        default="country",
+    )
+    map_parser.set_defaults(func=make_map)
+
+    org_parser = subparsers.add_parser("sponsor-org", parents=[results])
+    org_parser.set_defaults(func=org_region)
+
+    flowchart_parser = subparsers.add_parser("flowchart", parents=[results])
+    flowchart_parser.set_defaults(func=flowchart)
+
+    multisite_parser = subparsers.add_parser("multisite", parents=[results])
+    multisite_parser.set_defaults(func=multisite)
+
+    verb = get_verbosity_parser()
+    site_sponsor_parser = subparsers.add_parser("site-sponsor", parents=[verb])
+    site_sponsor_parser.add_argument(
+        "--site-files",
+        required=True,
+        action="append",
+        type=match_paths,
+        help="One or more glob patterns for matching input files",
+    )
+    site_sponsor_parser.add_argument(
+        "--sponsor-files",
+        required=True,
+        action="append",
+        type=match_paths,
+        help="One or more glob patterns for matching input files",
+    )
+    site_sponsor_parser.add_argument(
+        "--file-filter",
+        choices=["manual", "ror", "country"],
+        default="country",
+        help="Filter registry data",
+    )
+    site_sponsor_parser.set_defaults(func=site_sponsor)
 
     args = ror_parser.parse_args()
     if hasattr(args, "func"):

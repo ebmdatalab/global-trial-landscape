@@ -3,6 +3,8 @@ import logging
 import pathlib
 from os import environ
 
+from utils import match_paths
+
 
 def setup_logger(verbosity):
     logging_level = logging.ERROR
@@ -41,6 +43,25 @@ def get_verbosity_parser():
         default=0,
     )
     return verb
+
+
+def get_results_parser():
+    verb = get_verbosity_parser()
+    res = argparse.ArgumentParser(add_help=False, parents=[verb])
+    res.add_argument(
+        "--input-files",
+        required=True,
+        action="append",
+        type=match_paths,
+        help="One or more glob patterns for matching input files",
+    )
+    res.add_argument(
+        "--file-filter",
+        choices=["manual", "ror", "country"],
+        default="country",
+        help="Filter registry data",
+    )
+    return res
 
 
 def get_base_parser():
