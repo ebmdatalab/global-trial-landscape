@@ -142,7 +142,7 @@ six==1.16.0
     #   url-normalize
 tzdata==2023.3
     # via pandas
-unidecode==1.3.6
+unidecode==1.3.7
     # via -r requirements.dev.in
 url-normalize==1.4.3
     # via requests-cache
