@@ -1,11 +1,14 @@
 import numpy
 import pandas
+import pytest
 import vcr
 
 from query_ror import (
     apply_ror,
+    check_mapping_dict,
     get_empty_results,
     merge_and_update,
+    merge_drop_dups,
     process_ror_json,
 )
 from utils import create_session, find_city_country, remove_noninformative
@@ -176,3 +179,44 @@ def test_merge_and_update():
     assert merged.lattitude.loc[5] == "-101"
     # single ror id gets mapped to both trials
     assert merged[merged.ror == "https://1"].trial_id.count() == 2
+
+
+def test_merge_drop_dups():
+    results = pandas.DataFrame(
+        {
+            "id": [1, 2, 3, 4],
+            "country": ["a", "b", "c", "d"],
+            "ror": ["htpps://1", "https://2", "htpps://3", "https://4"],
+        }
+    )
+    results = results.set_index("id")
+    remaining = pandas.DataFrame(
+        {
+            "id": [1, 3, 4, 5],
+            "lattitude": [100, -100, 400, -200],
+            "ror": ["htpps://1", "https://old_ror", "htpps://4", "https://5"],
+        }
+    )
+    remaining = remaining.set_index("id")
+    merged = merge_drop_dups(results, remaining, on="index")
+    # This is a left merge, so we should have same num as left frame
+    assert len(merged) == len(results)
+    # If there are duplicate columns in the left/right, choose the left
+    assert merged.loc[2].ror == "https://2"
+    # Resulting df should have union of columns
+    assert (
+        len(set(merged.columns) - set(["country", "ror", "lattitude", "_merge"])) == 0
+    )
+
+
+def test_check_mapping_dict():
+    df = pandas.DataFrame(
+        {
+            "a": [1, 1, 2, 2, 3],
+            "b": [1, 1, 3, 4, 5],
+            "ror": ["https://1", "https://2", "https://3", "https://4", "https://5"],
+        }
+    )
+    with pytest.raises(SystemExit) as wrapped_exit:
+        check_mapping_dict(df, compare_id=["a", "b"])
+    assert wrapped_exit.type == SystemExit

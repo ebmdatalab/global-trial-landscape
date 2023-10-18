@@ -1,18 +1,25 @@
 import difflib
+import glob
 import html
 import json
 import logging
+import pathlib
 import re
 import sys
 import time
 from ast import literal_eval
+from itertools import chain
 
 import country_converter as coco
+import geopandas
+import matplotlib.pyplot as plt
 import numpy
 import pandas
 import requests
 import requests_cache
+import seaborn as sns
 from requests_cache import NEVER_EXPIRE, CachedSession
+from shapely.geometry import MultiPolygon
 from unidecode import unidecode
 
 
@@ -35,6 +42,99 @@ SPECIFIC_TRIAL_PROTOCOL = (
     "trial [ti]) "
     "NOT (animals [mh] NOT humans [mh])"
 )
+
+REGISTRY_MAP = {
+    "ACT": "ANZCTR",
+    "CTR": "CRiS",
+    "CHI": "ChiCTR",
+    "DRK": "DRKS",
+    "EUC": "EUCTR",
+    "IRC": "IRCT",
+    "ITM": "ITMCTR",
+    "JRP": "JPRN",
+    "KCT": "KCTR",
+    "LBC": "LBCTR",
+    "NCT": "ClinicalTrials.gov",
+    "NTR": "NTR",
+    "PAC": "PACTRN",
+    "PER": "REPEC",
+    "RBR": "ReBec",
+    "RPC": "RPCEC",
+    "SLC": "SLCTR",
+    "TCT": "TCTR",
+}
+
+
+def get_path(*args):
+    return pathlib.Path(*args).resolve()
+
+
+def match_paths(pattern):
+    return [get_path(x) for x in glob.glob(pattern)]
+
+
+def load_glob(filenames, file_filter):
+    filenames_flat = list(chain.from_iterable(filenames))
+    frames = []
+    for input_file in filenames_flat:
+        df = pandas.read_csv(input_file)
+
+        # NOTE: have not removed individual/no manual/ror wrong
+        # NOTE: ror metadata i.e. country_ror might be wrong (if ror_wrong)
+        if file_filter == "manual":
+            if (
+                len(
+                    set(
+                        [
+                            "individual",
+                            "no_manual_match",
+                            "name_manual",
+                            "name_resolved",
+                        ]
+                    )
+                    - set(df.columns)
+                )
+                == 0
+            ):
+                df["individual"] = df["individual"].fillna(0).astype(bool)
+                df["no_manual_match"] = df["no_manual_match"].fillna(0).astype(bool)
+                resolved_filter = (~df.individual) & (~df.no_manual_match)
+                df.loc[resolved_filter, "name_normalized"] = df.name_manual.fillna(
+                    df.name_resolved
+                )
+                if "manual_org_type" in df.columns:
+                    # Prefer manual
+                    df.organization_type = df.manual_org_type.fillna(
+                        df.organization_type
+                    )
+            else:
+                logging.info(f"Skipping {input_file}: has not been manually resolved")
+                continue
+
+        elif file_filter == "ror":
+            # TODO: use manual fixes if they exist?
+            # Filter for those that ror resolved
+            if "ror" in df.columns and "organization_type" in df.columns:
+                df = df[df.ror.notnull()]
+                # TODO: could exclude Company here (high error rate)
+                # df = df[df.organization_type != "Company"]
+            else:
+                logging.info(f"Skipping {input_file}: does not have ROR columns")
+                continue
+        elif file_filter == "country":
+            # Skip the dataset if it has no country data
+            if "country" not in df.columns:
+                logging.info(f"Skipping {input_file}: has no country data")
+                continue
+
+        # TODO: do we need to merge so they have the same columns? Fillna
+        logging.info(f"Adding {input_file}")
+        frames.append(df)
+    if len(frames) > 0:
+        return pandas.concat(frames, ignore_index=True)
+    else:
+        logging.error(f"No data passed the {file_filter} filter")
+        sys.exit(1)
 
 
 def append_safe(df, filepath):
@@ -421,6 +521,7 @@ def map_country(country_column):
 
 
 # https://ourworldindata.org/grapher/who-regions
+# TODO: country codes that are not listed as WHO countries
 def map_who(country_column):
     """
     Map country to WHO region
@@ -621,3 +722,134 @@ def preprocess_trial_file(args):
                 )
             ]
         ].to_csv(output_dir / f"{source}_sites.csv")
+
+
+def world_map(counts, country_column="country", legend_title="Number of Trials"):
+    """
+    Counts is a series indexed by iso2 country
+    """
+    world = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres"))
+    world["country"] = convert_country_simple(world["iso_a3"], to="iso2")
+    fig, ax = plt.subplots(1, 1, figsize=(16, 10))
+    world.boundary.plot(ax=ax)
+
+    column_name = counts.name
+    counts = counts.reset_index()
+
+    merged = world.merge(counts, left_on="country", right_on=country_column)
+    merged.plot(
+        column=column_name,
+        cmap="YlOrRd",
+        ax=ax,
+        legend=True,
+        legend_kwds={"label": f"{legend_title}"},
+    )
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+
+
+def region_map(counts, country_column="country", legend_title="Number of Trials"):
+    """
+    Counts is a series indexed by iso2 country
+    """
+    world = geopandas.read_file(geopandas.datasets.get_path("naturalearth_lowres"))
+    world["country"] = convert_country_simple(world["iso_a3"], to="iso2")
+    world["who_region"] = map_who(world["country"])
+
+    # Remove geometries that leave large gaps/impact scaling
+    world.loc[world["country"] == "FR", "geometry"] = (
+        world[world["country"] == "FR"].iloc[0].geometry.geoms[1]
+    )
+    world.loc[world["country"] == "FJ", "geometry"] = MultiPolygon(
+        list(world[world["country"] == "FJ"].iloc[0].geometry.geoms)[0:2]
+    )
+    ru_shapes = list(world[world["country"] == "RU"].iloc[0].geometry.geoms)
+    world.loc[world["country"] == "RU", "geometry"] = MultiPolygon(
+        ru_shapes[0:10] + ru_shapes[13:]
+    )
+
+    column_name = counts.name
+    counts = counts.reset_index()
+    merged = world.merge(counts, left_on="country", right_on=country_column)
+
+    fig, axs = plt.subplots(2, 3, figsize=(20, 10))
+    axs = axs.flat
+
+    for i, region in enumerate(merged.groupby("who_region")):
+        ax = axs[i]
+        region_name, region_df = region
+        # NOTE: plot WHOLE region boundary, not just those with counts
+        region_boundary = world[world.who_region == region_name]
+        region_boundary.boundary.plot(ax=ax)
+        region_df.plot(
+            column=column_name,
+            cmap="YlOrRd",
+            ax=ax,
+            legend=True,
+            legend_kwds={"label": f"{legend_title}"},
+        )
+        ax.set_title(f"{region_name} Trial Sites")
+        ax.set_xticklabels([])
+        ax.set_yticklabels([])
+
+
+def region_pie(df, legend_title="Number of Trials"):
+    """
+    Counts is a series indexed by iso2 country
+    """
+    # TODO: which country- country_ror?
+    df["who_region"] = map_who(df["country"])
+    grouped = df.groupby("who_region")
+
+    orgs = df.organization_type.unique()
+    colors = dict(zip(orgs, sns.color_palette("colorblind", len(orgs))))
+
+    fig, axs = plt.subplots(2, 3, figsize=(20, 10))
+    axs = axs.flat
+
+    for i, region in enumerate(grouped):
+        region_name, data = region
+        ax = axs[i]
+        counts = (
+            data.groupby("organization_type")
+            .trial_id.count()
+            .sort_values(ascending=False)
+        )
+        labels = [f"{label} {count}" for label, count in counts.items()]
+        region_colors = list(counts.index.map(colors))
+        ax.pie(
+            counts,
+            labels=labels,
+            startangle=140,
+            colors=region_colors,
+            labeldistance=None,
+        )
+        ax.legend(bbox_to_anchor=(1.0, 0, 0.5, 1))
+        ax.set_title(f"{region_name}")
+
+
+def over_time(df, column="trial_id"):
+    df["enrollment_year"] = pandas.to_datetime(df.enrollment_date).dt.strftime("%Y")
+    df["registration_year"] = pandas.to_datetime(df.registration_date).dt.strftime("%Y")
+    by_enroll_date = df.groupby("enrollment_year")[column].count().reset_index()
+    by_reg_date = df.groupby("registration_year")[column].count().reset_index()
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(
+        by_reg_date["registration_year"].astype(int) - 0.2,
+        by_reg_date["trial_id"],
+        0.4,
+        label="Registration year",
+    )
+    ax.bar(
+        by_enroll_date["enrollment_year"].astype(int) + 0.2,
+        by_enroll_date["trial_id"],
+        0.4,
+        label="Enrollment year",
+    )
+    ax.legend(bbox_to_anchor=(1.3, 1.05))
+    registries = " and ".join(df.source.str.upper().unique())
+    ax.set_title(f"New trials enrolled or registered in {registries}")
+    fig.tight_layout()
+    output_name = "_".join(df.source.unique())
+    plt.savefig(f"{output_name}_registrations_over_time")
