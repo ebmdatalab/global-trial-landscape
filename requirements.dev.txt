@@ -9,7 +9,7 @@ attrs==23.1.0
     #   cattrs
     #   fiona
     #   requests-cache
-black==23.9.1
+black==23.10.0
     # via -r requirements.dev.in
 build==1.0.3
     # via pip-tools
