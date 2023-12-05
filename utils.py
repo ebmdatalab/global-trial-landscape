@@ -52,7 +52,7 @@ REGISTRY_MAP = {
     "IRC": "IRCT",
     "ITM": "ITMCTR",
     "JRP": "JPRN",
-    "KCT": "KCTR",
+    "KCT": "KCT",
     "LBC": "LBCTR",
     "NCT": "ClinicalTrials.gov",
     "NTR": "NTR",
@@ -202,7 +202,12 @@ def convert_country(country_column, to="ISO2"):
     """
     cc = coco.CountryConverter()
     # Initial conversion
-    out = cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
+    try:
+        out = cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
+    except Exception:
+        import code
+
+        code.interact(local=locals())
     missing = country_column[
         out.isnull() & country_column.notnull() & (country_column != "")
     ]
@@ -303,7 +308,12 @@ def clean_trials(trials):
     # Use ISO2 as per the ror schema
     # https://ror.readme.io/docs/all-ror-fields-and-sub-fields
     if "country" in trials.columns:
-        trials.loc[:, "country"] = convert_country(trials.country)
+        try:
+            trials.loc[:, "country"] = convert_country(trials.country)
+        except Exception:
+            import code
+
+            code.interact(local=locals())
 
     # Standardise city name
     if "city" in trials.columns:
