@@ -528,17 +528,17 @@ def site_sponsor(args):
         for index, name in enumerate(counts.sponsor_who_region.unique())
     }
     link = dict(
-        source=list(counts.who_region.map(who_map)),
-        target=list(counts.sponsor_who_region.map(who_sponsor_map)),
+        source=list(counts.sponsor_who_region.map(who_sponsor_map)),
+        target=list(counts.who_region.map(who_map)),
         value=list(counts.trial_id),
     )
     data = go.Sankey(
         link=link, node=dict(label=list(who_map.keys()) + list(who_sponsor_map.keys()))
     )
     fig = go.Figure(data)
-    sources = sorted(set(merged.source_x).intersection(set(merged.source_y)))
+    sources = sorted(set(merged.source))
     fig.update_layout(
-        title=f"Mapping Trials Sites Country to Sponsor Country by WHO Region (data from: {' '.join(sources)})",
+        title=f"Mapping Sponsor to Trial Site by WHO Region (data from: {' '.join(sources)})",
     )
     fig.write_html("sankey.html")
 
@@ -725,6 +725,12 @@ if __name__ == "__main__":
     map_parser.set_defaults(func=make_map)
 
     org_parser = subparsers.add_parser("sponsor-org", parents=[results])
+    org_parser.add_argument(
+        "--country-column",
+        type=str,
+        help="Name of country column to use",
+        default="country",
+    )
     org_parser.set_defaults(func=org_region)
 
     flowchart_parser = subparsers.add_parser("flowchart", parents=[results])
@@ -750,10 +756,33 @@ if __name__ == "__main__":
         help="One or more glob patterns for matching input files",
     )
     site_sponsor_parser.add_argument(
-        "--file-filter",
+        "--sponsor-filter",
         choices=["manual", "ror", "country"],
         default="country",
         help="Filter registry data",
+    )
+    site_sponsor_parser.add_argument(
+        "--site-filter",
+        choices=["manual", "ror", "country"],
+        default="country",
+        help="Filter registry data",
+    )
+    site_sponsor_parser.add_argument(
+        "--sponsor-country-column",
+        type=str,
+        help="Name of sponsor country column to use",
+        default="country",
+    )
+    site_sponsor_parser.add_argument(
+        "--site-country-column",
+        type=str,
+        help="Name of site country column to use",
+        default="country",
+    )
+    site_sponsor_parser.add_argument(
+        "--exclude-indiv-company",
+        action="store_true",
+        help="Exclude individuals and companies",
     )
     site_sponsor_parser.set_defaults(func=site_sponsor)
 

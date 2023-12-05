@@ -134,7 +134,8 @@ def load_glob(filenames, file_filter, exclude_indiv_company=False):
             if "country" not in df.columns:
                 logging.info(f"Skipping {input_file}: has no country data")
                 continue
-
+            # One entry per trial/source/country
+            df = df.groupby(["trial_id", "source", "country"]).first().reset_index()
         # TODO: do we need to merge so they have the same columns? Fillna
         logging.info(f"Adding {input_file}")
         frames.append(df)
@@ -842,17 +843,17 @@ def region_map(counts, country_column="country", legend_title="Number of Trials"
             legend=True,
             legend_kwds={"label": f"{legend_title}"},
         )
-        ax.set_title(f"{region_name} Trial Sites")
+        ax.set_title(f"{region_name}")
         ax.set_xticklabels([])
         ax.set_yticklabels([])
 
 
-def region_pie(df, legend_title="Number of Trials"):
+def region_pie(df, country_column, legend_title="Number of Trials"):
     """
     Counts is a series indexed by iso2 country
     """
     # TODO: which country- country_ror?
-    df["who_region"] = map_who(df["country"])
+    df["who_region"] = map_who(df[country_column])
     grouped = df.groupby("who_region")
 
     orgs = df.organization_type.unique()
