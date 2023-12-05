@@ -400,16 +400,30 @@ def query(url, session, params={}, retries=2):
 
 def split_country_list(site_country_list):
     non_null = site_country_list.dropna()
+    # TODO: could be comma separated! i.e. SLCTR
+    # First see if if literal eval is needed
     try:
         non_null = non_null.apply(
-            lambda x: literal_eval(x).split(";") if isinstance(x, str) else x
+            lambda x: literal_eval(x) if isinstance(x, str) else x
         )
     except Exception:
         pass
+    try:
+        non_null = non_null.apply(
+            lambda x: x.strip().split(";") if ";" in x else x.strip().split(",")
+        )
+    except Exception:
+        pass
+    # Otherwise skip right to trying to split on ;
 
     exploded = non_null.explode().reset_index()
-    countries = convert_country(exploded["site_country_list"])
-    exploded["site_country_list"] = countries
+    countries = convert_country(exploded[site_country_list.name])
+    exploded[site_country_list.name] = countries
+    return exploded
+
+
+def ictrp_to_list(site_country_list):
+    exploded = split_country_list(site_country_list)
     grouped = exploded.groupby("index", dropna=False).site_country_list.apply(list)
     site_country_list.loc[grouped.index] = grouped
     site_country_list.loc[site_country_list.isnull()] = site_country_list.loc[
@@ -434,7 +448,7 @@ def expand_sites(df):
         df = df[["trial_id"]].join(normalized)
 
     if "site_country_list" in df.columns:
-        df["site_country_list"] = split_country_list(df.site_country_list)
+        df["site_country_list"] = ictrp_to_list(df.site_country_list)
         df["country"] = df.site_country_list.apply(
             lambda x: x[0] if len(x) == 1 else None
         )
@@ -588,7 +602,30 @@ def preprocess_trial_file(args):
     set_country = None
     site_column_name = "sites"
 
-    df = pandas.read_csv(filepath, index_col=[0])
+    df = pandas.read_csv(filepath)
+
+    df = df.drop(
+        df.columns[df.columns.str.contains("unnamed", case=False)],
+        axis=1,
+    )
+
+    df["source"] = source
+
+    if "Countries" in df.columns:
+        exploded = split_country_list(df.Countries)
+        ictrp_countries = df[["trial_id", "source"]].copy()
+        joined = exploded.join(ictrp_countries, on="index").drop("index", axis=1)
+        joined = joined.rename({"Countries": "country"}, axis=1)
+
+        if "aus_states" in df.columns:
+            joined.loc[
+                (df.aus_states.notnull()) & (joined.country.isnull()), "country"
+            ] = "AU"
+        joined.to_csv(output_dir / f"{source}_sites_ictrp.csv")
+        # Exit if there is only ictrp data
+        if set(df.columns) == {"trial_id", "Countries", "source"}:
+            return
+
     if source == "cris":
         df = df.rename(columns={"cris_sites": "sites"})
         set_country = "KR"
@@ -684,7 +721,6 @@ def preprocess_trial_file(args):
             }
         )
 
-    df["source"] = source
     if "sponsor" in df.columns:
         df = df.rename(columns={"sponsor": "name"})
         # The columns we want to keep for the sponsor
