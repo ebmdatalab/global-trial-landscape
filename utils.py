@@ -73,7 +73,7 @@ def match_paths(pattern):
     return [get_path(x) for x in glob.glob(pattern)]
 
 
-def load_glob(filenames, file_filter):
+def load_glob(filenames, file_filter, exclude_indiv_company=False):
     filenames_flat = list(chain.from_iterable(filenames))
     frames = []
     for input_file in filenames_flat:
@@ -98,26 +98,34 @@ def load_glob(filenames, file_filter):
             ):
                 df["individual"] = df["individual"].fillna(0).astype(bool)
                 df["no_manual_match"] = df["no_manual_match"].fillna(0).astype(bool)
-                resolved_filter = (~df.individual) & (~df.no_manual_match)
-                df.loc[resolved_filter, "name_normalized"] = df.name_manual.fillna(
-                    df.name_resolved
-                )
                 if "manual_org_type" in df.columns:
                     # Prefer manual
                     df.organization_type = df.manual_org_type.fillna(
                         df.organization_type
                     )
+                if "type" in df.columns:
+                    df.loc[
+                        (df.source == "ctgov") & (df.type == "INDUSTRY"),
+                        "organization_type",
+                    ] = df.organization_type.fillna("Company")
+                if "manual_spon_country" in df.columns:
+                    df.country_ror = df.manual_spon_country.fillna(df.country_ror)
+                df.loc[:, "name_normalized"] = df.name_manual.fillna(df.name_resolved)
+                if exclude_indiv_company:
+                    df = df[
+                        ~df.individual
+                        & ~df.no_manual_match
+                        & ~(df.organization_type == "Company")
+                    ]
             else:
                 logging.info(f"Skipping {input_file}: has not been manually resolved")
                 continue
 
         elif file_filter == "ror":
-            # TODO: use manual fixes if they exist?
             # Filter for those that ror resolved
-            if "ror" in df.columns and "organization_type" in df.columns:
+            # Note: update_metadata should have been run if ror_manual
+            if "ror" in df.columns in df.columns:
                 df = df[df.ror.notnull()]
-                # TODO: could exclude Company here (high error rate)
-                # df = df[df.organization_type != "Company"]
             else:
                 logging.info(f"Skipping {input_file}: does not have ROR columns")
                 continue
