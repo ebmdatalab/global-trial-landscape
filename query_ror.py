@@ -596,6 +596,10 @@ def flowchart(args):
                 f"\n\n\n\n\n\n\n(n={ror_manual.sum()} ROR manually resolved)",
                 fontsize=8,
             )
+            .label(
+                f"\n\n\n\n\n\n\n\n\n\n(n={ror_right.sum()} ROR correct)",
+                fontsize=8,
+            )
         )
 
         d.move_from(step3.S)
