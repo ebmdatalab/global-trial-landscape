@@ -503,6 +503,7 @@ def site_sponsor(args):
     sponsor_country_column = args.sponsor_country_column
     site_country_column = args.site_country_column
     exclude_indiv_company = args.exclude_indiv_company
+    exclude_same = args.exclude_same
 
     site_df = load_glob(site_files, site_filter, exclude_indiv_company)
     sponsor_df = load_glob(sponsor_files, sponsor_filter, exclude_indiv_company)
@@ -521,6 +522,9 @@ def site_sponsor(args):
         .trial_id.count()
         .reset_index()
     )
+
+    if exclude_same:
+        counts = counts.loc[counts.who_region != counts.sponsor_who_region]
     # Map nodes to node ids
     who_map = {name: index for index, name in enumerate(counts.who_region.unique())}
     who_sponsor_map = {
@@ -787,6 +791,11 @@ if __name__ == "__main__":
         "--exclude-indiv-company",
         action="store_true",
         help="Exclude individuals and companies",
+    )
+    site_sponsor_parser.add_argument(
+        "--exclude-same",
+        action="store_true",
+        help="Exclude site/sponsor region the same",
     )
     site_sponsor_parser.set_defaults(func=site_sponsor)
 
