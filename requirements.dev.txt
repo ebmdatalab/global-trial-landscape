@@ -37,7 +37,7 @@ cligj==0.7.2
     # via fiona
 contourpy==1.1.1
     # via matplotlib
-country-converter==1.0.0
+country-converter==1.1.1
     # via -r requirements.dev.in
 coverage==7.3.2
     # via -r requirements.dev.in
