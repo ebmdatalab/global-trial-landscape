@@ -52,7 +52,7 @@ REGISTRY_MAP = {
     "IRC": "IRCT",
     "ITM": "ITMCTR",
     "JRP": "JPRN",
-    "KCT": "KCTR",
+    "KCT": "KCT",
     "LBC": "LBCTR",
     "NCT": "ClinicalTrials.gov",
     "NTR": "NTR",
@@ -73,7 +73,7 @@ def match_paths(pattern):
     return [get_path(x) for x in glob.glob(pattern)]
 
 
-def load_glob(filenames, file_filter):
+def load_glob(filenames, file_filter, exclude_indiv_company=False):
     filenames_flat = list(chain.from_iterable(filenames))
     frames = []
     for input_file in filenames_flat:
@@ -98,26 +98,34 @@ def load_glob(filenames, file_filter):
             ):
                 df["individual"] = df["individual"].fillna(0).astype(bool)
                 df["no_manual_match"] = df["no_manual_match"].fillna(0).astype(bool)
-                resolved_filter = (~df.individual) & (~df.no_manual_match)
-                df.loc[resolved_filter, "name_normalized"] = df.name_manual.fillna(
-                    df.name_resolved
-                )
                 if "manual_org_type" in df.columns:
                     # Prefer manual
                     df.organization_type = df.manual_org_type.fillna(
                         df.organization_type
                     )
+                if "type" in df.columns:
+                    df.loc[
+                        (df.source == "ctgov") & (df.type == "INDUSTRY"),
+                        "organization_type",
+                    ] = df.organization_type.fillna("Company")
+                if "manual_spon_country" in df.columns:
+                    df.country_ror = df.manual_spon_country.fillna(df.country_ror)
+                df.loc[:, "name_normalized"] = df.name_manual.fillna(df.name_resolved)
+                if exclude_indiv_company:
+                    df = df[
+                        ~df.individual
+                        & ~df.no_manual_match
+                        & ~(df.organization_type == "Company")
+                    ]
             else:
                 logging.info(f"Skipping {input_file}: has not been manually resolved")
                 continue
 
         elif file_filter == "ror":
-            # TODO: use manual fixes if they exist?
             # Filter for those that ror resolved
-            if "ror" in df.columns and "organization_type" in df.columns:
+            # Note: update_metadata should have been run if ror_manual
+            if "ror" in df.columns in df.columns:
                 df = df[df.ror.notnull()]
-                # TODO: could exclude Company here (high error rate)
-                # df = df[df.organization_type != "Company"]
             else:
                 logging.info(f"Skipping {input_file}: does not have ROR columns")
                 continue
@@ -126,7 +134,8 @@ def load_glob(filenames, file_filter):
             if "country" not in df.columns:
                 logging.info(f"Skipping {input_file}: has no country data")
                 continue
-
+            # One entry per trial/source/country
+            df = df.groupby(["trial_id", "source", "country"]).first().reset_index()
         # TODO: do we need to merge so they have the same columns? Fillna
         logging.info(f"Adding {input_file}")
         frames.append(df)
@@ -194,7 +203,12 @@ def convert_country(country_column, to="ISO2"):
     """
     cc = coco.CountryConverter()
     # Initial conversion
-    out = cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
+    try:
+        out = cc.pandas_convert(country_column, to=to, not_found=numpy.nan)
+    except Exception:
+        import code
+
+        code.interact(local=locals())
     missing = country_column[
         out.isnull() & country_column.notnull() & (country_column != "")
     ]
@@ -295,7 +309,12 @@ def clean_trials(trials):
     # Use ISO2 as per the ror schema
     # https://ror.readme.io/docs/all-ror-fields-and-sub-fields
     if "country" in trials.columns:
-        trials.loc[:, "country"] = convert_country(trials.country)
+        try:
+            trials.loc[:, "country"] = convert_country(trials.country)
+        except Exception:
+            import code
+
+            code.interact(local=locals())
 
     # Standardise city name
     if "city" in trials.columns:
@@ -382,16 +401,30 @@ def query(url, session, params={}, retries=2):
 
 def split_country_list(site_country_list):
     non_null = site_country_list.dropna()
+    # TODO: could be comma separated! i.e. SLCTR
+    # First see if if literal eval is needed
     try:
         non_null = non_null.apply(
-            lambda x: literal_eval(x).split(";") if isinstance(x, str) else x
+            lambda x: literal_eval(x) if isinstance(x, str) else x
         )
     except Exception:
         pass
+    try:
+        non_null = non_null.apply(
+            lambda x: x.strip().split(";") if ";" in x else x.strip().split(",")
+        )
+    except Exception:
+        pass
+    # Otherwise skip right to trying to split on ;
 
     exploded = non_null.explode().reset_index()
-    countries = convert_country(exploded["site_country_list"])
-    exploded["site_country_list"] = countries
+    countries = convert_country(exploded[site_country_list.name])
+    exploded[site_country_list.name] = countries
+    return exploded
+
+
+def ictrp_to_list(site_country_list):
+    exploded = split_country_list(site_country_list)
     grouped = exploded.groupby("index", dropna=False).site_country_list.apply(list)
     site_country_list.loc[grouped.index] = grouped
     site_country_list.loc[site_country_list.isnull()] = site_country_list.loc[
@@ -416,7 +449,7 @@ def expand_sites(df):
         df = df[["trial_id"]].join(normalized)
 
     if "site_country_list" in df.columns:
-        df["site_country_list"] = split_country_list(df.site_country_list)
+        df["site_country_list"] = ictrp_to_list(df.site_country_list)
         df["country"] = df.site_country_list.apply(
             lambda x: x[0] if len(x) == 1 else None
         )
@@ -570,7 +603,30 @@ def preprocess_trial_file(args):
     set_country = None
     site_column_name = "sites"
 
-    df = pandas.read_csv(filepath, index_col=[0])
+    df = pandas.read_csv(filepath)
+
+    df = df.drop(
+        df.columns[df.columns.str.contains("unnamed", case=False)],
+        axis=1,
+    )
+
+    df["source"] = source
+
+    if "Countries" in df.columns:
+        exploded = split_country_list(df.Countries)
+        ictrp_countries = df[["trial_id", "source"]].copy()
+        joined = exploded.join(ictrp_countries, on="index").drop("index", axis=1)
+        joined = joined.rename({"Countries": "country"}, axis=1)
+
+        if "aus_states" in df.columns:
+            joined.loc[
+                (df.aus_states.notnull()) & (joined.country.isnull()), "country"
+            ] = "AU"
+        joined.to_csv(output_dir / f"{source}_sites_ictrp.csv")
+        # Exit if there is only ictrp data
+        if set(df.columns) == {"trial_id", "Countries", "source"}:
+            return
+
     if source == "cris":
         df = df.rename(columns={"cris_sites": "sites"})
         set_country = "KR"
@@ -666,7 +722,6 @@ def preprocess_trial_file(args):
             }
         )
 
-    df["source"] = source
     if "sponsor" in df.columns:
         df = df.rename(columns={"sponsor": "name"})
         # The columns we want to keep for the sponsor
@@ -788,17 +843,17 @@ def region_map(counts, country_column="country", legend_title="Number of Trials"
             legend=True,
             legend_kwds={"label": f"{legend_title}"},
         )
-        ax.set_title(f"{region_name} Trial Sites")
+        ax.set_title(f"{region_name}")
         ax.set_xticklabels([])
         ax.set_yticklabels([])
 
 
-def region_pie(df, legend_title="Number of Trials"):
+def region_pie(df, country_column, legend_title="Number of Trials"):
     """
     Counts is a series indexed by iso2 country
     """
     # TODO: which country- country_ror?
-    df["who_region"] = map_who(df["country"])
+    df["who_region"] = map_who(df[country_column])
     grouped = df.groupby("who_region")
 
     orgs = df.organization_type.unique()

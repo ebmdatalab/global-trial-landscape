@@ -461,7 +461,8 @@ def make_map(args):
     plot_world = args.plot_world
     country_column = args.country_column
     title = args.title
-    df = load_glob(input_files, file_filter)
+    exclude_indiv_company = args.exclude_indiv_company
+    df = load_glob(input_files, file_filter, exclude_indiv_company)
 
     sources = sorted(df.source.unique())
     if country_column not in df.columns:
@@ -478,11 +479,18 @@ def make_map(args):
 
 def org_region(args):
     input_files = args.input_files
-    df = load_glob(input_files, "ror")
+    file_filter = args.file_filter
+    exclude_indiv_company = args.exclude_indiv_company
+    country_column = args.country_column
+    df = load_glob(input_files, file_filter, exclude_indiv_company)
+    if exclude_indiv_company:
+        exclusion_str = " (excluding industry and individuals)"
+    else:
+        exclusion_str = ""
     sources = sorted(df.source.unique())
-    region_pie(df)
+    region_pie(df, country_column)
     plt.suptitle(
-        f"Sponsor Type by WHO Region with Registry Data\nData from: {' '.join(sources)}"
+        f"Sponsor Type by WHO Region with Registry Data\nData from: {' '.join(sources)}{exclusion_str}"
     )
     plt.savefig(f"{'_'.join(sources)}_sponsor_by_region.png", bbox_inches="tight")
 
@@ -490,20 +498,33 @@ def org_region(args):
 def site_sponsor(args):
     sponsor_files = args.sponsor_files
     site_files = args.site_files
-    file_filter = args.file_filter
+    sponsor_filter = args.sponsor_filter
+    site_filter = args.site_filter
+    sponsor_country_column = args.sponsor_country_column
+    site_country_column = args.site_country_column
+    exclude_indiv_company = args.exclude_indiv_company
+    exclude_same = args.exclude_same
 
-    site_df = load_glob(site_files, file_filter)
-    site_df["who_region"] = map_who(site_df.country_ror)
-    sponsor_df = load_glob(sponsor_files, file_filter)
-    sponsor_df["sponsor_who_region"] = map_who(sponsor_df.country_ror)
+    site_df = load_glob(site_files, site_filter, exclude_indiv_company)
+    sponsor_df = load_glob(sponsor_files, sponsor_filter, exclude_indiv_company)
+    # Only use sites with same source as sponsor
+    site_df = site_df[site_df.source.isin(sponsor_df.source.unique())]
+    site_df["who_region"] = map_who(site_df[site_country_column])
+    sponsor_df["sponsor_who_region"] = map_who(sponsor_df[sponsor_country_column])
     merged = site_df.merge(
-        sponsor_df, left_on="trial_id", right_on="trial_id", how="left"
+        sponsor_df,
+        left_on=["source", "trial_id"],
+        right_on=["source", "trial_id"],
+        how="left",
     )
     counts = (
         merged.groupby(["who_region", "sponsor_who_region"])
         .trial_id.count()
         .reset_index()
     )
+
+    if exclude_same:
+        counts = counts.loc[counts.who_region != counts.sponsor_who_region]
     # Map nodes to node ids
     who_map = {name: index for index, name in enumerate(counts.who_region.unique())}
     who_sponsor_map = {
@@ -511,17 +532,17 @@ def site_sponsor(args):
         for index, name in enumerate(counts.sponsor_who_region.unique())
     }
     link = dict(
-        source=list(counts.who_region.map(who_map)),
-        target=list(counts.sponsor_who_region.map(who_sponsor_map)),
+        source=list(counts.sponsor_who_region.map(who_sponsor_map)),
+        target=list(counts.who_region.map(who_map)),
         value=list(counts.trial_id),
     )
     data = go.Sankey(
         link=link, node=dict(label=list(who_map.keys()) + list(who_sponsor_map.keys()))
     )
     fig = go.Figure(data)
-    sources = sorted(set(merged.source_x).intersection(set(merged.source_y)))
+    sources = sorted(set(merged.source))
     fig.update_layout(
-        title=f"Mapping Trials Sites Country to Sponsor Country by WHO Region (data from: {' '.join(sources)})",
+        title=f"Mapping Sponsor to Trial Site by WHO Region (data from: {' '.join(sources)})",
     )
     fig.write_html("sankey.html")
 
@@ -533,9 +554,10 @@ def flowchart(args):
     total = df.shape[0]
 
     individual = df.individual
-    no_manual = df.no_manual_match | df.name.isnull()
+    company = (~individual) & (df.organization_type == "Company")
+    no_manual = (~individual) & (~company) & (df.no_manual_match | df.name.isnull())
 
-    leftover = df[~(individual | no_manual)]
+    leftover = df[~(individual) & ~(no_manual) & ~(company)]
 
     ror_manual = (
         leftover.ror.isnull()
@@ -566,6 +588,8 @@ def flowchart(args):
         d += (step1 := flow.Box(w=0, h=0))
         d += flow.Arrow().down(d.unit / 2)
         d += (step2 := flow.Box(w=0, h=0))
+        d += flow.Arrow().down(d.unit / 2)
+        d += (step3 := flow.Box(w=0, h=0))
 
         d += flow.Arrow().theta(-135)
         d += (
@@ -576,9 +600,13 @@ def flowchart(args):
                 f"\n\n\n\n\n\n\n(n={ror_manual.sum()} ROR manually resolved)",
                 fontsize=8,
             )
+            .label(
+                f"\n\n\n\n\n\n\n\n\n\n(n={ror_right.sum()} ROR correct)",
+                fontsize=8,
+            )
         )
 
-        d.move_from(step2.S)
+        d.move_from(step3.S)
         d += flow.Arrow().theta(-45)
         d += flow.Box(w=6, h=4).label(f"Name manually resolved\nn={manual.sum()}")
 
@@ -587,6 +615,8 @@ def flowchart(args):
         d += flow.Arrow().right(d.unit / 4).at(step1.E)
         d += flow.Box(w=6, h=1).anchor("W").label(f"Individual\nn={individual.sum()}")
         d += flow.Arrow().right(d.unit / 4).at(step2.E)
+        d += flow.Box(w=6, h=1).anchor("W").label(f"Company\nn={company.sum()}")
+        d += flow.Arrow().right(d.unit / 4).at(step3.E)
         d += (
             flow.Box(w=6, h=1)
             .anchor("W")
@@ -595,9 +625,7 @@ def flowchart(args):
 
     output_name = "_".join(sorted(df.source.unique()))
     plt.savefig(f"{output_name}_flowchart")
-    if "manual_org_type" in leftover.columns:
-        leftover = leftover.organization_type.fillna(leftover.manual_org_type)
-    leftover.value_counts().to_csv(f"{output_name}_orgs.csv")
+    leftover.organization_type.value_counts().to_csv(f"{output_name}_orgs.csv")
 
 
 def multisite(args):
@@ -705,6 +733,12 @@ if __name__ == "__main__":
     map_parser.set_defaults(func=make_map)
 
     org_parser = subparsers.add_parser("sponsor-org", parents=[results])
+    org_parser.add_argument(
+        "--country-column",
+        type=str,
+        help="Name of country column to use",
+        default="country",
+    )
     org_parser.set_defaults(func=org_region)
 
     flowchart_parser = subparsers.add_parser("flowchart", parents=[results])
@@ -730,10 +764,38 @@ if __name__ == "__main__":
         help="One or more glob patterns for matching input files",
     )
     site_sponsor_parser.add_argument(
-        "--file-filter",
+        "--sponsor-filter",
         choices=["manual", "ror", "country"],
         default="country",
         help="Filter registry data",
+    )
+    site_sponsor_parser.add_argument(
+        "--site-filter",
+        choices=["manual", "ror", "country"],
+        default="country",
+        help="Filter registry data",
+    )
+    site_sponsor_parser.add_argument(
+        "--sponsor-country-column",
+        type=str,
+        help="Name of sponsor country column to use",
+        default="country",
+    )
+    site_sponsor_parser.add_argument(
+        "--site-country-column",
+        type=str,
+        help="Name of site country column to use",
+        default="country",
+    )
+    site_sponsor_parser.add_argument(
+        "--exclude-indiv-company",
+        action="store_true",
+        help="Exclude individuals and companies",
+    )
+    site_sponsor_parser.add_argument(
+        "--exclude-same",
+        action="store_true",
+        help="Exclude site/sponsor region the same",
     )
     site_sponsor_parser.set_defaults(func=site_sponsor)
 

@@ -61,6 +61,11 @@ def get_results_parser():
         default="country",
         help="Filter registry data",
     )
+    res.add_argument(
+        "--exclude-indiv-company",
+        action="store_true",
+        help="Exclude individuals and companies",
+    )
     return res
 
 
