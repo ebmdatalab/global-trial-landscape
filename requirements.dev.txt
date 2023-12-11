@@ -110,7 +110,7 @@ platformdirs==3.10.0
     #   black
     #   requests-cache
     #   virtualenv
-plotly==5.17.0
+plotly==5.18.0
     # via -r requirements.dev.in
 pluggy==1.3.0
     # via pytest
