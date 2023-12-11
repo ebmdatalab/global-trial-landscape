@@ -138,7 +138,7 @@ requests==2.31.0
     # via
     #   -r requirements.dev.in
     #   requests-cache
-requests-cache==1.1.0
+requests-cache==1.1.1
     # via -r requirements.dev.in
 ruff==0.0.292
     # via -r requirements.dev.in
