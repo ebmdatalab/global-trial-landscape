@@ -1,3 +1,4 @@
+import argparse
 import difflib
 import glob
 import html
@@ -73,9 +74,20 @@ def match_paths(pattern):
     return [get_path(x) for x in glob.glob(pattern)]
 
 
-def load_glob(filenames, file_filter, exclude_indiv_company=False):
+def load_glob(
+    filenames,
+    file_filter,
+    exclude_unresolved=False,
+    exclude_indiv=False,
+    exclude_company=False,
+):
     filenames_flat = list(chain.from_iterable(filenames))
     frames = []
+    # TODO: could do for raw ror with organization type
+    if (file_filter != "manual") and (exclude_indiv or exclude_company):
+        raise argparse.ArgumentTypeError(
+            "Excluding individuals or companies only works for the manual filter"
+        )
     for input_file in filenames_flat:
         df = pandas.read_csv(input_file)
 
@@ -111,12 +123,13 @@ def load_glob(filenames, file_filter, exclude_indiv_company=False):
                 if "manual_spon_country" in df.columns:
                     df.country_ror = df.manual_spon_country.fillna(df.country_ror)
                 df.loc[:, "name_normalized"] = df.name_manual.fillna(df.name_resolved)
-                if exclude_indiv_company:
-                    df = df[
-                        ~df.individual
-                        & ~df.no_manual_match
-                        & ~(df.organization_type == "Company")
-                    ]
+
+                if exclude_unresolved:
+                    df = df[~df.no_manual_match]
+                if exclude_indiv:
+                    df = df[~df.individual]
+                if exclude_company:
+                    df = df[~(df.organization_type == "Company")]
             else:
                 logging.info(f"Skipping {input_file}: has not been manually resolved")
                 continue

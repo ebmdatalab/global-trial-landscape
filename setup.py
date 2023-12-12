@@ -62,9 +62,10 @@ def get_results_parser():
         help="Filter registry data",
     )
     res.add_argument(
-        "--exclude-indiv-company",
-        action="store_true",
-        help="Exclude individuals and companies",
+        "--keep-indiv", action="store_true", help="MANUAL ONLY: keep individuals"
+    )
+    res.add_argument(
+        "--keep-companies", action="store_true", help="MANUAL ONLY: keep companies"
     )
     return res
 

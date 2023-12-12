@@ -461,8 +461,12 @@ def make_map(args):
     plot_world = args.plot_world
     country_column = args.country_column
     title = args.title
-    exclude_indiv_company = args.exclude_indiv_company
-    df = load_glob(input_files, file_filter, exclude_indiv_company)
+    keep_indiv = args.keep_indiv
+    keep_companies = args.keep_companies
+    if file_filter == "manual":
+        df = load_glob(input_files, file_filter, True, keep_indiv, keep_companies)
+    else:
+        df = load_glob(input_files, file_filter, True, False, False)
 
     sources = sorted(df.source.unique())
     if country_column not in df.columns:
@@ -480,19 +484,30 @@ def make_map(args):
 def org_region(args):
     input_files = args.input_files
     file_filter = args.file_filter
-    exclude_indiv_company = args.exclude_indiv_company
+    keep_indiv = args.keep_indiv
+    keep_companies = args.keep_companies
     country_column = args.country_column
-    df = load_glob(input_files, file_filter, exclude_indiv_company)
-    if exclude_indiv_company:
-        exclusion_str = " (excluding industry and individuals)"
+    df = load_glob(input_files, file_filter, True, not keep_indiv, not keep_companies)
+    exclusion_str = " (excluding"
+    if not keep_companies:
+        exclusion_str += " companies"
+    if not keep_indiv:
+        if not keep_companies:
+            exclusion_str += " and individuals)"
+        else:
+            exclusion_str += " individuals)"
     else:
+        exclusion_str += ")"
+    if keep_companies and keep_indiv:
         exclusion_str = ""
     sources = sorted(df.source.unique())
     region_pie(df, country_column)
     plt.suptitle(
         f"Sponsor Type by WHO Region with Registry Data\nData from: {' '.join(sources)}{exclusion_str}"
     )
-    plt.savefig(f"{'_'.join(sources)}_sponsor_by_region.png", bbox_inches="tight")
+    plt.savefig(
+        f"{'_'.join(sources)}_sponsor_by_region{exclusion_str}.png", bbox_inches="tight"
+    )
 
 
 def site_sponsor(args):
@@ -502,11 +517,10 @@ def site_sponsor(args):
     site_filter = args.site_filter
     sponsor_country_column = args.sponsor_country_column
     site_country_column = args.site_country_column
-    exclude_indiv_company = args.exclude_indiv_company
     exclude_same = args.exclude_same
 
-    site_df = load_glob(site_files, site_filter, exclude_indiv_company)
-    sponsor_df = load_glob(sponsor_files, sponsor_filter, exclude_indiv_company)
+    site_df = load_glob(site_files, site_filter, True, False, False)
+    sponsor_df = load_glob(sponsor_files, sponsor_filter, True, True, True)
     # Only use sites with same source as sponsor
     site_df = site_df[site_df.source.isin(sponsor_df.source.unique())]
     site_df["who_region"] = map_who(site_df[site_country_column])
@@ -786,11 +800,6 @@ if __name__ == "__main__":
         type=str,
         help="Name of site country column to use",
         default="country",
-    )
-    site_sponsor_parser.add_argument(
-        "--exclude-indiv-company",
-        action="store_true",
-        help="Exclude individuals and companies",
     )
     site_sponsor_parser.add_argument(
         "--exclude-same",
