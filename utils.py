@@ -121,7 +121,11 @@ def load_glob(
                         "organization_type",
                     ] = df.organization_type.fillna("Company")
                 if "manual_spon_country" in df.columns:
-                    df.country_ror = df.manual_spon_country.fillna(df.country_ror)
+                    df.loc[:, "country_normalized"] = df.manual_spon_country.fillna(
+                        df.country_ror
+                    )
+                else:
+                    df.loc[:, "country_normalized"] = df.country
                 df.loc[:, "name_normalized"] = df.name_manual.fillna(df.name_resolved)
 
                 if exclude_unresolved:
