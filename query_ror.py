@@ -558,6 +558,8 @@ def site_sponsor(args):
     fig.update_layout(
         title=f"Mapping Sponsor to Trial Site by WHO Region (data from: {' '.join(sources)})",
     )
+    fig.add_annotation(x=0, y=1.05, text="<b>Sponsor</b>", showarrow=False)
+    fig.add_annotation(x=1, y=1.05, text="<b>Site</b>", showarrow=False)
     fig.write_html("sankey.html")
 
 
