@@ -201,6 +201,7 @@ def convert_country(country_column, to="ISO2"):
     """
     Standardise to a country code
     """
+    country_column = country_column.str.strip()
     cc = coco.CountryConverter()
     # Initial conversion
     try:
@@ -401,25 +402,29 @@ def query(url, session, params={}, retries=2):
 
 def split_country_list(site_country_list):
     non_null = site_country_list.dropna()
-    # TODO: could be comma separated! i.e. SLCTR
-    # First see if if literal eval is needed
+    has_multiple = len(convert_country(non_null).explode()) > len(non_null)
+    # NOTE: could directly call convert_country, but when given a list it
+    # will leave out ones it failed to convert
     try:
         non_null = non_null.apply(
             lambda x: literal_eval(x) if isinstance(x, str) else x
         )
     except Exception:
         pass
-    try:
-        non_null = non_null.apply(
-            lambda x: x.strip().split(";") if ";" in x else x.strip().split(",")
-        )
-    except Exception:
-        pass
+    if has_multiple:
+        try:
+            non_null = non_null.apply(
+                lambda x: x.strip().split(";") if ";" in x else x.strip().split(",")
+            )
+        except Exception:
+            pass
     # Otherwise skip right to trying to split on ;
 
     exploded = non_null.explode().reset_index()
     countries = convert_country(exploded[site_country_list.name])
     exploded[site_country_list.name] = countries
+    # Convert country could have made a list, re-explode
+    exploded = exploded.explode(site_country_list.name, ignore_index=True)
     return exploded
 
 
