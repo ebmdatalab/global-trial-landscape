@@ -152,12 +152,16 @@ def load_glob(
                 logging.info(f"Skipping {input_file}: has no country data")
                 continue
             # One entry per trial/source/country
+            # NOTE: this is to match any ICTRP data
             df = df.groupby(["trial_id", "source", "country"]).first().reset_index()
         # TODO: do we need to merge so they have the same columns? Fillna
         logging.info(f"Adding {input_file}")
         frames.append(df)
     if len(frames) > 0:
-        return pandas.concat(frames, ignore_index=True)
+        joined = pandas.concat(frames, ignore_index=True)
+        return joined.drop(
+            joined.columns[joined.columns.str.contains("unnamed", case=False)], axis=1
+        )
     else:
         logging.error(f"No data passed the {file_filter} filter")
         sys.exit(1)

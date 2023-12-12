@@ -520,34 +520,45 @@ def site_sponsor(args):
     exclude_same = args.exclude_same
 
     site_df = load_glob(site_files, site_filter, True, False, False)
+    site_df.columns = site_df.columns.map(
+        lambda x: "site_" + x if x != "source" and x != "trial_id" else x
+    )
     sponsor_df = load_glob(sponsor_files, sponsor_filter, True, True, True)
+    sponsor_df.columns = sponsor_df.columns.map(
+        lambda x: "sponsor_" + x if x != "source" and x != "trial_id" else x
+    )
     # Only use sites with same source as sponsor
     site_df = site_df[site_df.source.isin(sponsor_df.source.unique())]
-    site_df["who_region"] = map_who(site_df[site_country_column])
-    sponsor_df["sponsor_who_region"] = map_who(sponsor_df[sponsor_country_column])
+    site_df["site_who_region"] = map_who(site_df["site_" + site_country_column])
+    sponsor_df["sponsor_who_region"] = map_who(
+        sponsor_df["sponsor_" + sponsor_country_column]
+    )
     merged = site_df.merge(
         sponsor_df,
         left_on=["source", "trial_id"],
         right_on=["source", "trial_id"],
-        how="left",
+        how="inner",
     )
+    merged.to_csv("site_sponsor.csv", index=False)
     counts = (
-        merged.groupby(["who_region", "sponsor_who_region"])
+        merged.groupby(["site_who_region", "sponsor_who_region"])
         .trial_id.count()
         .reset_index()
     )
 
     if exclude_same:
-        counts = counts.loc[counts.who_region != counts.sponsor_who_region]
+        counts = counts.loc[counts.site_who_region != counts.sponsor_who_region]
     # Map nodes to node ids
-    who_map = {name: index for index, name in enumerate(counts.who_region.unique())}
+    who_map = {
+        name: index for index, name in enumerate(counts.site_who_region.unique())
+    }
     who_sponsor_map = {
         name: index + len(who_map)
         for index, name in enumerate(counts.sponsor_who_region.unique())
     }
     link = dict(
         source=list(counts.sponsor_who_region.map(who_sponsor_map)),
-        target=list(counts.who_region.map(who_map)),
+        target=list(counts.site_who_region.map(who_map)),
         value=list(counts.trial_id),
     )
     data = go.Sankey(
@@ -561,6 +572,41 @@ def site_sponsor(args):
     fig.add_annotation(x=0, y=1.05, text="<b>Sponsor</b>", showarrow=False)
     fig.add_annotation(x=1, y=1.05, text="<b>Site</b>", showarrow=False)
     fig.write_html("sankey.html")
+
+
+def combine_datasets(args):
+    sponsor_files = args.sponsor_files
+    site_files = args.site_files
+    # Do not exclude individuals (exclude companies)
+    sponsor_df = load_glob(sponsor_files, "manual", True, False, True)
+    sponsor_df["sponsor_who_region"] = map_who(sponsor_df["country_normalized"])
+    sponsor_counts = sponsor_df.groupby(
+        ["sponsor_who_region", "country_normalized"]
+    ).trial_id.count()
+    sponsor_counts = (
+        sponsor_counts.reset_index()
+        .sort_values(by=["sponsor_who_region", "trial_id"], ascending=[True, False])
+        .set_index(["sponsor_who_region", "country_normalized"])
+    )
+    sponsor_counts.to_csv("sponsor_counts.csv")
+    import code
+
+    code.interact(local=locals())
+
+    # This will just get one trial/source/country
+    site_df = load_glob(site_files, "country", True, False, False)
+    site_df["who_region"] = map_who(site_df["country"])
+    site_counts = site_df.groupby(["who_region", "country"]).trial_id.count()
+    site_counts = (
+        site_counts.reset_index()
+        .sort_values(by=["who_region", "trial_id"], ascending=[True, False])
+        .set_index(["who_region", "country"])
+    )
+    site_counts.to_csv("site_counts.csv")
+
+    # TODO: include an output dir
+    sponsor_df.to_csv("sponsor_combined.csv", index=False)
+    site_df.to_csv("site_combined.csv", index=False)
 
 
 def flowchart(args):
@@ -809,6 +855,23 @@ if __name__ == "__main__":
         help="Exclude site/sponsor region the same",
     )
     site_sponsor_parser.set_defaults(func=site_sponsor)
+
+    combine_datasets_parser = subparsers.add_parser("combine-datasets", parents=[verb])
+    combine_datasets_parser.add_argument(
+        "--site-files",
+        required=True,
+        action="append",
+        type=match_paths,
+        help="One or more glob patterns for matching input files",
+    )
+    combine_datasets_parser.add_argument(
+        "--sponsor-files",
+        required=True,
+        action="append",
+        type=match_paths,
+        help="One or more glob patterns for matching input files",
+    )
+    combine_datasets_parser.set_defaults(func=combine_datasets)
 
     args = ror_parser.parse_args()
     if hasattr(args, "func"):
