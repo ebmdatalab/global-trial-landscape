@@ -39,7 +39,7 @@ contourpy==1.1.1
     # via matplotlib
 country-converter==1.1.1
     # via -r requirements.dev.in
-coverage==7.3.2
+coverage==7.3.3
     # via -r requirements.dev.in
 cycler==0.11.0
     # via matplotlib
