@@ -142,7 +142,7 @@ requests-cache==1.1.1
     # via -r requirements.dev.in
 ruff==0.1.7
     # via -r requirements.dev.in
-schemdraw==0.17
+schemdraw==0.18
     # via -r requirements.dev.in
 seaborn==0.13.0
     # via -r requirements.dev.in
