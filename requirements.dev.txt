@@ -144,7 +144,7 @@ ruff==0.1.7
     # via -r requirements.dev.in
 schemdraw==0.17
     # via -r requirements.dev.in
-seaborn==0.13.0
+seaborn==0.13.1
     # via -r requirements.dev.in
 shapely==2.0.1
     # via geopandas
