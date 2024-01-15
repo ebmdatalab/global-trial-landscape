@@ -168,7 +168,7 @@ typing-extensions==4.8.0
     #   cattrs
 tzdata==2023.3
     # via pandas
-unidecode==1.3.7
+unidecode==1.3.8
     # via -r requirements.dev.in
 url-normalize==1.4.3
     # via requests-cache
