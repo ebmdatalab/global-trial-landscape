@@ -55,7 +55,7 @@ fiona==1.9.4.post1
     # via geopandas
 fonttools==4.42.1
     # via matplotlib
-geopandas==0.14.1
+geopandas==0.14.3
     # via -r requirements.dev.in
 identify==2.5.29
     # via pre-commit
