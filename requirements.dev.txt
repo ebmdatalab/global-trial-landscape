@@ -77,7 +77,7 @@ mypy-extensions==1.0.0
     # via black
 nodeenv==1.8.0
     # via pre-commit
-numpy==1.26.2
+numpy==1.26.4
     # via
     #   -r requirements.dev.in
     #   contourpy
