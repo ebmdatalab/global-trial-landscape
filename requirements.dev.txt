@@ -93,7 +93,7 @@ packaging==23.1
     #   matplotlib
     #   plotly
     #   pytest
-pandas==2.1.4
+pandas==2.2.1
     # via
     #   -r requirements.dev.in
     #   country-converter
