@@ -103,7 +103,7 @@ pathspec==0.11.2
     # via black
 pillow==10.0.1
     # via matplotlib
-pip-tools==7.3.0
+pip-tools==7.4.1
     # via -r requirements.dev.in
 platformdirs==3.10.0
     # via
@@ -121,7 +121,9 @@ pyparsing==3.1.1
 pyproj==3.6.0
     # via geopandas
 pyproject-hooks==1.0.0
-    # via build
+    # via
+    #   build
+    #   pip-tools
 pytest==7.4.3
     # via -r requirements.dev.in
 python-dateutil==2.8.2
