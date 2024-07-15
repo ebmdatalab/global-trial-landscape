@@ -134,7 +134,7 @@ pyyaml==6.0.1
     # via
     #   pre-commit
     #   vcrpy
-requests==2.31.0
+requests==2.32.3
     # via
     #   -r requirements.dev.in
     #   requests-cache
